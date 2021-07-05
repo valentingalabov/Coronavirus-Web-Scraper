@@ -4,8 +4,7 @@ using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace dataScraperExample
 {
@@ -19,13 +18,29 @@ namespace dataScraperExample
         private IDocument statisticDocument;
         private string[] statistics;
         private IElement[] allTebles;
+        private int totalTests;
+        private string[] totalTestsByTypeTableRecords;
+        private int totalPcr;
+        private int totalAntigen;
+        private int totalTests24;
+        private int totalPcr24;
+        private int totalAntigen24;
+        private int totalConfirmed;
+        private string[] confirmedTestsByTypeTableRecords;
+        private int confirmedPcr;
+        private int confirmedAntigen;
+        private int confirmedPcr24;
+        private int confirmedAntigen24;
+        private int totalConfirmed24;
 
         public CreateEntity()
         {
             this.config = Configuration.Default.WithDefaultLoader();
             this.context = BrowsingContext.New(config);
+
             this.covidUrl = "https://coronavirus.bg/";
             this.document = context.OpenAsync(this.covidUrl).GetAwaiter().GetResult();
+
             this.covidStatisticUrl = this.covidUrl + document.QuerySelector(".statistics-sub-header.nsi").GetAttribute("href");
             this.statisticDocument = context.OpenAsync(this.covidStatisticUrl)
                 .GetAwaiter()
@@ -33,6 +48,30 @@ namespace dataScraperExample
 
             this.statistics = document.QuerySelectorAll(".statistics-container > div > p").Select(x => x.TextContent).ToArray();
             this.allTebles = this.statisticDocument.QuerySelectorAll(".table").ToArray();
+
+            //Tests
+            this.totalTestsByTypeTableRecords = allTebles[1].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
+
+            this.totalTests = IntParser(statistics[0]);
+            this.totalPcr = IntParser(totalTestsByTypeTableRecords[1]);
+            this.totalAntigen = IntParser(totalTestsByTypeTableRecords[4]);
+
+            this.totalTests24 = IntParser(statistics[2]);
+            this.totalPcr24 = IntParser(totalTestsByTypeTableRecords[2]);
+            this.totalAntigen24 = IntParser(totalTestsByTypeTableRecords[5]);
+
+            //confirmed
+            this.confirmedTestsByTypeTableRecords = allTebles[2].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
+
+            this.totalConfirmed = IntParser(this.statistics[4]);
+            this.confirmedPcr = IntParser(confirmedTestsByTypeTableRecords[1]);
+            this.confirmedAntigen = IntParser(confirmedTestsByTypeTableRecords[4]);
+
+            this.confirmedPcr24 = IntParser(confirmedTestsByTypeTableRecords[2]);
+            this.confirmedAntigen24 = IntParser(confirmedTestsByTypeTableRecords[5]);
+            this.totalConfirmed24 = IntParser(confirmedTestsByTypeTableRecords[8]);
+
+
         }
 
 
@@ -51,50 +90,81 @@ namespace dataScraperExample
             var dateToAdd = currDate.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
             var dateScraped = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
-
             return new BsonDocument
             {
                 { "date", dateToAdd },
                 { "date_scraped", dateScraped },
                 { "country", "BG"},
                 { "overall", GetOverallStats()},
-                {"regions", GetAllRegionsStatistics() }
+                {"regions",  new BsonArray(GetAllRegionsData()) },
+                { "stats", GetStatsByPercentage()}
             };
 
 
         }
 
-        private BsonDocument GetAllRegionsStatistics()
+        private BsonDocument GetStatsByPercentage()
         {
-            var regions = GetRegionsData();
 
             return new BsonDocument
             {
-                { "regions", 151 }
+                { "tested", GetTestedPercentage()},
+                { "confirmed", GetConfirmedPercentage()}
+            };
+
+        }
+
+        private BsonDocument GetConfirmedPercentage()
+        {
+            var totalPerTestedPcr = DevideTwoIntiger(totalConfirmed,totalTests);
+            var lastPerTestedPrc = DevideTwoIntiger(totalConfirmed24, totalTests24);
+       
+            //
+            return new BsonDocument
+            {
+                { "total_per_tested_prc", totalPerTestedPcr},
+                { "last_per_tested_prc", lastPerTestedPrc},
+                { "total_by_type_prc", new BsonDocument { { "pcr", 1 }, { "antigen", 1 } } }
             };
         }
 
-        private List<BsonDocument> GetRegionsData()
+        private BsonDocument GetTestedPercentage()
+        {
+
+            var pcrPercentage = DevideTwoIntiger(totalPcr, totalTests);
+            var antigenPercentage = DevideTwoIntiger(totalAntigen, totalTests);       
+            var pcrPercentage24 = DevideTwoIntiger(totalPcr24, totalTests24);             
+            var antigenPercentage24 = DevideTwoIntiger(totalAntigen24, totalTests24);
+
+            return new BsonDocument
+            {
+                { "total_by_type_prc", new BsonDocument { {"pcr", pcrPercentage }, {"antigen", antigenPercentage } } },
+                { "last_by_type_prc", new BsonDocument { {"pcr", pcrPercentage24 }, {"antigen", antigenPercentage24 } } },
+
+            };
+        }
+
+        private List<BsonDocument> GetAllRegionsData()
         {
             var regions = new List<BsonDocument>();
-
 
             var confirmedByRegionTableRecords = allTebles[3].QuerySelectorAll("td").SkipLast(3).Select(x => x.TextContent).ToArray();
             var vaccinatedByRegions = allTebles[5].QuerySelectorAll("td").SkipLast(7).Select(x => x.TextContent).ToArray();
 
-            var currentRegionDocument = new BsonDocument();
+
 
             for (int i = 0; i < confirmedByRegionTableRecords.Length; i += 3)
             {
                 var regionCode = GetRegionЕКАТТЕCode(confirmedByRegionTableRecords[i]).ToLower();
                 var confirmed = IntParser(confirmedByRegionTableRecords[i + 1]);
                 var confirmed24 = IntParser(confirmedByRegionTableRecords[i + 2]);
-                var bson = new BsonDocument
-                {
-                    { regionCode,  new BsonDocument { { "confirmed", new BsonDocument { { "total", confirmed }, { "last", confirmed24 } } } } }
-                };
-                regions.Add(bson);
+                var currentRegionDocument = new BsonDocument();
+
+                currentRegionDocument.Add(regionCode, new BsonDocument { { "confirmed", new BsonDocument { { "total", confirmed }, { "last", confirmed24 } } } });
+
+                regions.Add(currentRegionDocument);
             }
+
             var counter = 0;
             for (int i = 0; i < vaccinatedByRegions.Length; i += 7)
             {
@@ -106,9 +176,15 @@ namespace dataScraperExample
                 var totalVaccinedComplate = IntParser(vaccinatedByRegions[i + 6]);
                 var totalVaccinated24 = comirnaty + moderna + astrazeneca + janssen;
 
-                regions[counter].Add("vaccinated", new BsonDocument { { "total", totalVaccinated } });
-                regions[counter].Add("last", totalVaccinated24);
-                regions[counter].Add("last_by_type", new BsonDocument { { "comirnaty", comirnaty }, { "moderna", moderna }, { "astrazeneca", astrazeneca }, { "janssen", janssen } });
+                var doc = regions[counter];
+
+
+                regions[counter].Add("vaccinated", new BsonDocument
+                {
+                    { "total", totalVaccinated },
+                    { "last", totalVaccinated24 },
+                    { "last_by_type", new BsonDocument { { "comirnaty", comirnaty }, { "moderna", moderna }, { "astrazeneca", astrazeneca }, { "janssen", janssen } } }
+                });
                 regions[counter].Add("total_completed", totalVaccinedComplate);
                 counter++;
             }
@@ -158,9 +234,6 @@ namespace dataScraperExample
 
         private BsonDocument GetOverallStats()
         {
-
-
-            var totalTests = IntParser(statistics[0]);
 
 
             return new BsonDocument
@@ -245,15 +318,6 @@ namespace dataScraperExample
 
         private BsonDocument GetConfirmedStatistics()
         {
-            var totalConfirmed = IntParser(this.statistics[4]);
-
-            var confirmedTestsByTypeTableRecords = allTebles[2].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
-
-            var confirmedPcr = IntParser(confirmedTestsByTypeTableRecords[1]);
-            var confirmedAntigen = IntParser(confirmedTestsByTypeTableRecords[4]);
-            var confirmedPcr24 = IntParser(confirmedTestsByTypeTableRecords[2]);
-            var confirmedAntigen24 = IntParser(confirmedTestsByTypeTableRecords[5]);
-            var totalConfirmed24 = IntParser(confirmedTestsByTypeTableRecords[8]);
 
 
 
@@ -298,20 +362,6 @@ namespace dataScraperExample
         }
         private BsonDocument GetTestedStatistics()
         {
-            var totalTests = IntParser(statistics[0]);
-
-            var totalTestsByTypeTableRecords = allTebles[1].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
-
-            var totalPcr = IntParser(totalTestsByTypeTableRecords[1]);
-            var totalAntigen = IntParser(totalTestsByTypeTableRecords[4]);
-
-            var totalTests24 = IntParser(statistics[2]);
-
-            var totalPcr24 = IntParser(totalTestsByTypeTableRecords[2]);
-            var totalAntigen24 = IntParser(totalTestsByTypeTableRecords[5]);
-
-
-
 
             return new BsonDocument()
             {
@@ -331,6 +381,11 @@ namespace dataScraperExample
             }
 
             return int.Parse(num.Trim().Replace(" ", string.Empty));
+        }
+
+        private static double DevideTwoIntiger(int num1, int num2) 
+        { 
+            return Math.Round(((double)(num1) / num2), 4);
         }
 
     }

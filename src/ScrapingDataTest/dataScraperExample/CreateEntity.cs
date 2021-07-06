@@ -32,6 +32,9 @@ namespace dataScraperExample
         private int confirmedPcr24;
         private int confirmedAntigen24;
         private int totalConfirmed24;
+        private int active;
+        private int hospitalized;
+        private int intensiveCare;
 
         public CreateEntity()
         {
@@ -72,6 +75,11 @@ namespace dataScraperExample
             this.totalConfirmed24 = IntParser(confirmedTestsByTypeTableRecords[8]);
 
 
+            this.active = IntParser(statistics[6]);
+
+            this.hospitalized = IntParser(statistics[12]);
+            this.intensiveCare = IntParser(statistics[14]);
+
         }
 
 
@@ -109,22 +117,63 @@ namespace dataScraperExample
             return new BsonDocument
             {
                 { "tested", GetTestedPercentage()},
-                { "confirmed", GetConfirmedPercentage()}
+                { "confirmed", GetConfirmedPercentage()},
+                { "active" , GetActivePercentage()}
             };
 
         }
 
+        private BsonDocument GetActivePercentage()
+        {
+            var hospitalizedPerActive = DevideTwoIntiger(hospitalized, active);
+            var icuPerHospitalized = DevideTwoIntiger(intensiveCare, active);
+
+            //      Хоспитализирани / Активни[%](текущо)
+            //      "hospitalized_per_active": 0.1401,
+            // Интензивни / Хоспитализирани[%](текущо)
+            //"icu_per_hospitalized": 0.815
+
+            return new BsonDocument
+            {
+                { "hospitalized_per_active",hospitalizedPerActive },
+                { "icu_per_hospitalized", icuPerHospitalized}
+            };
+        }
+
         private BsonDocument GetConfirmedPercentage()
         {
-            var totalPerTestedPcr = DevideTwoIntiger(totalConfirmed,totalTests);
+            var totalPerTestedPcr = DevideTwoIntiger(totalConfirmed, totalTests);
             var lastPerTestedPrc = DevideTwoIntiger(totalConfirmed24, totalTests24);
-       
-            //
+
+            var totalByTypePrcPCR = DevideTwoIntiger(confirmedPcr, totalConfirmed);
+            var totalByTypePrcAntigen = DevideTwoIntiger(confirmedAntigen, totalConfirmed);
+
+
+            var lastByTypePrcPCR24 = DevideTwoIntiger(confirmedPcr24, totalConfirmed24);
+            var lastByTypePrcAntigen24 = DevideTwoIntiger(confirmedAntigen24, totalConfirmed24);
+
+            //var medicalPrc = DevideTwoIntiger(medic);
+
+            // Потвърдени PCR [%] (общо)
+            //"pcr": 0.5706,
+            // Потвърдени антиген [%] (общо)
+            //"antigen": 0.4294
+
+            //"last_by_type_prc": {
+            //Потвърдени PCR[%] (24 ч)
+            //"pcr": 0.6264,
+            // Потвърдени антиген[%] (24 ч)
+            //"antigen": 0.3736
+
+            //// Медицински/потвърдени [%] (24 ч)
+            //"medical_prc": 0.0279
             return new BsonDocument
             {
                 { "total_per_tested_prc", totalPerTestedPcr},
                 { "last_per_tested_prc", lastPerTestedPrc},
-                { "total_by_type_prc", new BsonDocument { { "pcr", 1 }, { "antigen", 1 } } }
+                { "total_by_type_prc", new BsonDocument { { "pcr", totalByTypePrcPCR }, { "antigen", totalByTypePrcAntigen } } },
+                { "last_by_type_prc" , new BsonDocument { { "pcr", lastByTypePrcPCR24 }, { "antigen", lastByTypePrcAntigen24 } } },
+                { "medical_prc" , "-"}
             };
         }
 
@@ -132,8 +181,8 @@ namespace dataScraperExample
         {
 
             var pcrPercentage = DevideTwoIntiger(totalPcr, totalTests);
-            var antigenPercentage = DevideTwoIntiger(totalAntigen, totalTests);       
-            var pcrPercentage24 = DevideTwoIntiger(totalPcr24, totalTests24);             
+            var antigenPercentage = DevideTwoIntiger(totalAntigen, totalTests);
+            var pcrPercentage24 = DevideTwoIntiger(totalPcr24, totalTests24);
             var antigenPercentage24 = DevideTwoIntiger(totalAntigen24, totalTests24);
 
             return new BsonDocument
@@ -302,12 +351,6 @@ namespace dataScraperExample
         private BsonDocument GetActiveStatistic()
         {
 
-            var active = IntParser(statistics[6]);
-
-            var hospitalized = IntParser(statistics[12]);
-            var intensiveCare = IntParser(statistics[14]);
-
-
 
             return new BsonDocument
             {
@@ -383,8 +426,8 @@ namespace dataScraperExample
             return int.Parse(num.Trim().Replace(" ", string.Empty));
         }
 
-        private static double DevideTwoIntiger(int num1, int num2) 
-        { 
+        private static double DevideTwoIntiger(int num1, int num2)
+        {
             return Math.Round(((double)(num1) / num2), 4);
         }
 

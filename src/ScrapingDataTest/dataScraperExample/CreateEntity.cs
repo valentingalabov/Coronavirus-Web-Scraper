@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace dataScraperExample
 {
-    class CreateEntity
+    public class CreateEntity
     {
         private IConfiguration config;
         private IBrowsingContext context;

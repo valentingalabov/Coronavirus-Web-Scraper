@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CoronavirusWebScraper.Common\CoronavirusWebScraper.Common.csproj" />
     <ProjectReference Include="..\..\Data\CoronavirusWebScraper.Data\CoronavirusWebScraper.Data.csproj" />
+    <ProjectReference Include="..\..\Services\CoronavirusWebScraper.Services\CoronavirusWebScraper.Services.Data.csproj" />
   </ItemGroup>
 
 </Project>

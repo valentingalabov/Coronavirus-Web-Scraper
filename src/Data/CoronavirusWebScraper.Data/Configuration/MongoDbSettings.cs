@@ -4,8 +4,9 @@ using System.Text;
 
 namespace CoronavirusWebScraper.Data.Configuration
 {
-   public interface  IDatabaseSettings
+    public class MongoDbSettings
     {
+        public string CollectionName { get; set; }
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
     }

@@ -9,6 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\CoronavirusWebScraper.Data\CoronavirusWebScraper.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="DTOs\" />
   </ItemGroup>
 

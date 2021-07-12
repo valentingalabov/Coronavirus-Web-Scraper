@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using MongoDB.Bson;
+using System.Threading.Tasks;
 
 namespace CoronavirusWebScraper.Services.Data.Interfaces
 {
     public interface ICovid19Scraper
     {
-        Task PopultateDBWithCurrentDayStatisticcAsync();
+        BsonDocument ScrapeData();
     }
 }

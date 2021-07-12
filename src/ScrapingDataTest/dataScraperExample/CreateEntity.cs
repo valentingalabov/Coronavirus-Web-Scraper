@@ -44,10 +44,9 @@ namespace dataScraperExample
         private int astraZeneca;
         private int janssen;
         private int totalVaccinatedComplate;
-        private StringBuilder sb;
         private string status;
 
-        public CreateEntity()
+        public  CreateEntity()
         {
             this.config = Configuration.Default.WithDefaultLoader();
             this.context = BrowsingContext.New(config);
@@ -104,7 +103,7 @@ namespace dataScraperExample
             this.totalVaccinatedComplate = IntParser(vaccinatedTableRecords[6]);
 
 
-            this.sb = new StringBuilder();
+           
             this.status = "approved";
         }
 
@@ -142,8 +141,7 @@ namespace dataScraperExample
 
             if (this.status == "discrepancy")
             {
-                document.Add("status_result",
-                statusDoc);
+                document.Add("status_result", statusDoc);
             }
 
 
@@ -152,6 +150,7 @@ namespace dataScraperExample
 
         private BsonDocument CheckDataState()
         {
+            var sb = new StringBuilder();
             var fields = new BsonDocument();
 
 
@@ -358,8 +357,6 @@ namespace dataScraperExample
 
         private BsonDocument GetOverallStats()
         {
-
-
             return new BsonDocument
             {
                 { "tested", GetTestedStatistics()},
@@ -374,8 +371,6 @@ namespace dataScraperExample
 
         private BsonDocument GetVaccinatedStatistic()
         {
-
-
             return new BsonDocument()
             {
                 { "total", 590495 },
@@ -388,7 +383,6 @@ namespace dataScraperExample
 
         private BsonDocument GetDeceasedStatistic()
         {
-
             var deceased = IntParser(statistics[16]);
             var deceased24 = IntParser(statistics[18]);
 
@@ -417,8 +411,6 @@ namespace dataScraperExample
 
         private BsonDocument GetActiveStatistic()
         {
-
-
             return new BsonDocument
             {
                 {"current", active },
@@ -459,17 +451,16 @@ namespace dataScraperExample
                 { "total_by_type", new BsonDocument{{ "doctor", totalDoctors },
                         { "nurces", totalNurces }, { "paramedics_1", totalParamedics1 },
                         { "paramedics_2", totalParamedics2 }, { "other", others } }},
-                { "last", 1111111 },
-                { "last_by_type", new BsonDocument{{ "doctor", 11111 },
-                        { "nurces", 1111 }, { "paramedics_1", 1111 },
-                        { "paramedics_2", 1111 }, { "other", 111 } }}
+                { "last", "-" },
+                { "last_by_type", new BsonDocument{{ "doctor", "-" },
+                        { "nurces", "-" }, { "paramedics_1", "-" },
+                        { "paramedics_2", "-" }, { "other", "-" } }}
             };
 
 
         }
         private BsonDocument GetTestedStatistics()
         {
-
             return new BsonDocument()
             {
                 { "total", totalTests},

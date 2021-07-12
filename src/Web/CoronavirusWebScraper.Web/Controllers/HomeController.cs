@@ -1,7 +1,12 @@
-﻿using CoronavirusWebScraper.Web.Models;
+﻿using CoronavirusWebScraper.Data.Repositories;
+using CoronavirusWebScraper.Services.Data.Interfaces;
+using CoronavirusWebScraper.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoronavirusWebScraper.Web.Controllers
@@ -13,12 +18,13 @@ namespace CoronavirusWebScraper.Web.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
- 
+
         }
 
         public IActionResult Index()
         {
-            return View();           
+            return View();
+            
         }
 
         public IActionResult Privacy()

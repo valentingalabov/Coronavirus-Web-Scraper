@@ -1,8 +1,0 @@
-﻿namespace dataScraperExample
-{
-    class ScrapeDataService
-    {
-       
-
-    }
-}

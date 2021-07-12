@@ -4,7 +4,7 @@ using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Text;
 
 namespace dataScraperExample
 {
@@ -27,6 +27,7 @@ namespace dataScraperExample
         private int totalAntigen24;
         private int totalConfirmed;
         private string[] confirmedTestsByTypeTableRecords;
+        private string[] confirmedByRegionTableRecords;
         private int confirmedPcr;
         private int confirmedAntigen;
         private int confirmedPcr24;
@@ -35,6 +36,16 @@ namespace dataScraperExample
         private int active;
         private int hospitalized;
         private int intensiveCare;
+        private int vaccinated;
+        private int vaccinated24;
+        private string[] vaccinatedTableRecords;
+        private int comirnaty;
+        private int moderna;
+        private int astraZeneca;
+        private int janssen;
+        private int totalVaccinatedComplate;
+        private StringBuilder sb;
+        private string status;
 
         public CreateEntity()
         {
@@ -65,6 +76,7 @@ namespace dataScraperExample
 
             //confirmed
             this.confirmedTestsByTypeTableRecords = allTebles[2].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
+            this.confirmedByRegionTableRecords = allTebles[3].QuerySelectorAll("td").SkipLast(3).Select(x => x.TextContent).ToArray();
 
             this.totalConfirmed = IntParser(this.statistics[4]);
             this.confirmedPcr = IntParser(confirmedTestsByTypeTableRecords[1]);
@@ -80,6 +92,20 @@ namespace dataScraperExample
             this.hospitalized = IntParser(statistics[12]);
             this.intensiveCare = IntParser(statistics[14]);
 
+            //vaccinated
+            this.vaccinated = IntParser(statistics[20]);
+            this.vaccinated24 = IntParser(statistics[22]);
+
+            this.vaccinatedTableRecords = allTebles[5].QuerySelectorAll("tr").Last().QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
+            this.comirnaty = IntParser(vaccinatedTableRecords[2]);
+            this.moderna = IntParser(vaccinatedTableRecords[3]);
+            this.astraZeneca = IntParser(vaccinatedTableRecords[4]);
+            this.janssen = IntParser(vaccinatedTableRecords[5]);
+            this.totalVaccinatedComplate = IntParser(vaccinatedTableRecords[6]);
+
+
+            this.sb = new StringBuilder();
+            this.status = "approved";
         }
 
 
@@ -98,15 +124,81 @@ namespace dataScraperExample
             var dateToAdd = currDate.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
             var dateScraped = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
-            return new BsonDocument
+            var statusDoc = CheckDataState();
+
+            var document = new BsonDocument
             {
                 { "date", dateToAdd },
                 { "date_scraped", dateScraped },
                 { "country", "BG"},
                 { "overall", GetOverallStats()},
                 {"regions",  new BsonArray(GetAllRegionsData()) },
-                { "stats", GetStatsByPercentage()}
+                { "stats", GetStatsByPercentage()},
+                { "status", this.status}
+
             };
+
+
+
+            if (this.status == "discrepancy")
+            {
+                document.Add("status_result",
+                statusDoc);
+            }
+
+
+            return document;
+        }
+
+        private BsonDocument CheckDataState()
+        {
+            var fields = new BsonDocument();
+
+
+            if (totalTests24 != totalPcr24 + totalAntigen24)
+            {
+                status = "discrepancy";
+                sb.AppendLine($"Sum of total tests for 24h must be {totalTests24} but it is {totalPcr24 + totalAntigen24}");
+                fields.Add("TotalTestFor24h ", new BsonDocument { { "expected", totalTests24 }, { "actual", totalPcr24 + totalAntigen24 } });
+
+            }
+            if (totalConfirmed24 != confirmedAntigen24 + confirmedPcr24)
+            {
+                status = "discrepancy";
+                sb.AppendLine($"Sum of total confirmed tests for 24h must be {totalConfirmed24} but it is {confirmedAntigen24 + confirmedPcr24}");
+                fields.Add("TotalConfrimedTestFor24h ", new BsonDocument { { "expected", totalConfirmed24 }, { "actual", confirmedAntigen24 + confirmedPcr24 } });
+            }
+
+
+            var totalConfirmed24Test = 0;
+
+            for (int i = 0; i < confirmedByRegionTableRecords.Length; i += 3)
+            {
+                totalConfirmed24Test += IntParser(confirmedByRegionTableRecords[i + 2]);
+
+            }
+
+            if (totalConfirmed24 != totalConfirmed24Test)
+            {
+                status = "discrepancy";
+                sb.AppendLine($"Sum of total confirmed tests for 24h for all regions must be {totalConfirmed24} but it is {totalConfirmed24Test}");
+                fields.Add("TotalConfrimedTestForAllRegions24h ", new BsonDocument { { "expected", totalConfirmed24 }, { "actual", totalConfirmed24Test } });
+            }
+
+            if (vaccinated24 != comirnaty + moderna + astraZeneca + janssen)
+            {
+                status = "discrepancy";
+                sb.AppendLine($"Sum of total vaccinated by type for 24h must be {vaccinated24} but it is {comirnaty + moderna + astraZeneca + janssen}");
+                fields.Add("TotalVaccinated24h ", new BsonDocument { { "expected", vaccinated24 }, { "actual", comirnaty + moderna + astraZeneca + janssen } });
+            }
+
+            if (sb.Length > 0)
+            {
+                fields.Add("description", sb.ToString().Trim());
+            }
+
+            return fields;
+
 
 
         }
@@ -128,10 +220,7 @@ namespace dataScraperExample
             var hospitalizedPerActive = DevideTwoIntiger(hospitalized, active);
             var icuPerHospitalized = DevideTwoIntiger(intensiveCare, active);
 
-            //      Хоспитализирани / Активни[%](текущо)
-            //      "hospitalized_per_active": 0.1401,
-            // Интензивни / Хоспитализирани[%](текущо)
-            //"icu_per_hospitalized": 0.815
+
 
             return new BsonDocument
             {
@@ -152,21 +241,7 @@ namespace dataScraperExample
             var lastByTypePrcPCR24 = DevideTwoIntiger(confirmedPcr24, totalConfirmed24);
             var lastByTypePrcAntigen24 = DevideTwoIntiger(confirmedAntigen24, totalConfirmed24);
 
-            //var medicalPrc = DevideTwoIntiger(medic);
 
-            // Потвърдени PCR [%] (общо)
-            //"pcr": 0.5706,
-            // Потвърдени антиген [%] (общо)
-            //"antigen": 0.4294
-
-            //"last_by_type_prc": {
-            //Потвърдени PCR[%] (24 ч)
-            //"pcr": 0.6264,
-            // Потвърдени антиген[%] (24 ч)
-            //"antigen": 0.3736
-
-            //// Медицински/потвърдени [%] (24 ч)
-            //"medical_prc": 0.0279
             return new BsonDocument
             {
                 { "total_per_tested_prc", totalPerTestedPcr},
@@ -197,7 +272,7 @@ namespace dataScraperExample
         {
             var regions = new List<BsonDocument>();
 
-            var confirmedByRegionTableRecords = allTebles[3].QuerySelectorAll("td").SkipLast(3).Select(x => x.TextContent).ToArray();
+
             var vaccinatedByRegions = allTebles[5].QuerySelectorAll("td").SkipLast(7).Select(x => x.TextContent).ToArray();
 
 
@@ -299,15 +374,7 @@ namespace dataScraperExample
 
         private BsonDocument GetVaccinatedStatistic()
         {
-            var vaccinated = IntParser(statistics[20]);
-            var vaccinated24 = IntParser(statistics[22]);
 
-            var vaccinatedTableRecords = allTebles[5].QuerySelectorAll("tr").Last().QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
-            var comirnaty = IntParser(vaccinatedTableRecords[2]);
-            var moderna = IntParser(vaccinatedTableRecords[3]);
-            var astraZeneca = IntParser(vaccinatedTableRecords[4]);
-            var janssen = IntParser(vaccinatedTableRecords[5]);
-            var totalVaccinatedComplate = IntParser(vaccinatedTableRecords[6]);
 
             return new BsonDocument()
             {
@@ -361,9 +428,6 @@ namespace dataScraperExample
 
         private BsonDocument GetConfirmedStatistics()
         {
-
-
-
             return new BsonDocument
             {
                 {"total", totalConfirmed },

@@ -135,7 +135,7 @@ namespace CoronavirusWebScraper.Services
                 { "date_scraped", dateScraped },
                 { "country", "BG"},
                 { "overall", GetOverallStats()},
-                {"regions",  new BsonArray(GetAllRegionsData()) },
+                {"regions",  GetAllRegionsData() },
                 { "stats", GetStatsByPercentage()},
                 { "status", this.status}
 
@@ -271,11 +271,11 @@ namespace CoronavirusWebScraper.Services
             };
         }
 
-        private List<BsonDocument> GetAllRegionsData()
+        private BsonDocument GetAllRegionsData()
         {
-            var regions = new List<BsonDocument>();
-
-
+            var regionsStatistic = new List<BsonDocument>();
+            var regionsNames = new List<string>();
+            var dictionary = new Dictionary<string, object>();
             var vaccinatedByRegions = allTebles[5].QuerySelectorAll("td").SkipLast(7).Select(x => x.TextContent).ToArray();
 
 
@@ -286,10 +286,10 @@ namespace CoronavirusWebScraper.Services
                 var confirmed = IntParser(confirmedByRegionTableRecords[i + 1]);
                 var confirmed24 = IntParser(confirmedByRegionTableRecords[i + 2]);
                 var currentRegionDocument = new BsonDocument();
-
-                currentRegionDocument.Add(regionCode, new BsonDocument { { "confirmed", new BsonDocument { { "total", confirmed }, { "last", confirmed24 } } } });
-
-                regions.Add(currentRegionDocument);
+                regionsNames.Add(regionCode);
+                regionsStatistic.Add(new BsonDocument { { "confirmed", new BsonDocument { { "total", confirmed }, { "last", confirmed24 } } } });
+                
+                
             }
 
             var counter = 0;
@@ -303,21 +303,28 @@ namespace CoronavirusWebScraper.Services
                 var totalVaccinedComplate = IntParser(vaccinatedByRegions[i + 6]);
                 var totalVaccinated24 = comirnaty + moderna + astrazeneca + janssen;
 
-                var doc = regions[counter];
+        
 
-
-                regions[counter].Add("vaccinated", new BsonDocument
+                
+                regionsStatistic[counter].Add("vaccinated", new BsonDocument
                 {
                     { "total", totalVaccinated },
                     { "last", totalVaccinated24 },
                     { "last_by_type", new BsonDocument { { "comirnaty", comirnaty }, { "moderna", moderna }, { "astrazeneca", astrazeneca }, { "janssen", janssen } } }
                 });
-                regions[counter].Add("total_completed", totalVaccinedComplate);
+                regionsStatistic[counter].Add("total_completed", totalVaccinedComplate);
                 counter++;
             }
 
+            for (int i = 0; i < regionsNames.Count; i++)
+            {
+                dictionary.Add(regionsNames[i], regionsStatistic[i]);
+            }
 
-            return regions;
+            var bson = new BsonDocument();
+            bson.AddRange(dictionary);
+
+            return bson;
         }
 
 

@@ -26,7 +26,7 @@ namespace CoronavirusWebScraper.Services.Data
                 var data = this.covidScraper.ScrapeData();
                 await mongoRepository.AddAsync(data);
 
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
 
             }
 

@@ -1,5 +1,4 @@
-﻿
-using CoronavirusWebScraper.Data.Repositories;
+﻿using CoronavirusWebScraper.Data.Repositories;
 using CoronavirusWebScraper.Services.Data.Interfaces;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Bson;
@@ -21,14 +20,33 @@ namespace CoronavirusWebScraper.Services.Data
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+
+            do
             {
-                var data = this.covidScraper.ScrapeData();
-                await mongoRepository.AddAsync(data);
+                int hourSpan = 24 - DateTime.Now.Hour;
+                int numberOfHours = hourSpan;
 
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                if (hourSpan == 24)
+                {
+                    var data = this.covidScraper.ScrapeData();
+                    await mongoRepository.AddAsync(data);
 
+                    numberOfHours = 24;
+                }
+
+                await Task.Delay(TimeSpan.FromHours(numberOfHours), stoppingToken);
             }
+            while (!stoppingToken.IsCancellationRequested);
+
+
+            //while (!stoppingToken.IsCancellationRequested)
+            //{
+            //    var data = this.covidScraper.ScrapeData();
+            //    await mongoRepository.AddAsync(data);
+
+            //    await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+
+            //}
 
         }
     }

@@ -1,0 +1,56 @@
+﻿@{
+
+    //var date = DateTime.Now;
+    //var days = DateTime.DaysInMonth(date.Year, date.Month);
+    //var dayOfWeek = date.DayOfWeek;
+    //var currDate = date.Day;
+    //var firstDayDate = new DateTime(date.Year, date.Month, 1);
+    //var dayOfWeekFor1 = firstDayDate.DayOfWeek;
+    var getDate = DateTime.Now;
+    var sekondDate = new DateTime(getDate.Year, getDate.Month, getDate.Day);
+
+    var firstDayOfTheMonth = new DateTime(sekondDate.Year, sekondDate.Month, 1);
+
+    DateTime startDate = firstDayOfTheMonth.AddDays(-(int)firstDayOfTheMonth.DayOfWeek);
+
+}
+
+
+<div class="btn btn-primary">Prev</div>
+<div class="btn btn-primary">Next</div>
+<table class="table table-striped table-dark text-center">
+    <thead>
+        <tr>
+            <td>Monday</td>
+            <td>Tuesday</td>
+            <td>Wednesday</td>
+            <td>Thursday</td>
+            <td>Friday</td>
+            <td>Saturday</td>
+            <td>Sunday</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="calendar">
+            @for (int i = 0; i < 42; i++)
+            {
+                DateTime date = startDate.AddDays(i + 1);
+                if (i % 7 == 0 && i > 0)
+                {
+                @:</tr><tr>
+                    // start a new row every 7 days
+                }
+                if (date.ToShortDateString() == getDate.ToShortDateString())
+                {
+                    <td class="badge-danger">@date.ToShortDateString()</td>
+                }
+                else
+                {
+                    <td>@date.ToShortDateString()</td>
+                }
+
+            }
+        </tr>
+    </tbody>
+</table>
+

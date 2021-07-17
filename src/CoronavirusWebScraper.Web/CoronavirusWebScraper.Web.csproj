@@ -11,7 +11,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CoronavirusWebScraper.Data\CoronavirusWebScraper.Data.csproj" />
-    <ProjectReference Include="..\CoronavirusWebScraper.Services\CoronavirusWebScraper.Services.Data.csproj" />
+    <ProjectReference Include="..\CoronavirusWebScraper.Services.Impl\CoronavirusWebScraper.Services.Impl.csproj" />
+    <ProjectReference Include="..\CoronavirusWebScraper.Services\CoronavirusWebScraper.Services.csproj" />
   </ItemGroup>
 
 </Project>

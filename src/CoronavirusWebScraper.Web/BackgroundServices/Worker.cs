@@ -1,22 +1,18 @@
-﻿using CoronavirusWebScraper.Data.Repositories;
-using CoronavirusWebScraper.Services.Data.Interfaces;
+﻿using CoronavirusWebScraper.Services;
 using Microsoft.Extensions.Hosting;
-using MongoDB.Bson;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CoronavirusWebScraper.Services.Data
+namespace CoronavirusWebScraper.Web.BackgroundServices
 {
     public class Worker : BackgroundService
     {
         private readonly ICovid19Scraper covidScraper;
-        private readonly IMongoRepository<BsonDocument> mongoRepository;
 
-        public Worker(ICovid19Scraper covidScraper, IMongoRepository<BsonDocument> mongoRepository)
+        public Worker(ICovid19Scraper covidScraper)
         {
             this.covidScraper = covidScraper;
-            this.mongoRepository = mongoRepository;
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -28,14 +24,14 @@ namespace CoronavirusWebScraper.Services.Data
 
                 if (hourSpan == 24)
                 {
-                    var data = this.covidScraper.ScrapeData();
-                    await mongoRepository.AddAsync(data);
+                    this.covidScraper.ScrapeData();
 
                     numberOfHours = 24;
                 }
 
                 await Task.Delay(TimeSpan.FromHours(numberOfHours), stoppingToken);
             }
+
             while (!stoppingToken.IsCancellationRequested);
 
 

@@ -1,22 +1,22 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
-using CoronavirusWebScraper.Services.Data.Interfaces;
+using CoronavirusWebScraper.Data;
+using CoronavirusWebScraper.Services;
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace CoronavirusWebScraper.Services
+namespace CoronavirusWebScraper.Web.Services.Impl
 {
     public class Covid19Scraper : ICovid19Scraper
     {
+        private readonly MongoDbContext _dbContext;
         private IConfiguration config;
         private IBrowsingContext context;
         private string covidUrl;
-        private AngleSharp.Dom.IDocument document;
+        private IDocument document;
         private string covidStatisticUrl;
         private IDocument statisticDocument;
         private string[] statistics;
@@ -49,8 +49,9 @@ namespace CoronavirusWebScraper.Services
         private int totalVaccinatedComplate;
         private string status;
 
-        public Covid19Scraper()
+        public Covid19Scraper(MongoDbContext dbContext)
         {
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
             this.config = Configuration.Default.WithDefaultLoader();
             this.context = BrowsingContext.New(config);
@@ -111,11 +112,13 @@ namespace CoronavirusWebScraper.Services
             this.status = "approved";
         }
 
-
-
-        public BsonDocument ScrapeData()
+        public void ScrapeData()
         {
+            BsonDocument document = FetchDocument();
+        }
 
+        private BsonDocument FetchDocument()
+        {
             var currentDateSpan = this.document.QuerySelector(".statistics-header-wrapper span").TextContent.Split(" ");
             var time = currentDateSpan[2];
             var date = currentDateSpan[5];
@@ -141,13 +144,10 @@ namespace CoronavirusWebScraper.Services
 
             };
 
-
-
             if (this.status == "discrepancy")
             {
                 document.Add("status_result", statusDoc);
             }
-
 
             return document;
         }

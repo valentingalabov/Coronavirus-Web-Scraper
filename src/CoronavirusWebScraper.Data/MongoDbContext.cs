@@ -1,13 +1,10 @@
 ﻿using CoronavirusWebScraper.Data.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CoronavirusWebScraper.Data
 {
-    public class MongoDbContext : IMongoDbContext
+    public class MongoDbContext
     {
         public IMongoDatabase MongoDB { get; set; }
 

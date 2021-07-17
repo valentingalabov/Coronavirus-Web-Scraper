@@ -10,8 +10,4 @@
     <PackageReference Include="mongocsharpdriver" Version="2.12.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CoronavirusWebScraper.Data.Models\CoronavirusWebScraper.Data.Models.csproj" />
-  </ItemGroup>
-
 </Project>

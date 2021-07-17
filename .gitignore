@@ -357,5 +357,4 @@ MigrationBackup/
 appsettings.Production.json
 *.min.css
 *.min.js
-*.sln
 /src/Web/CoronavirusWebScraper.Web/appsettings.Development.json

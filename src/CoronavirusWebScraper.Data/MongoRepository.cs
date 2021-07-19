@@ -3,7 +3,9 @@ using CoronavirusWebScraper.Data.Configuration;
 using CoronavirusWebScraper.Data.Models;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CoronavirusWebScraper.Data
@@ -24,9 +26,16 @@ namespace CoronavirusWebScraper.Data
                     true)
                 .FirstOrDefault())?.CollectionName;
         }
-        public Task InsertOneAsync(TDocument document)
+        public async Task InsertOneAsync(TDocument document)
         {
-            return Task.Run(() => _collection.InsertOneAsync(document));
+            await _collection.InsertOneAsync(document);
+        }
+
+        public virtual IEnumerable<TProjected> FilterBy<TProjected>(
+       Expression<Func<TDocument, bool>> filterExpression,
+       Expression<Func<TDocument, TProjected>> projectionExpression)
+        {
+            return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
     }
 }

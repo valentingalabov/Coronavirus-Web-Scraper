@@ -340,7 +340,6 @@ namespace CoronavirusWebScraper.Web.Services.Impl
             return regionsWithCodes[region];
         }
 
-
         private Medical GetMedicalStatistics(string[] medicalTableRecords)
         {
 
@@ -367,26 +366,6 @@ namespace CoronavirusWebScraper.Web.Services.Impl
             };
         }
 
-        //private BsonDocument GetTestedStatistics(string[] statistics, IElement[] allTebles)
-        //{
-        //    var totalTestsByTypeTableRecords = allTebles[1].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
-        //    var totalTests = IntParser(statistics[0]);
-        //    var totalPcr = IntParser(totalTestsByTypeTableRecords[1]);
-        //    var totalAntigen = IntParser(totalTestsByTypeTableRecords[4]);
-
-        //    var totalTests24 = IntParser(statistics[2]);
-        //    var totalPcr24 = IntParser(totalTestsByTypeTableRecords[2]);
-        //    var totalAntigen24 = IntParser(totalTestsByTypeTableRecords[5]);
-
-        //    return new BsonDocument()
-        //        {
-        //            { "total", totalTests},
-        //            { "total_by_type", new BsonDocument { { "pcr", totalPcr }, { "antigen", totalAntigen} } },
-        //            { "last",totalTests24 },
-        //            { "last_by_type", new BsonDocument { { "pcr", totalPcr24 }, { "antigen", totalAntigen24 } } }
-        //        };
-        //}
-
         private static int IntParser(string num)
         {
             if (num == "-")
@@ -402,5 +381,13 @@ namespace CoronavirusWebScraper.Web.Services.Impl
             return Math.Round(((double)(num1) / num2), 4);
         }
 
+        public IEnumerable<string> GetAllDates()
+        {
+            var dates =  _repository.FilterBy(
+                filter => filter.Date != "",
+                projection => projection.Date);
+
+            return dates;
+        }
     }
 }

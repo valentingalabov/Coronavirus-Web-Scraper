@@ -17,13 +17,30 @@
 </div>
 
 <script>
-    function createCalendar(elem, year, month) {
+
+    async function getListOfDates() {
+        try {
+            let response = await fetch('/dates');
+            return await response.json();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    async function createCalendar(elem, year, month) {
+
+        let listOfDates = await getListOfDates();
+
 
         let takeCurrenDate = new Date();
 
         // months in JS are 0..11, not 1..12
 
         let d = new Date(year, month);
+
+
+
 
 
         document.getElementById('table-header').textContent = `${d.toLocaleString('default', { month: 'long' })} / ${year}`;
@@ -35,16 +52,21 @@
         // spaces for the first row
         // from Monday till the first day of the month
         // * * * 1  2  3  4
-        console.log(getDay(d));
-        console.log(d.getDay());
         for (let i = 0; i < getDay(d); i++) {
             table += '<td></td>';
         }
 
         // <td> with actual dates
         while (d.getMonth() == month) {
+            let bb = new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
-            if (d.getDate() == takeCurrenDate.getDate() && d.getFullYear() == takeCurrenDate.getFullYear() && d.getMonth() == takeCurrenDate.getMonth()) {
+
+            if (isIncluded(listOfDates, bb)) {
+                table += `<td class="border border-primary"><a href='/Dates?Date=${d.getFullYear()}.${d.getMonth()}.${d.getDate()}' class= "text-primary">` + d.getDate() + '</a></b></td>';
+            }
+
+
+            else if (d.getDate() == takeCurrenDate.getDate() && d.getFullYear() == takeCurrenDate.getFullYear() && d.getMonth() == takeCurrenDate.getMonth()) {
                 table += '<td class="btn btn-primary"><b>' + d.getDate() + '</b></td>';
             } else {
                 table += '<td>' + d.getDate() + '</td>';
@@ -104,4 +126,18 @@
         createCalendar(calendar, currentDate.getFullYear(), currentDate.getMonth())
     }
 
+
+    function isIncluded(listOfDates, currDate) {
+
+
+        var contains = listOfDates.some(elem => {
+            return JSON.stringify(currDate.getTime()) === JSON.stringify(new Date(elem).getTime());
+        });
+
+        if (contains) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 </script>

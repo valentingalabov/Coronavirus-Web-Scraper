@@ -14,36 +14,30 @@ namespace CoronavirusWebScraper.Web.BackgroundServices
         {
             this.covidScraper = covidScraper;
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
-            do
-            {
-                int hourSpan = 24 - DateTime.Now.Hour;
-                int numberOfHours = hourSpan;
-
-                if (hourSpan == 24)
-                {
-                    this.covidScraper.ScrapeData();
-
-                    numberOfHours = 24;
-                }
-
-                await Task.Delay(TimeSpan.FromHours(numberOfHours), stoppingToken);
-            }
-
-            while (!stoppingToken.IsCancellationRequested);
-
-
-            //while (!stoppingToken.IsCancellationRequested)
+            //do
             //{
-            //    var data = this.covidScraper.ScrapeData();
-            //    await mongoRepository.AddAsync(data);
+            //    int hourSpan = 24 - DateTime.Now.Hour;
+            //    int numberOfHours = hourSpan;
 
-            //    await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+            //    if (hourSpan == 24)
+            //    {
+            //        await this.covidScraper.ScrapeData();
 
+            //        numberOfHours = 24;
+            //    }
+
+            //    await Task.Delay(TimeSpan.FromHours(numberOfHours), stoppingToken);
             //}
 
+            while (!stoppingToken.IsCancellationRequested) 
+            {
+                await covidScraper.ScrapeData();
+
+                await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
+            }
         }
     }
 }

@@ -17,10 +17,10 @@ namespace dataScraperExample
         {
 
 
-            var asd = new CreateEntity();
-           var data  = asd.GetDateAndCountryData();
-            MongoCrud db = new MongoCrud("WebScraper");
-            db.InsertRecord("Statistics", data);
+           // var asd = new CreateEntity();
+           //var data  = asd.GetDateAndCountryData();
+           // MongoCrud db = new MongoCrud("WebScraper");
+           // db.InsertRecord("Statistics", data);
 
 
         }

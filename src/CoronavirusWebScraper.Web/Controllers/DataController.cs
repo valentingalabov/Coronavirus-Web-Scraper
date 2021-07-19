@@ -5,19 +5,8 @@ namespace CoronavirusWebScraper.Web.Controllers
     public class DataController : Controller
     {
         public IActionResult Calendar()
-        {
-           
-                return this.View();
-            
-        }
-
-        [Route("/Data/NextMonth/{date}")]
-        public IActionResult NextMonth(string date)
-        {
-          
-            
-
-            return Ok(date);
+        {           
+                return this.View(); 
         }
     }
 }

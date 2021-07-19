@@ -1,9 +1,10 @@
 ﻿using MongoDB.Bson;
+using System.Threading.Tasks;
 
 namespace CoronavirusWebScraper.Services
 { 
     public interface ICovid19Scraper
     {
-        void ScrapeData();
+        Task ScrapeData();
     }
 }

@@ -1,50 +1,31 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using dataScraperExample;
+using CoronavirusWebScraper.Services;
 
 namespace TestWorker
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
-        private CreateEntity collectDataClass;
-        private MongoCrud db;
+        private readonly ICovid19Scraper covid19Scraper;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ICovid19Scraper covid19Scraper)
         {
-            _logger = logger;
+            this.covid19Scraper = covid19Scraper;
         }
 
-        public override Task StartAsync(CancellationToken cancellationToken)
-        {
-            collectDataClass = new CreateEntity();
-           
-            db = new MongoCrud("WebScraper");
-            
-            return base.StartAsync(cancellationToken);
-        }
 
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-          
-            return base.StopAsync(cancellationToken);
-        }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var data = collectDataClass.GetDateAndCountryData();
-                db.InsertRecord("Statistics", data);
+                await this.covid19Scraper.ScrapeData();
 
-                _logger.LogInformation("data added");
-
-                await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
+                await Task.Delay(5, stoppingToken);
                 
             }
         }

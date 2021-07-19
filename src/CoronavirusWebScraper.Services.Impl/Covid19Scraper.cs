@@ -1,125 +1,50 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using CoronavirusWebScraper.Data;
+
 using CoronavirusWebScraper.Services;
+using CoronavirusWebScraper.Services.Impl.DTO;
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace CoronavirusWebScraper.Web.Services.Impl
 {
     public class Covid19Scraper : ICovid19Scraper
     {
-        private readonly MongoDbContext _dbContext;
-        private IConfiguration config;
-        private IBrowsingContext context;
-        private string covidUrl;
-        private IDocument document;
-        private string covidStatisticUrl;
-        private IDocument statisticDocument;
-        private string[] statistics;
-        private IElement[] allTebles;
-        private int totalTests;
-        private string[] totalTestsByTypeTableRecords;
-        private int totalPcr;
-        private int totalAntigen;
-        private int totalTests24;
-        private int totalPcr24;
-        private int totalAntigen24;
-        private int totalConfirmed;
-        private string[] confirmedTestsByTypeTableRecords;
-        private string[] confirmedByRegionTableRecords;
-        private int confirmedPcr;
-        private int confirmedAntigen;
-        private int confirmedPcr24;
-        private int confirmedAntigen24;
-        private int totalConfirmed24;
-        private int active;
-        private int hospitalized;
-        private int intensiveCare;
-        private int vaccinated;
-        private int vaccinated24;
-        private string[] vaccinatedTableRecords;
-        private int comirnaty;
-        private int moderna;
-        private int astraZeneca;
-        private int janssen;
-        private int totalVaccinatedComplate;
-        private string status;
+        const string covidUrl = "https://coronavirus.bg/";
 
-        public Covid19Scraper(MongoDbContext dbContext)
+        private readonly IMongoRepository<CovidStatistic> _repository;
+
+        public Covid19Scraper(IMongoRepository<CovidStatistic> repository)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-
-            this.config = Configuration.Default.WithDefaultLoader();
-            this.context = BrowsingContext.New(config);
-
-            this.covidUrl = "https://coronavirus.bg/";
-            this.document = context.OpenAsync(this.covidUrl).GetAwaiter().GetResult();
-
-            this.covidStatisticUrl = this.covidUrl + document.QuerySelector(".statistics-sub-header.nsi").GetAttribute("href");
-            this.statisticDocument = context.OpenAsync(this.covidStatisticUrl)
-                .GetAwaiter()
-                .GetResult();
-
-            this.statistics = document.QuerySelectorAll(".statistics-container > div > p").Select(x => x.TextContent).ToArray();
-            this.allTebles = this.statisticDocument.QuerySelectorAll(".table").ToArray();
-
-            //Tests
-            this.totalTestsByTypeTableRecords = allTebles[1].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
-
-            this.totalTests = IntParser(statistics[0]);
-            this.totalPcr = IntParser(totalTestsByTypeTableRecords[1]);
-            this.totalAntigen = IntParser(totalTestsByTypeTableRecords[4]);
-
-            this.totalTests24 = IntParser(statistics[2]);
-            this.totalPcr24 = IntParser(totalTestsByTypeTableRecords[2]);
-            this.totalAntigen24 = IntParser(totalTestsByTypeTableRecords[5]);
-
-            //confirmed
-            this.confirmedTestsByTypeTableRecords = allTebles[2].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
-            this.confirmedByRegionTableRecords = allTebles[3].QuerySelectorAll("td").SkipLast(3).Select(x => x.TextContent).ToArray();
-
-            this.totalConfirmed = IntParser(this.statistics[4]);
-            this.confirmedPcr = IntParser(confirmedTestsByTypeTableRecords[1]);
-            this.confirmedAntigen = IntParser(confirmedTestsByTypeTableRecords[4]);
-
-            this.confirmedPcr24 = IntParser(confirmedTestsByTypeTableRecords[2]);
-            this.confirmedAntigen24 = IntParser(confirmedTestsByTypeTableRecords[5]);
-            this.totalConfirmed24 = IntParser(confirmedTestsByTypeTableRecords[8]);
-
-
-            this.active = IntParser(statistics[6]);
-
-            this.hospitalized = IntParser(statistics[12]);
-            this.intensiveCare = IntParser(statistics[14]);
-
-            //vaccinated
-            this.vaccinated = IntParser(statistics[20]);
-            this.vaccinated24 = IntParser(statistics[22]);
-
-            this.vaccinatedTableRecords = allTebles[5].QuerySelectorAll("tr").Last().QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
-            this.comirnaty = IntParser(vaccinatedTableRecords[2]);
-            this.moderna = IntParser(vaccinatedTableRecords[3]);
-            this.astraZeneca = IntParser(vaccinatedTableRecords[4]);
-            this.janssen = IntParser(vaccinatedTableRecords[5]);
-            this.totalVaccinatedComplate = IntParser(vaccinatedTableRecords[6]);
-
-
-
-            this.status = "approved";
+            _repository = repository;
         }
 
-        public void ScrapeData()
+        public async Task ScrapeData()
         {
-            BsonDocument document = FetchDocument();
+            var document = await FetchDocument();
+
+            await _repository.InsertOneAsync(document);
         }
 
-        private BsonDocument FetchDocument()
+        private async Task<CovidStatistic> FetchDocument()
         {
-            var currentDateSpan = this.document.QuerySelector(".statistics-header-wrapper span").TextContent.Split(" ");
+            var config = Configuration.Default.WithDefaultLoader();
+            var context = BrowsingContext.New(config);
+
+            var document = await context.OpenAsync(covidUrl);
+
+            var covidStatisticUrl = covidUrl + document.QuerySelector(".statistics-sub-header.nsi").GetAttribute("href");
+            var statisticDocument = await context.OpenAsync(covidStatisticUrl);
+
+            var statistics = document.QuerySelectorAll(".statistics-container > div > p").Select(x => x.TextContent).ToArray();
+            var allTebles = statisticDocument.QuerySelectorAll(".table").ToArray();
+
+            //Date
+            var currentDateSpan = document.QuerySelector(".statistics-header-wrapper span").TextContent.Split(" ");
             var time = currentDateSpan[2];
             var date = currentDateSpan[5];
             var month = currentDateSpan[6];
@@ -127,157 +52,208 @@ namespace CoronavirusWebScraper.Web.Services.Impl
             var currDateAsString = date + " " + month + " " + year + " " + time;
             var currDate = DateTime.Parse(currDateAsString);
 
-            var dateToAdd = currDate.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
+            var dataDate = currDate.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
+
             var dateScraped = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
-            var statusDoc = CheckDataState();
+            //Tests
+            var totalTestsByTypeTableRecords = allTebles[1].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
 
-            var document = new BsonDocument
+            var totalTests = IntParser(statistics[0]);
+            var totalPcr = IntParser(totalTestsByTypeTableRecords[1]);
+            var totalAntigen = IntParser(totalTestsByTypeTableRecords[4]);
+
+            var totalTests24 = IntParser(statistics[2]);
+            var totalPcr24 = IntParser(totalTestsByTypeTableRecords[2]);
+            var totalAntigen24 = IntParser(totalTestsByTypeTableRecords[5]);
+
+            //confirmed
+            var confirmedTestsByTypeTableRecords = allTebles[2].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
+            var confirmedByRegionTableRecords = allTebles[3].QuerySelectorAll("td").SkipLast(3).Select(x => x.TextContent).ToArray();
+
+            var totalConfirmed = IntParser(statistics[4]);
+            var confirmedPcr = IntParser(confirmedTestsByTypeTableRecords[1]);
+            var confirmedAntigen = IntParser(confirmedTestsByTypeTableRecords[4]);
+
+            var confirmedPcr24 = IntParser(confirmedTestsByTypeTableRecords[2]);
+            var confirmedAntigen24 = IntParser(confirmedTestsByTypeTableRecords[5]);
+            var totalConfirmed24 = IntParser(confirmedTestsByTypeTableRecords[8]);
+
+            //active 
+            var active = IntParser(statistics[6]);
+
+            var hospitalized = IntParser(statistics[12]);
+            var intensiveCare = IntParser(statistics[14]);
+
+            //recovered
+            var totalRecovered = IntParser(statistics[8]);
+            var totalRecovered24 = IntParser(statistics[10]);
+
+            //deceased
+            var deceased = IntParser(statistics[16]);
+            var deceased24 = IntParser(statistics[18]);
+
+            //vaccinated
+            var vaccinated = IntParser(statistics[20]);
+            var vaccinated24 = IntParser(statistics[22]);
+
+            var vaccinatedTableRecords = allTebles[5].QuerySelectorAll("tr").Last().QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
+
+            var comirnaty = IntParser(vaccinatedTableRecords[2]);
+            var moderna = IntParser(vaccinatedTableRecords[3]);
+            var astraZeneca = IntParser(vaccinatedTableRecords[4]);
+            var janssen = IntParser(vaccinatedTableRecords[5]);
+            var totalVaccinatedComplate = IntParser(vaccinatedTableRecords[6]);
+
+            //MedicalTable
+            var medicalTableRecords = allTebles[4].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
+
+            var status = "approved";
+
+
+            var covidStatistics = new CovidStatistic
             {
-                { "date", dateToAdd },
-                { "date_scraped", dateScraped },
-                { "country", "BG"},
-                { "overall", GetOverallStats()},
-                {"regions",  GetAllRegionsData() },
-                { "stats", GetStatsByPercentage()},
-                { "status", this.status}
-
+                Date = dataDate,
+                ScrapedDate = dateScraped,
+                Country = "BG",
+                Overall = new Overall
+                {
+                    Tested = new Tested
+                    {
+                        Total = totalTests,
+                        TotalByType = new TestedByType { PCR = totalPcr, Antigen = totalAntigen },
+                        Last24 = totalTests24,
+                        TotalByType24 = new TestedByType { PCR = totalPcr24, Antigen = totalAntigen24 },
+                    },
+                    Confirmed = new Confirmed
+                    {
+                        Total = totalConfirmed,
+                        TotalByType = new TestedByType { PCR = confirmedPcr, Antigen = confirmedAntigen },
+                        Last24 = totalConfirmed24,
+                        TotalByType24 = new TestedByType { PCR = confirmedPcr24, Antigen = confirmedAntigen24 },
+                        Medical = GetMedicalStatistics(medicalTableRecords),
+                    },
+                    Active = new Active
+                    {
+                        Curent = active,
+                        CurrentByType = new ActiveTypes { Hospitalized = hospitalized, Icu = intensiveCare }
+                    },
+                    Recovered = new TotalAndLast
+                    {
+                        Total = totalRecovered,
+                        Last = totalRecovered24
+                    },
+                    Deceased = new TotalAndLast
+                    {
+                        Total = deceased,
+                        Last = deceased24
+                    },
+                    Vaccinated = new Vaccinated
+                    {
+                        Total = vaccinated,
+                        Last = vaccinated24,
+                        LastByType = new VaccineType
+                        {
+                            Comirnaty = comirnaty,
+                            Moderna = moderna,
+                            AstraZeneca = astraZeneca,
+                            Janssen = janssen
+                        },
+                        TotalCompleted = totalVaccinatedComplate
+                    }
+                },
+                Regions = GetAllRegionsData(allTebles),
+                Stats = new Stats
+                {
+                    TestedPrc = new TestedPrc
+                    {
+                        TotalByTyprPrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(totalPcr, totalTests), Antigen = DevideTwoIntiger(totalAntigen, totalTests) },
+                        LastByTypePrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(totalPcr24, totalTests24), Antigen = DevideTwoIntiger(totalAntigen24, totalTests24) },
+                    },
+                    ConfirmedPrc = new ConfirmedPrc
+                    {
+                        TotalPerTestedPrc = DevideTwoIntiger(totalConfirmed, totalTests),
+                        LastPerTestedPrc = DevideTwoIntiger(totalConfirmed24, totalTests24),
+                        TotalByTypePrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(confirmedPcr, totalConfirmed), Antigen = DevideTwoIntiger(confirmedAntigen, totalConfirmed) },
+                        LastByTypePrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(confirmedPcr24, totalConfirmed24), Antigen = DevideTwoIntiger(confirmedAntigen24, totalConfirmed24) },
+                        //toDo medicalPrc
+                        MedicalPcr = 0
+                    },
+                    Active = new ActivePrc
+                    {
+                        HospotalizedPerActive = DevideTwoIntiger(hospitalized, active),
+                        IcuPerHospitalized = DevideTwoIntiger(intensiveCare, hospitalized)
+                    }
+                }
             };
 
-            if (this.status == "discrepancy")
-            {
-                document.Add("status_result", statusDoc);
-            }
-
-            return document;
-        }
-
-        private BsonDocument CheckDataState()
-        {
-            var sb = new StringBuilder();
-            var fields = new BsonDocument();
-
-
-            if (totalTests24 != totalPcr24 + totalAntigen24)
-            {
-                status = "discrepancy";
-                sb.AppendLine($"Sum of total tests for 24h must be {totalTests24} but it is {totalPcr24 + totalAntigen24}");
-                fields.Add("TotalTestFor24h ", new BsonDocument { { "expected", totalTests24 }, { "actual", totalPcr24 + totalAntigen24 } });
-
-            }
-            if (totalConfirmed24 != confirmedAntigen24 + confirmedPcr24)
-            {
-                status = "discrepancy";
-                sb.AppendLine($"Sum of total confirmed tests for 24h must be {totalConfirmed24} but it is {confirmedAntigen24 + confirmedPcr24}");
-                fields.Add("TotalConfrimedTestFor24h ", new BsonDocument { { "expected", totalConfirmed24 }, { "actual", confirmedAntigen24 + confirmedPcr24 } });
-            }
-
-
-            var totalConfirmed24Test = 0;
-
-            for (int i = 0; i < confirmedByRegionTableRecords.Length; i += 3)
-            {
-                totalConfirmed24Test += IntParser(confirmedByRegionTableRecords[i + 2]);
-
-            }
-
-            if (totalConfirmed24 != totalConfirmed24Test)
-            {
-                status = "discrepancy";
-                sb.AppendLine($"Sum of total confirmed tests for 24h for all regions must be {totalConfirmed24} but it is {totalConfirmed24Test}");
-                fields.Add("TotalConfrimedTestForAllRegions24h ", new BsonDocument { { "expected", totalConfirmed24 }, { "actual", totalConfirmed24Test } });
-            }
-
-            if (vaccinated24 != comirnaty + moderna + astraZeneca + janssen)
-            {
-                status = "discrepancy";
-                sb.AppendLine($"Sum of total vaccinated by type for 24h must be {vaccinated24} but it is {comirnaty + moderna + astraZeneca + janssen}");
-                fields.Add("TotalVaccinated24h ", new BsonDocument { { "expected", vaccinated24 }, { "actual", comirnaty + moderna + astraZeneca + janssen } });
-            }
-
-            if (sb.Length > 0)
-            {
-                fields.Add("description", sb.ToString().Trim());
-            }
-
-            return fields;
-
-
+            return covidStatistics;
 
         }
 
-        private BsonDocument GetStatsByPercentage()
-        {
-
-            return new BsonDocument
-            {
-                { "tested", GetTestedPercentage()},
-                { "confirmed", GetConfirmedPercentage()},
-                { "active" , GetActivePercentage()}
-            };
-
-        }
-
-        private BsonDocument GetActivePercentage()
-        {
-            var hospitalizedPerActive = DevideTwoIntiger(hospitalized, active);
-            var icuPerHospitalized = DevideTwoIntiger(intensiveCare, active);
+        //private BsonDocument CheckDataState()
+        //{
+        //    var sb = new StringBuilder();
+        //    var fields = new BsonDocument();
 
 
+        //    if (totalTests24 != totalPcr24 + totalAntigen24)
+        //    {
+        //        status = "discrepancy";
+        //        sb.AppendLine($"Sum of total tests for 24h must be {totalTests24} but it is {totalPcr24 + totalAntigen24}");
+        //        fields.Add("TotalTestFor24h ", new BsonDocument { { "expected", totalTests24 }, { "actual", totalPcr24 + totalAntigen24 } });
 
-            return new BsonDocument
-            {
-                { "hospitalized_per_active",hospitalizedPerActive },
-                { "icu_per_hospitalized", icuPerHospitalized}
-            };
-        }
-
-        private BsonDocument GetConfirmedPercentage()
-        {
-            var totalPerTestedPcr = DevideTwoIntiger(totalConfirmed, totalTests);
-            var lastPerTestedPrc = DevideTwoIntiger(totalConfirmed24, totalTests24);
-
-            var totalByTypePrcPCR = DevideTwoIntiger(confirmedPcr, totalConfirmed);
-            var totalByTypePrcAntigen = DevideTwoIntiger(confirmedAntigen, totalConfirmed);
+        //    }
+        //    if (totalConfirmed24 != confirmedAntigen24 + confirmedPcr24)
+        //    {
+        //        status = "discrepancy";
+        //        sb.AppendLine($"Sum of total confirmed tests for 24h must be {totalConfirmed24} but it is {confirmedAntigen24 + confirmedPcr24}");
+        //        fields.Add("TotalConfrimedTestFor24h ", new BsonDocument { { "expected", totalConfirmed24 }, { "actual", confirmedAntigen24 + confirmedPcr24 } });
+        //    }
 
 
-            var lastByTypePrcPCR24 = DevideTwoIntiger(confirmedPcr24, totalConfirmed24);
-            var lastByTypePrcAntigen24 = DevideTwoIntiger(confirmedAntigen24, totalConfirmed24);
+        //    var totalConfirmed24Test = 0;
+
+        //    for (int i = 0; i < confirmedByRegionTableRecords.Length; i += 3)
+        //    {
+        //        totalConfirmed24Test += IntParser(confirmedByRegionTableRecords[i + 2]);
+
+        //    }
+
+        //    if (totalConfirmed24 != totalConfirmed24Test)
+        //    {
+        //        status = "discrepancy";
+        //        sb.AppendLine($"Sum of total confirmed tests for 24h for all regions must be {totalConfirmed24} but it is {totalConfirmed24Test}");
+        //        fields.Add("TotalConfrimedTestForAllRegions24h ", new BsonDocument { { "expected", totalConfirmed24 }, { "actual", totalConfirmed24Test } });
+        //    }
+
+        //    if (vaccinated24 != comirnaty + moderna + astraZeneca + janssen)
+        //    {
+        //        status = "discrepancy";
+        //        sb.AppendLine($"Sum of total vaccinated by type for 24h must be {vaccinated24} but it is {comirnaty + moderna + astraZeneca + janssen}");
+        //        fields.Add("TotalVaccinated24h ", new BsonDocument { { "expected", vaccinated24 }, { "actual", comirnaty + moderna + astraZeneca + janssen } });
+        //    }
+
+        //    if (sb.Length > 0)
+        //    {
+        //        fields.Add("description", sb.ToString().Trim());
+        //    }
+
+        //    return fields;
 
 
-            return new BsonDocument
-            {
-                { "total_per_tested_prc", totalPerTestedPcr},
-                { "last_per_tested_prc", lastPerTestedPrc},
-                { "total_by_type_prc", new BsonDocument { { "pcr", totalByTypePrcPCR }, { "antigen", totalByTypePrcAntigen } } },
-                { "last_by_type_prc" , new BsonDocument { { "pcr", lastByTypePrcPCR24 }, { "antigen", lastByTypePrcAntigen24 } } },
-                { "medical_prc" , "-"}
-            };
-        }
 
-        private BsonDocument GetTestedPercentage()
-        {
+        //}
 
-            var pcrPercentage = DevideTwoIntiger(totalPcr, totalTests);
-            var antigenPercentage = DevideTwoIntiger(totalAntigen, totalTests);
-            var pcrPercentage24 = DevideTwoIntiger(totalPcr24, totalTests24);
-            var antigenPercentage24 = DevideTwoIntiger(totalAntigen24, totalTests24);
 
-            return new BsonDocument
-            {
-                { "total_by_type_prc", new BsonDocument { {"pcr", pcrPercentage }, {"antigen", antigenPercentage } } },
-                { "last_by_type_prc", new BsonDocument { {"pcr", pcrPercentage24 }, {"antigen", antigenPercentage24 } } },
-
-            };
-        }
-
-        private BsonDocument GetAllRegionsData()
+        private BsonDocument GetAllRegionsData(IElement[] allTebles)
         {
             var regionsStatistic = new List<BsonDocument>();
             var regionsNames = new List<string>();
             var dictionary = new Dictionary<string, object>();
-            var vaccinatedByRegions = allTebles[5].QuerySelectorAll("td").SkipLast(7).Select(x => x.TextContent).ToArray();
 
+            var vaccinatedByRegions = allTebles[5].QuerySelectorAll("td").SkipLast(7).Select(x => x.TextContent).ToArray();
+            var confirmedByRegionTableRecords = allTebles[3].QuerySelectorAll("td").SkipLast(3).Select(x => x.TextContent).ToArray();
 
 
             for (int i = 0; i < confirmedByRegionTableRecords.Length; i += 3)
@@ -288,8 +264,8 @@ namespace CoronavirusWebScraper.Web.Services.Impl
                 var currentRegionDocument = new BsonDocument();
                 regionsNames.Add(regionCode);
                 regionsStatistic.Add(new BsonDocument { { "confirmed", new BsonDocument { { "total", confirmed }, { "last", confirmed24 } } } });
-                
-                
+
+
             }
 
             var counter = 0;
@@ -303,9 +279,9 @@ namespace CoronavirusWebScraper.Web.Services.Impl
                 var totalVaccinedComplate = IntParser(vaccinatedByRegions[i + 6]);
                 var totalVaccinated24 = comirnaty + moderna + astrazeneca + janssen;
 
-        
 
-                
+
+
                 regionsStatistic[counter].Add("vaccinated", new BsonDocument
                 {
                     { "total", totalVaccinated },
@@ -326,7 +302,6 @@ namespace CoronavirusWebScraper.Web.Services.Impl
 
             return bson;
         }
-
 
         private string GetRegionЕКАТТЕCode(string region)
         {
@@ -366,87 +341,9 @@ namespace CoronavirusWebScraper.Web.Services.Impl
         }
 
 
-        private BsonDocument GetOverallStats()
+        private Medical GetMedicalStatistics(string[] medicalTableRecords)
         {
-            return new BsonDocument
-            {
-                { "tested", GetTestedStatistics()},
-                {"confirmed",  GetConfirmedStatistics()},
-                { "active", GetActiveStatistic()},
-                {"recovered", GetRecoveredStatistic()},
-                { "deceased", GetDeceasedStatistic()},
-                { "vaccinated", GetVaccinatedStatistic()}
-            };
 
-        }
-
-        private BsonDocument GetVaccinatedStatistic()
-        {
-            return new BsonDocument()
-            {
-                { "total", 590495 },
-                // Ваксинирани (24 ч)
-                { "last", 10503 },
-                { "last_by_type", new BsonDocument { { "Comirnaty", comirnaty }, { "Moderna", moderna }, { "AstraZeneca", astraZeneca }, { "Janssen", janssen } } },
-                { "total_completed", totalVaccinatedComplate}
-            };
-        }
-
-        private BsonDocument GetDeceasedStatistic()
-        {
-            var deceased = IntParser(statistics[16]);
-            var deceased24 = IntParser(statistics[18]);
-
-            return new BsonDocument
-            {
-                // Починали (общо)
-                { "total", deceased },
-                // Починали (24 ч)
-                { "last", deceased24 }
-            };
-        }
-
-
-        private BsonDocument GetRecoveredStatistic()
-        {
-            var totalRecovered = IntParser(statistics[8]);
-            var totalRecovered24 = IntParser(statistics[10]);
-
-            return new BsonDocument
-            {
-                { "total", totalRecovered },
-                // Излекувани (24 ч)
-                { "last", totalRecovered24 }
-            };
-        }
-
-        private BsonDocument GetActiveStatistic()
-        {
-            return new BsonDocument
-            {
-                {"current", active },
-                { "current_by_type", new BsonDocument { { "hospitalized", hospitalized }, { "icu", intensiveCare } }}
-            };
-        }
-
-        private BsonDocument GetConfirmedStatistics()
-        {
-            return new BsonDocument
-            {
-                {"total", totalConfirmed },
-                { "total_by_type", new BsonDocument
-                    { { "pcr", confirmedPcr }, {"antigen", confirmedAntigen } } },
-                {"last",  totalConfirmed24},
-                {"last_by_type", new BsonDocument { { "pcr", confirmedPcr24 }, { "antigen", confirmedAntigen24 } } },
-                { "medical", GetMedicalStatistics() },
-
-
-            };
-        }
-
-        private BsonDocument GetMedicalStatistics()
-        {
-            var medicalTableRecords = allTebles[4].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
             var totalDoctors = IntParser(medicalTableRecords[1]);
             var totalNurces = IntParser(medicalTableRecords[3]);
             var totalParamedics1 = IntParser(medicalTableRecords[5]);
@@ -456,31 +353,39 @@ namespace CoronavirusWebScraper.Web.Services.Impl
 
             //TODO:  data for medical for 24h!
 
-            return new BsonDocument
+            return new Medical
             {
-                { "total", totalMedical },
-                { "total_by_type", new BsonDocument{{ "doctor", totalDoctors },
-                        { "nurces", totalNurces }, { "paramedics_1", totalParamedics1 },
-                        { "paramedics_2", totalParamedics2 }, { "other", others } }},
-                { "last", "-" },
-                { "last_by_type", new BsonDocument{{ "doctor", "-" },
-                        { "nurces", "-" }, { "paramedics_1", "-" },
-                        { "paramedics_2", "-" }, { "other", "-" } }}
-            };
-
-
-        }
-        private BsonDocument GetTestedStatistics()
-        {
-            return new BsonDocument()
-            {
-                { "total", totalTests},
-                { "total_by_type", new BsonDocument { { "pcr", totalPcr }, { "antigen", totalAntigen} } },
-                { "last",totalTests24 },
-                { "last_by_type", new BsonDocument { { "pcr", totalPcr24 }, { "antigen", totalAntigen24 } } }
+                Total = totalMedical,
+                TotalByType = new MedicalTypes
+                {
+                    Doctror = totalDoctors,
+                    Nurces = totalNurces,
+                    Paramedics_1 = totalParamedics1,
+                    Paramedics_2 = totalParamedics2,
+                    Others = others
+                }
             };
         }
 
+        //private BsonDocument GetTestedStatistics(string[] statistics, IElement[] allTebles)
+        //{
+        //    var totalTestsByTypeTableRecords = allTebles[1].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
+        //    var totalTests = IntParser(statistics[0]);
+        //    var totalPcr = IntParser(totalTestsByTypeTableRecords[1]);
+        //    var totalAntigen = IntParser(totalTestsByTypeTableRecords[4]);
+
+        //    var totalTests24 = IntParser(statistics[2]);
+        //    var totalPcr24 = IntParser(totalTestsByTypeTableRecords[2]);
+        //    var totalAntigen24 = IntParser(totalTestsByTypeTableRecords[5]);
+
+        //    return new BsonDocument()
+        //        {
+        //            { "total", totalTests},
+        //            { "total_by_type", new BsonDocument { { "pcr", totalPcr }, { "antigen", totalAntigen} } },
+        //            { "last",totalTests24 },
+        //            { "last_by_type", new BsonDocument { { "pcr", totalPcr24 }, { "antigen", totalAntigen24 } } }
+        //        };
+        //}
 
         private static int IntParser(string num)
         {
@@ -498,7 +403,4 @@ namespace CoronavirusWebScraper.Web.Services.Impl
         }
 
     }
-
-
 }
-

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace CoronavirusWebScraper.Web
 {
@@ -23,12 +24,22 @@ namespace CoronavirusWebScraper.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            //services.Configure<MongoDbSettings>(
+            //       Configuration.GetSection(nameof(MongoDbSettings)));
+
+            //services.AddSingleton<IMongoDbSettings>(sp =>
+            //    sp.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+
             services.Configure<MongoDbSettings>(Configuration.GetSection(nameof(MongoDbSettings)));
-            services.AddSingleton<MongoDbContext>();
+            services.AddSingleton<IMongoDbSettings>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+
+            services.AddSingleton(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+
+            services.AddSingleton<ICovid19Scraper, Covid19Scraper>();
 
             services.AddHostedService<Worker>();
-
-            services.AddScoped<ICovid19Scraper, Covid19Scraper>();
 
             services.AddControllersWithViews();
         }
@@ -60,7 +71,7 @@ namespace CoronavirusWebScraper.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                
+
 
             });
         }

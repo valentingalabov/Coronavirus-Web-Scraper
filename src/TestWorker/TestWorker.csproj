@@ -10,6 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CoronavirusWebScraper.Services.Impl\CoronavirusWebScraper.Services.Impl.csproj" />
+    <ProjectReference Include="..\CoronavirusWebScraper.Services\CoronavirusWebScraper.Services.csproj" />
     <ProjectReference Include="..\dataScraperExample\dataScraperExample.csproj" />
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace CoronavirusWebScraper.Web.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class DatesController : ControllerBase
     {
         private readonly ICovid19Scraper covid19Scraper;
@@ -20,11 +20,12 @@ namespace CoronavirusWebScraper.Web.Controllers
         }
 
         [HttpGet]
+
         public ActionResult Dates()
         {
-            var dates = this.covid19Scraper.GetAllDates();
+            var dates = this.covid19Scraper.GetAllDates().ToArray();
        
-            return Ok(dates.ToArray());
+            return Ok(dates);
         }
     }
 }

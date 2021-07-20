@@ -8,5 +8,12 @@ namespace CoronavirusWebScraper.Web.Controllers
         {           
                 return this.View(); 
         }
+
+        public IActionResult DateDetails(string date)
+        {
+
+
+            return Ok(date);
+        }
     }
 }

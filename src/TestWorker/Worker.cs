@@ -10,9 +10,9 @@ namespace TestWorker
 {
     public class Worker : BackgroundService
     {
-        private readonly ICovid19Scraper covid19Scraper;
+        private readonly ICovidDataScraperService covid19Scraper;
 
-        public Worker(ICovid19Scraper covid19Scraper)
+        public Worker(ICovidDataScraperService covid19Scraper)
         {
             this.covid19Scraper = covid19Scraper;
         }

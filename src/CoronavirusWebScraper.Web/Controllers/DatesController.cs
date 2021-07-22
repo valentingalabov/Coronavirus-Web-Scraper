@@ -1,10 +1,6 @@
-﻿
-using CoronavirusWebScraper.Services;
+﻿using CoronavirusWebScraper.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CoronavirusWebScraper.Web.Controllers
 {
@@ -12,19 +8,19 @@ namespace CoronavirusWebScraper.Web.Controllers
     [Route("api/[controller]")]
     public class DatesController : ControllerBase
     {
-        private readonly ICovid19Scraper covid19Scraper;
+        private readonly IStatisticsDataService dataService;
 
-        public DatesController(ICovid19Scraper covid19Scraper)
+        public DatesController(IStatisticsDataService dataService)
         {
-            this.covid19Scraper = covid19Scraper;
+            this.dataService = dataService;
         }
 
         [HttpGet]
 
         public ActionResult Dates()
         {
-            var dates = this.covid19Scraper.GetAllDates().ToArray();
-       
+            var dates = this.dataService.GetAllDates().ToArray();
+
             return Ok(dates);
         }
     }

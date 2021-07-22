@@ -1,24 +1,25 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using CoronavirusWebScraper.Data;
-
+using CoronavirusWebScraper.Data.Models;
 using CoronavirusWebScraper.Services;
-using CoronavirusWebScraper.Services.Impl.DTO;
+
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CoronavirusWebScraper.Web.Services.Impl
+
+namespace CoronavirusWebScraper.Services.Impl
 {
-    public class Covid19Scraper : ICovid19Scraper
+    public class CovidDataScraperService : ICovidDataScraperService
     {
         const string covidUrl = "https://coronavirus.bg/";
 
         private readonly IMongoRepository<CovidStatistic> _repository;
 
-        public Covid19Scraper(IMongoRepository<CovidStatistic> repository)
+        public CovidDataScraperService(IMongoRepository<CovidStatistic> repository)
         {
             _repository = repository;
         }
@@ -381,13 +382,5 @@ namespace CoronavirusWebScraper.Web.Services.Impl
             return Math.Round(((double)(num1) / num2), 4);
         }
 
-        public IEnumerable<string> GetAllDates()
-        {
-            var dates =  _repository.FilterBy(
-                filter => filter.Date != "",
-                projection => projection.Date);
-
-            return dates;
-        }
     }
 }

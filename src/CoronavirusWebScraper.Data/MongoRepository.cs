@@ -37,5 +37,11 @@ namespace CoronavirusWebScraper.Data
         {
             return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
+
+        public virtual IQueryable<TDocument> AsQueryable()
+        {
+            return _collection.AsQueryable();
+        }
+
     }
 }

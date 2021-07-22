@@ -1,8 +1,9 @@
+using AutoMapper;
 using CoronavirusWebScraper.Data;
 using CoronavirusWebScraper.Data.Configuration;
 using CoronavirusWebScraper.Services;
+using CoronavirusWebScraper.Services.Impl;
 using CoronavirusWebScraper.Web.BackgroundServices;
-using CoronavirusWebScraper.Web.Services.Impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,20 +25,16 @@ namespace CoronavirusWebScraper.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
 
-
-            //services.Configure<MongoDbSettings>(
-            //       Configuration.GetSection(nameof(MongoDbSettings)));
-
-            //services.AddSingleton<IMongoDbSettings>(sp =>
-            //    sp.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
             services.Configure<MongoDbSettings>(Configuration.GetSection(nameof(MongoDbSettings)));
             services.AddSingleton<IMongoDbSettings>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
             services.AddSingleton(typeof(IMongoRepository<>), typeof(MongoRepository<>));
 
-            services.AddSingleton<ICovid19Scraper, Covid19Scraper>();
+            services.AddSingleton<ICovidDataScraperService, CovidDataScraperService>();
+            services.AddTransient<IStatisticsDataService, StatisticsDataService>();
 
             services.AddHostedService<Worker>();
 

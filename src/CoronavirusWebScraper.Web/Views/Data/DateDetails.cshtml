@@ -1,1 +1,13 @@
-﻿<h1>hereee</h1>
+﻿@model CovidStatisticsViewModel;
+
+
+
+    <h1>@Model.Date</h1>
+    <h1>@Model.ScrapedDate</h1>
+    <h1>@Model.Country</h1>
+    <p>@Model.Overall.Tested.Total</p>
+    <p>@Model.Overall.Tested.Last24</p>
+    <p>@Model.Overall.Tested.TotalByType.Antigen</p>
+    <p>@Model.Overall.Tested.TotalByType.PCR</p>
+    <h1>@Model.Overall.Tested.TotalByType24.PCR</h1>
+    <h1>@Model.Regions</h1>

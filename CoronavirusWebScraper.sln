@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dataScraperExample", "src\d
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWorker", "src\TestWorker\TestWorker.csproj", "{5D863F85-CA45-4AB5-95ED-ADDE6CCDA647}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoronavirusWebScraper.Services.Impl", "src\CoronavirusWebScraper.Services.Impl\CoronavirusWebScraper.Services.Impl.csproj", "{342E4F6B-EA8B-449A-804F-1061DDF7E7C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoronavirusWebScraper.Services.Impl", "src\CoronavirusWebScraper.Services.Impl\CoronavirusWebScraper.Services.Impl.csproj", "{342E4F6B-EA8B-449A-804F-1061DDF7E7C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

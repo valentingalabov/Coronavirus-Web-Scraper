@@ -1,6 +1,4 @@
-using CoronavirusWebScraper.Services;
-using CoronavirusWebScraper.Web.Services.Impl;
-using Microsoft.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -20,8 +18,8 @@ namespace TestWorker
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddScoped<ICovid19Scraper, Covid19Scraper>();
-                    services.AddHostedService<Worker>();
+                    //services.AddScoped<ICovid19Scraper, Covid19Scraper>();
+                    //services.AddHostedService<Worker>();
                 });
     }
 }

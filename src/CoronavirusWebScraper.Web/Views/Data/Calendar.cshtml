@@ -68,7 +68,7 @@
 </div>
 <script>
 
-    
+
     let today = new Date();
     let currentMonth = today.getMonth();
     let currentYear = today.getFullYear();
@@ -116,7 +116,7 @@
     }
 
     async function showCalendar(month, year) {
-       var statisticsDates = await getDates();
+        var statisticsDates = await getDates();
         let tbl = document.getElementById("calendar-body");
 
         tbl.innerHTML = "";
@@ -129,7 +129,7 @@
         for (let i = 0; i < 6; i++) {
             let row = document.createElement("tr");
 
-          
+
             for (let j = 0; j < 7; j++) {
                 if (i === 0 && j < getDay(new Date(year, month))) {
                     let cell = document.createElement("td");
@@ -148,10 +148,10 @@
                         cell.classList.add("bg-info");
                         cell.classList.add("text-success");
                         let a = document.createElement("a");
-                        a.href = `DateDetails?date=${date}/${month}/${year}`;
+                        a.href = `DateDetails?date=${year}-${month + 1}-${date}`;
                         a.appendChild(cellText);
                         cell.appendChild(a);
-                        
+
                     }
                     else if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth() && !isIncluded(statisticsDates, currDateAtMoment)) {
                         cell.appendChild(cellText);
@@ -160,23 +160,23 @@
                     else if (isIncluded(statisticsDates, new Date(year, month, date))) {
                         cell.classList.add("text-success");
                         let a = document.createElement("a");
-                        a.href = `DateDetails?date=${date}/${month}/${year}`;
+                        a.href = `DateDetails?date=${year}-${month + 1}-${date}`;
                         a.appendChild(cellText);
                         cell.appendChild(a);
                     } else {
                         cell.appendChild(cellText);
                     }
-                    
+
                     row.appendChild(cell);
                     date++;
                 }
 
             }
-            tbl.appendChild(row); 
+            tbl.appendChild(row);
         }
 
-        function getDay(date) { 
-            let day = date.getDay(); 
+        function getDay(date) {
+            let day = date.getDay();
             if (day == 0) day = 7;
             return day - 1;
         }

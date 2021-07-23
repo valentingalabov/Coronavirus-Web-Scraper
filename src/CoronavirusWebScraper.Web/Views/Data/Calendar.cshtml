@@ -5,7 +5,6 @@
 
 <div>
     <div class="container col-sm-12 text-center">
-
         <h3 class="card-header" id="monthAndYear"></h3>
         <div class="row mx-5">
             <button class="btn btn-outline-secondary  col-sm-6" id="previous" onclick="previous()">
@@ -53,7 +52,6 @@
                 @for (int i = 0; i < months.Length; i++)
                 {
                     <option value=@i>@months[i]</option>
-
                 }
             </select>
 
@@ -66,9 +64,8 @@
         </form>
     </div>
 </div>
+
 <script>
-
-
     let today = new Date();
     let currentMonth = today.getMonth();
     let currentYear = today.getFullYear();
@@ -89,8 +86,6 @@
             console.log(error);
         }
     }
-
-
 
 
     function next() {

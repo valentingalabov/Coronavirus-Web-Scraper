@@ -14,6 +14,11 @@
 }
 
 <br />
+<h1 class="text-center">
+    Статистическа Информация към @Model.FormatedDate.ToString().
+</h1>
+
+<hr />
 <div class="row mask" style="
       background: linear-gradient(
         45deg,
@@ -21,41 +26,41 @@
         rgba(91, 14, 214, 0.7) 100%
       )">
 
-    <div class="col-md-4 col-sm-6 border">
-        <p>Направени тестове към @Model.FormatedDate</p>
-        <p class="border-bottom">@tested.Total</p>
-        <p>за последното денонощие</p>
-        <p>@tested.Last24</p>
+    <div class="col-lg-4 col-sm-6 border">
+        <p class="stats-title">Направени тестове към @Model.FormatedDate</p>
+        <p class="primary-digit">@tested.Total</p>
+        <p class="secondary-title">за последното денонощие</p>
+        <p class="secondary-digit"s>@tested.Last24</p>
     </div>
     <div class="col-lg-4 col-sm-6  border">
-        <p>ПОТВЪРДЕНИ СЛУЧАЯ</p>
-        <p class="border-bottom">@confirmed.Total</p>
-        <p>активни случая</p>
-        <p>@active.Curent</p>
+        <p class="stats-title">ПОТВЪРДЕНИ СЛУЧАЯ</p>
+        <p class="text-light primary-digit">@confirmed.Total</p>
+        <p class="secondary-title">активни случая</p>
+        <p class="text-light secondary-digit">@active.Curent</p>
     </div>
     <div class="col-lg-4 col-sm-6 border">
-        <p>ИЗЛЕКУВАНИ</p>
-        <p class="border-bottom">@recovered.Total</p>
-        <p>за последното денонощие</p>
-        <p>@recovered.Last</p>
+        <p class="stats-title">ИЗЛЕКУВАНИ</p>
+        <p class="primary-digit">@recovered.Total</p>
+        <p class="secondary-title">за последното денонощие</p>
+        <p class="secondary-digit">@recovered.Last</p>
     </div>
     <div class="col-lg-4 col-sm-6 border">
-        <p>ХОСПИТАЛИЗИРАНИ</p>
-        <p class="border-bottom">@active.CurrentByType.Hospitalized</p>
-        <p>в интензивно отделение</p>
-        <p>@active.CurrentByType.Icu</p>
+        <p class="stats-title">ХОСПИТАЛИЗИРАНИ</p>
+        <p class="text-warning primary-digit">@active.CurrentByType.Hospitalized</p>
+        <p class="secondary-title">в интензивно отделение</p>
+        <p class="text-warning secondary-digit">@active.CurrentByType.Icu</p>
     </div>
     <div class="col-lg-4 col-sm-6 border">
-        <p>ПОЧИНАЛИ</p>
-        <p class="border-bottom">@deceased.Total</p>
-        <p>за последното денонощие</p>
-        <p>@deceased.Last</p>
+        <p class="stats-title">ПОЧИНАЛИ</p>
+        <p class="text-danger primary-digit">@deceased.Total</p>
+        <p class="secondary-title">за последното денонощие</p>
+        <p class="text-danger secondary-digit">@deceased.Last</p>
     </div>
     <div class="col-lg-4 col-sm-6 border">
-        <p>ОБЩО ПОСТАВЕНИ ДОЗИ</p>
-        <p class="border-bottom">@vaccinated.Total</p>
-        <p>за последното денонощие</p>
-        <p>@vaccinated.Last</p>
+        <p class="stats-title">ОБЩО ПОСТАВЕНИ ДОЗИ</p>
+        <p class="text-primary primary-digit">@vaccinated.Total</p>
+        <p class="secondary-title">за последното денонощие</p>
+        <p class="text-primary secondary-digit">@vaccinated.Last</p>
     </div>
 </div>
 
@@ -63,10 +68,12 @@
 <hr />
 
 <div class="row">
-    <div class="col-sm-4">
-        <span class="text-center">
-            Потвърдени случаи за Медицински персонал
-        </span>
+    <div class="col-lg-4 col-sm-6">
+        <div class="h-heading">
+            <h4>
+                Потвърдени случаи за Медицински персонал
+            </h4>
+        </div>
         <table class="table table-hover table-dark">
             <thead>
                 <tr class="bg-info">
@@ -75,7 +82,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>              
+                <tr>
                     <td>Лекари</td>
                     <td>@medical.Doctror</td>
                 </tr>
@@ -103,10 +110,12 @@
         </table>
     </div>
 
-    <div class="col-sm-4">
-        <span class="text-center">
-            Лабораторни изследвания
-        </span>
+    <div class="col-lg-4 col-sm-6">
+        <div class="h-heading">
+            <h4>
+                Лабораторни изследвания
+            </h4>
+        </div>
         <table class="table table-hover table-dark">
             <thead>
 
@@ -136,10 +145,12 @@
         </table>
     </div>
 
-    <div class="col-sm-4">
-        <span class="text-center">
-            Потвърдени случаи според тип на лабораторно изследване
-        </span>
+    <div class="col-lg-4 col-sm-6">
+        <div class="h-heading">
+            <h4>
+                Потвърдени случаи според тип на лабораторно изследване
+            </h4>
+        </div>
         <table class="table table-hover table-dark">
             <thead>
                 <tr class="bg-info">

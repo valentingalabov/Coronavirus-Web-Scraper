@@ -1,13 +1,171 @@
 ﻿@model CovidStatisticsViewModel;
+@{
+    var currentDate = Model.Date.Split("T")[0];
 
+    var overall = Model.Overall;
 
+    var tested = overall.Tested;
+    var confirmed = overall.Confirmed;
+    var medical = confirmed.Medical.TotalByType;
+    var active = overall.Active;
+    var recovered = overall.Recovered;
+    var deceased = overall.Deceased;
+    var vaccinated = overall.Vaccinated;
+}
 
-    <h1>@Model.Date</h1>
-    <h1>@Model.ScrapedDate</h1>
-    <h1>@Model.Country</h1>
-    <p>@Model.Overall.Tested.Total</p>
-    <p>@Model.Overall.Tested.Last24</p>
-    <p>@Model.Overall.Tested.TotalByType.Antigen</p>
-    <p>@Model.Overall.Tested.TotalByType.PCR</p>
-    <h1>@Model.Overall.Tested.TotalByType24.PCR</h1>
-    <h1>@Model.Regions</h1>
+<br />
+<div class="row mask" style="
+      background: linear-gradient(
+        45deg,
+        rgba(29, 236, 197, 0.7),
+        rgba(91, 14, 214, 0.7) 100%
+      )">
+
+    <div class="col-md-4 col-sm-6 border">
+        <p>Направени тестове към @Model.FormatedDate</p>
+        <p class="border-bottom">@tested.Total</p>
+        <p>за последното денонощие</p>
+        <p>@tested.Last24</p>
+    </div>
+    <div class="col-lg-4 col-sm-6  border">
+        <p>ПОТВЪРДЕНИ СЛУЧАЯ</p>
+        <p class="border-bottom">@confirmed.Total</p>
+        <p>активни случая</p>
+        <p>@active.Curent</p>
+    </div>
+    <div class="col-lg-4 col-sm-6 border">
+        <p>ИЗЛЕКУВАНИ</p>
+        <p class="border-bottom">@recovered.Total</p>
+        <p>за последното денонощие</p>
+        <p>@recovered.Last</p>
+    </div>
+    <div class="col-lg-4 col-sm-6 border">
+        <p>ХОСПИТАЛИЗИРАНИ</p>
+        <p class="border-bottom">@active.CurrentByType.Hospitalized</p>
+        <p>в интензивно отделение</p>
+        <p>@active.CurrentByType.Icu</p>
+    </div>
+    <div class="col-lg-4 col-sm-6 border">
+        <p>ПОЧИНАЛИ</p>
+        <p class="border-bottom">@deceased.Total</p>
+        <p>за последното денонощие</p>
+        <p>@deceased.Last</p>
+    </div>
+    <div class="col-lg-4 col-sm-6 border">
+        <p>ОБЩО ПОСТАВЕНИ ДОЗИ</p>
+        <p class="border-bottom">@vaccinated.Total</p>
+        <p>за последното денонощие</p>
+        <p>@vaccinated.Last</p>
+    </div>
+</div>
+
+<br />
+<hr />
+
+<div class="row">
+    <div class="col-sm-4">
+        <span class="text-center">
+            Потвърдени случаи за Медицински персонал
+        </span>
+        <table class="table table-hover table-dark">
+            <thead>
+                <tr class="bg-info">
+                    <th>Тип</th>
+                    <th>Брой</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>              
+                    <td>Лекари</td>
+                    <td>@medical.Doctror</td>
+                </tr>
+                <tr>
+                    <td>Медицински сестри</td>
+                    <td>@medical.Nurces</td>
+                </tr>
+                <tr>
+                    <td>Санитари</td>
+                    <td>@medical.Paramedics_1</td>
+                </tr>
+                <tr>
+                    <td>Фелдшери</td>
+                    <td>@medical.Paramedics_2</td>
+                </tr>
+                <tr>
+                    <td>Други</td>
+                    <td>@medical.Others</td>
+                </tr>
+                <tr>
+                    <td>Общо</td>
+                    <td>@confirmed.Medical.Total</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-sm-4">
+        <span class="text-center">
+            Лабораторни изследвания
+        </span>
+        <table class="table table-hover table-dark">
+            <thead>
+
+                <tr class="bg-info">
+                    <th>Тип</th>
+                    <th>Общо</th>
+                    <th>Нови</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>RT PCR</td>
+                    <td>@tested.TotalByType.PCR</td>
+                    <td>@tested.TotalByType24.PCR</td>
+                </tr>
+                <tr>
+                    <td>Бърз тест за антигени</td>
+                    <td>@tested.TotalByType.Antigen</td>
+                    <td>@tested.TotalByType24.Antigen</td>
+                </tr>
+                <tr>
+                    <td>Общо</td>
+                    <td>@tested.Total</td>
+                    <td>@tested.Last24</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-sm-4">
+        <span class="text-center">
+            Потвърдени случаи според тип на лабораторно изследване
+        </span>
+        <table class="table table-hover table-dark">
+            <thead>
+                <tr class="bg-info">
+                    <th>Тип</th>
+                    <th>Общо</th>
+                    <th>Нови</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>RT PCR</td>
+                    <td>@confirmed.TotalByType.PCR</td>
+                    <td>@confirmed.TotalByType24.PCR</td>
+                </tr>
+                <tr>
+                    <td>Бърз тест за антигени</td>
+                    <td>@confirmed.TotalByType.Antigen</td>
+                    <td>@confirmed.TotalByType24.Antigen</td>
+                </tr>
+                <tr>
+                    <td>Общо</td>
+                    <td>@confirmed.Total</td>
+                    <td>@confirmed.Last24</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

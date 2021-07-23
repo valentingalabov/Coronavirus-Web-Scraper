@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace CoronavirusWebScraper.Services.Impl.DTO
+namespace CoronavirusWebScraper.Services.Impl.ServiceModels
 {
     public class Stats
     {

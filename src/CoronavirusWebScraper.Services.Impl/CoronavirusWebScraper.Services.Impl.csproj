@@ -6,11 +6,11 @@
 
 	<ItemGroup>
 	  <PackageReference Include="AngleSharp" Version="0.16.0" />
+	  <PackageReference Include="AutoMapper" Version="10.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\CoronavirusWebScraper.Data\CoronavirusWebScraper.Data.csproj" />
-		<ProjectReference Include="..\CoronavirusWebScraper.Services\CoronavirusWebScraper.Services.csproj" />
 	</ItemGroup>
 
 </Project>

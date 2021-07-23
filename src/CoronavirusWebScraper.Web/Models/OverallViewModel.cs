@@ -2,19 +2,17 @@
 {
     public class OverallViewModel
     {
-
         public TestedViewModel Tested { get; set; }
 
-        //public Confirmed Confirmed { get; set; }
+        public ConfirmedViewModel Confirmed { get; set; }
 
-        //public Active Active { get; set; }
+        public ActiveViewModel Active { get; set; }
 
-        //public TotalAndLast Recovered { get; set; }
+        public TotalAndLastViewModel Recovered { get; set; }
 
+        public TotalAndLastViewModel Deceased { get; set; }
 
-        //public TotalAndLast Deceased { get; set; }
-
-        //public Vaccinated Vaccinated { get; set; }
+        public VaccinatedViewModel Vaccinated { get; set; }
 
     }
 }

@@ -2,9 +2,9 @@
 using CoronavirusWebScraper.Data.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
 
-
-namespace CoronavirusWebScraper.Services.Impl.DTO
+namespace CoronavirusWebScraper.Services.Impl.ServiceModels
 {
     [BsonCollection("CovidStatistics")]
     public class CovidStatistic : Document
@@ -27,6 +27,6 @@ namespace CoronavirusWebScraper.Services.Impl.DTO
 
         [BsonElement("stats")]
         public Stats Stats { get; set; }
-       
+
     }
 }

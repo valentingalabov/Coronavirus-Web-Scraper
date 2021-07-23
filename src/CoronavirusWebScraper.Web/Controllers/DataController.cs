@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CoronavirusWebScraper.Services;
+using CoronavirusWebScraper.Services.Impl;
 using CoronavirusWebScraper.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,26 +8,24 @@ namespace CoronavirusWebScraper.Web.Controllers
     public class DataController : Controller
     {
         private readonly IStatisticsDataService _dataService;
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
 
-        public DataController(IStatisticsDataService dataService,IMapper mapper)
+        public DataController(IStatisticsDataService dataService, IMapper mapper)
         {
             _dataService = dataService;
-            this.mapper = mapper;
+            _mapper = mapper;
         }
 
         public IActionResult Calendar()
-        {           
-                return this.View(); 
+        {
+            return this.View();
         }
 
         public IActionResult DateDetails(string date)
         {
-
             var stats = _dataService.GetStatisticForDay(date);
 
-            var viewModel = mapper.Map<CovidStatisticsViewModel>(stats);
-            
+            var viewModel = _mapper.Map<CovidStatisticsViewModel>(stats);
 
             return this.View(viewModel);
         }

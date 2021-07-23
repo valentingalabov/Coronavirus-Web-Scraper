@@ -1,4 +1,5 @@
-﻿using CoronavirusWebScraper.Services;
+﻿
+using CoronavirusWebScraper.Services.Impl;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 

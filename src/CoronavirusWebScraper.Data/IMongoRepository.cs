@@ -14,6 +14,9 @@ namespace CoronavirusWebScraper.Data
 
         IQueryable<TDocument> AsQueryable();
 
+        IEnumerable<TDocument> FilterBy(
+       Expression<Func<TDocument, bool>> filterExpression);
+
         IEnumerable<TProjected> FilterBy<TProjected>(
     Expression<Func<TDocument, bool>> filterExpression,
     Expression<Func<TDocument, TProjected>> projectionExpression);

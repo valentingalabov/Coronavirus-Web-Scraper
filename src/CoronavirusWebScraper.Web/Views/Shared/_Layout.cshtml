@@ -6,7 +6,7 @@
     <title>@ViewData["Title"]Coronavirus Web Scraper</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
- 
+
 </head>
 <body>
 
@@ -14,15 +14,15 @@
 
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark rounded">
             <!-- Brand/logo -->
-            <a asp-controller="Home" asp-action="Index" class="navbar-brand" >Coronavirus Web Scraper</a>
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand">Coronavirus Web Scraper</a>
 
             <!-- Links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a asp-controller="Home" asp-action="Index" class="nav-link" >Начало</a>
+                    <a asp-controller="Home" asp-action="Index" class="nav-link">Начало</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Data" asp-action="Calendar" class="nav-link" >Данни</a>
+                    <a asp-controller="Data" asp-action="Calendar" class="nav-link">Данни</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Анализ</a>
@@ -36,17 +36,17 @@
                 @RenderBody()
             </main>
         </div>
-
-        <footer class="border-top footer text-muted">
-            <div class="container">
-                &copy; 2021 - CoronavirusWebScraper.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-            </div>
-        </footer>
     </div>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - CoronavirusWebScraper.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-  
+
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

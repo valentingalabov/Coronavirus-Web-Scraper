@@ -1,9 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using CoronavirusWebScraper.Data;
-using CoronavirusWebScraper.Data.Models;
-using CoronavirusWebScraper.Services;
-
+using CoronavirusWebScraper.Services.Impl.ServiceModels;
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;

@@ -4,12 +4,11 @@ for details on configuring this project to bundle and minify static web assets. 
 
 .bg {
     /* The image used */
-    background-image: url("https://image.freepik.com/free-vector/covid-19-corona-virus-white-background_213683-25.jpg");
+    background-image: url(/img/covid19BGImage.jpg);
     /* Full height */
-    height: 100vh;
-    /* Center and scale the image nicely */
+    min-height: 100vh;  /* Center and scale the image nicely */
     background-position: center;
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
     background-size: cover;
 }
 

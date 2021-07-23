@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoronavirusWebScraper.Data.Models;
+using AutoMapper;
+using CoronavirusWebScraper.Services.Impl.ServiceModels;
 
 namespace CoronavirusWebScraper.Services.Impl
 {
@@ -13,6 +14,7 @@ namespace CoronavirusWebScraper.Services.Impl
         public StatisticsDataService(IMongoRepository<CovidStatistic> repository)
         {
             _repository = repository;
+
         }
 
         public IEnumerable<string> GetAllDates()
@@ -28,13 +30,9 @@ namespace CoronavirusWebScraper.Services.Impl
         {
             var formatedDate = DateTime.Parse(date).ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
 
-            var currentDayData = _repository.FilterBy(filter => filter.Date == formatedDate,
-                projection =>projection).FirstOrDefault();
-
+            var currentDayData = _repository.FilterBy(filter => filter.Date == formatedDate).FirstOrDefault();
+      
             //var currentDayData = _repository.AsQueryable().Where(x => x.Date == formatedDate).FirstOrDefault();
-
-
-        
 
             return currentDayData;
         }

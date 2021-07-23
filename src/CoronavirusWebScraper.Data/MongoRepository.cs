@@ -31,6 +31,12 @@ namespace CoronavirusWebScraper.Data
             await _collection.InsertOneAsync(document);
         }
 
+        public virtual IEnumerable<TDocument> FilterBy(
+      Expression<Func<TDocument, bool>> filterExpression)
+        {
+            return _collection.Find(filterExpression).ToEnumerable();
+        }
+
         public virtual IEnumerable<TProjected> FilterBy<TProjected>(
        Expression<Func<TDocument, bool>> filterExpression,
        Expression<Func<TDocument, TProjected>> projectionExpression)

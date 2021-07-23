@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace CoronavirusWebScraper.Services.Impl.DTO
+namespace CoronavirusWebScraper.Services.Impl.ServiceModels
 {
-    public class TotalAndLast
+    public class ConfirmedByTown
     {
         [BsonElement("total")]
         public int Total { get; set; }

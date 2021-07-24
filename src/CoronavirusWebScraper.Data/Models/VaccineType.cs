@@ -10,7 +10,7 @@ namespace CoronavirusWebScraper.Data.Models
         [BsonElement("moderna")]
         public int Moderna { get; set; }
 
-        [BsonElement("astraZeneca")]
+        [BsonElement("astrazeneca")]
         public int AstraZeneca { get; set; }
 
         [BsonElement("janssen")]

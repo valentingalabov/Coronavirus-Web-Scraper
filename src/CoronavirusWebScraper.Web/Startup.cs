@@ -1,6 +1,7 @@
 using AutoMapper;
 using CoronavirusWebScraper.Data;
 using CoronavirusWebScraper.Data.Configuration;
+using CoronavirusWebScraper.Services;
 using CoronavirusWebScraper.Services.Impl;
 using CoronavirusWebScraper.Web.BackgroundServices;
 using Microsoft.AspNetCore.Builder;
@@ -33,6 +34,7 @@ namespace CoronavirusWebScraper.Web
             services.AddTransient<IStatisticsDataService, StatisticsDataService >();
 
             services.AddAutoMapper(typeof(Startup));
+    
             services.AddHostedService<Worker>();
 
 

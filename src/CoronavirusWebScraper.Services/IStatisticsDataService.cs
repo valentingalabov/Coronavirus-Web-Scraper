@@ -1,4 +1,4 @@
-﻿using CoronavirusWebScraper.Data.Models;
+﻿using CoronavirusWebScraper.Services.ServiceModels;
 using System.Collections.Generic;
 
 namespace CoronavirusWebScraper.Services
@@ -7,6 +7,6 @@ namespace CoronavirusWebScraper.Services
     {
         IEnumerable<string> GetAllDates();
 
-        CovidStatistic GetStatisticForDay(string day);
+        CovidStatisticServiceModel GetStatisticForDay(string day);
     }
 }

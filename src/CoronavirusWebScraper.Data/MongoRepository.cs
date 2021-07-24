@@ -1,6 +1,7 @@
 ﻿using CoronavirusWebScraper.Data.Attributes;
 using CoronavirusWebScraper.Data.Configuration;
 using CoronavirusWebScraper.Data.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -49,5 +50,16 @@ namespace CoronavirusWebScraper.Data
             return _collection.AsQueryable();
         }
 
+        //public virtual async Task<BsonDocument> ASd()
+        //{
+        //    var projectionDefinition = Builders<BsonDocument>.Projection
+        //                                .Exclude("_id")
+        //                                .Include("date")
+        //                                .Include("overall");
+
+        //    return await _collection.Find(x => x.Id != null)
+        //            .Project(projectionDefinition)
+        //            .FirstAsync();
+        //}
     }
 }

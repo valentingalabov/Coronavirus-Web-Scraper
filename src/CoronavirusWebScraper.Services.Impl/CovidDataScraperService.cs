@@ -1,7 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using CoronavirusWebScraper.Data;
-using CoronavirusWebScraper.Services.Impl.ServiceModels;
+using CoronavirusWebScraper.Data.Models;
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
@@ -285,9 +285,9 @@ namespace CoronavirusWebScraper.Services.Impl
                 {
                     { "total", totalVaccinated },
                     { "last", totalVaccinated24 },
-                    { "last_by_type", new BsonDocument { { "comirnaty", comirnaty }, { "moderna", moderna }, { "astrazeneca", astrazeneca }, { "janssen", janssen } } }
+                    { "last_by_type", new BsonDocument { { "comirnaty", comirnaty }, { "moderna", moderna }, { "astrazeneca", astrazeneca }, { "janssen", janssen } } },
+                    { "total_completed", totalVaccinedComplate}
                 });
-                regionsStatistic[counter].Add("total_completed", totalVaccinedComplate);
                 counter++;
             }
 

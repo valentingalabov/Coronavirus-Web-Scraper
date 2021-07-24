@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using CoronavirusWebScraper.Services.Impl.ServiceModels;
-using CoronavirusWebScraper.Web.Models;
-using System.Linq;
 
 namespace CoronavirusWebScraper.Web.AutoMapperConfiguration
 {
@@ -9,18 +6,20 @@ namespace CoronavirusWebScraper.Web.AutoMapperConfiguration
     {
         public AutoMapperProfile()
         {
-            CreateMap<CovidStatistic, CovidStatisticsViewModel>();
-            CreateMap<Overall, OverallViewModel>();
-            CreateMap<Tested, TestedViewModel>();
-            CreateMap<TestedByType, TestedByTypeViewModel>();
-            CreateMap<VaccineType, VaccineTypeViewModel>();
-            CreateMap<Vaccinated, VaccinatedViewModel>();
-            CreateMap<TotalAndLast, TotalAndLastViewModel>();
-            CreateMap<Medical, MedicalViewModel>();
-            CreateMap<MedicalTypes, MedicalTypesViewModel>();
-            CreateMap<Confirmed, ConfirmedViewModel>();
-            CreateMap<Active, ActiveViewModel>();
-            CreateMap<ActiveTypes, ActiveTypesViewModel>();
+            //CreateMap<Overall, OverallServiceModel>()
+            //    .ForMember;
+            //CreateMap<CovidStatisticServiceModel, CovidStatisticsViewModel>();
+            //CreateMap<OverallServiceModel, OverallViewModel>();
+            //CreateMap<TestedServiceModel, TestedViewModel>();
+            //CreateMap<TestedByTypeServiceModel, TestedByTypeViewModel>();
+            //CreateMap<VaccineTypeServiceModel, VaccineTypeViewModel>();
+            //CreateMap<VaccinatedServiceModel, VaccinatedViewModel>();
+            //CreateMap<TotalAndLastServiceModel, TotalAndLastViewModel>();
+            //CreateMap<MedicalServiceModel, MedicalViewModel>();
+            //CreateMap<MedicalTypesServiceModel, MedicalTypesViewModel>();
+            //CreateMap<ConfirmedServiceModel, ConfirmedViewModel>();
+            //CreateMap<ActiveServiceModel, ActiveViewModel>();
+            //CreateMap<ActiveTypesServiceModel, ActiveTypesViewModel>();
         }
     }
 }

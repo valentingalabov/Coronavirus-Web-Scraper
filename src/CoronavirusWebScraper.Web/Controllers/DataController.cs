@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CoronavirusWebScraper.Services.Impl;
+using CoronavirusWebScraper.Services;
 using CoronavirusWebScraper.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +26,8 @@ namespace CoronavirusWebScraper.Web.Controllers
             var stats = _dataService.GetStatisticForDay(date);
 
             var viewModel = _mapper.Map<CovidStatisticsViewModel>(stats);
+            
+            //var ser = BsonSerializer.Deserialize<RegionsViewModel>();
 
             return this.View(viewModel);
         }

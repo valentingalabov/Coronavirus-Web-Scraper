@@ -1,4 +1,4 @@
-﻿using CoronavirusWebScraper.Services.Impl;
+﻿using CoronavirusWebScraper.Services;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading;

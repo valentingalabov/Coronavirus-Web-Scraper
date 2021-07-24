@@ -13,7 +13,7 @@ namespace CoronavirusWebScraper.Data.Models
         [BsonElement("last")]
         public int Last24 { get; set; }
 
-        [BsonElement("last_by_type")]
-        public MedicalTypes LastByType24 { get; set; }
+        //[BsonElement("last_by_type")]
+        //public MedicalTypes LastByType24 { get; set; }
     }
 }

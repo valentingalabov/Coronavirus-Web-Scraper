@@ -2,7 +2,6 @@
 {
     public class TestedViewModel
     {
-
         public int Total { get; set; }
 
         public TestedByTypeViewModel TotalByType { get; set; }

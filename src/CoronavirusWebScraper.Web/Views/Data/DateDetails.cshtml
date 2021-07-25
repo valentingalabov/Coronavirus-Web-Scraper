@@ -1,64 +1,52 @@
-﻿@model CovidStatisticsViewModel;
-@{
+﻿@model CovidStatisticViewModel;
 
-    var overall = Model.Overall;
-    var tested = overall.Tested;
-    var confirmed = overall.Confirmed;
-    var medical = confirmed.Medical.TotalByType;
-    var active = overall.Active;
-    var recovered = overall.Recovered;
-    var deceased = overall.Deceased;
-    var vaccinated = overall.Vaccinated;
+@{
+    var medical = @Model.Confirmed.Medical;
 }
 
 <br />
 <h1 class="text-center">
-    Статистическа Информация към @*@Model.FormatedDate.ToString()*@.
+    Статистическа Информация към @Model.Date.
 </h1>
 
 <hr />
-<div class="row mask" style="
-      background: linear-gradient(
-        45deg,
-        rgba(29, 236, 197, 0.7),
-        rgba(91, 14, 214, 0.7) 100%
-      )">
+<div class="row mask blue-mask">
 
     <div class="col-lg-4 col-sm-6 border">
-        <p class="stats-title">Направени тестове към @*@Model.FormatedDate*@</p>
-        <p class="primary-digit">@tested.Total</p>
+        <p class="stats-title">Направени тестове към @Model.Date</p>
+        <p class="primary-digit">@Model.Tested.Total</p>
         <p class="secondary-title">за последното денонощие</p>
-        <p class="secondary-digit" s>@tested.Last24</p>
+        <p class="secondary-digit" s>@Model.Tested.Last24</p>
     </div>
     <div class="col-lg-4 col-sm-6  border">
         <p class="stats-title">ПОТВЪРДЕНИ СЛУЧАЯ</p>
-        <p class="text-light primary-digit">@confirmed.Total</p>
+        <p class="text-light primary-digit">@Model.Confirmed.Total</p>
         <p class="secondary-title">активни случая</p>
-        <p class="text-light secondary-digit">@active.Curent</p>
+        <p class="text-light secondary-digit">@Model.Active.Curent</p>
     </div>
     <div class="col-lg-4 col-sm-6 border">
         <p class="stats-title">ИЗЛЕКУВАНИ</p>
-        <p class="primary-digit">@recovered.Total</p>
+        <p class="primary-digit">@Model.Recovered.Total</p>
         <p class="secondary-title">за последното денонощие</p>
-        <p class="secondary-digit">@recovered.Last</p>
+        <p class="secondary-digit">@Model.Recovered.Last</p>
     </div>
     <div class="col-lg-4 col-sm-6 border">
         <p class="stats-title">ХОСПИТАЛИЗИРАНИ</p>
-        <p class="text-warning primary-digit">@active.CurrentByType.Hospitalized</p>
+        <p class="text-warning primary-digit">@Model.Active.CurrentByType.Hospitalized</p>
         <p class="secondary-title">в интензивно отделение</p>
-        <p class="text-warning secondary-digit">@active.CurrentByType.Icu</p>
+        <p class="text-warning secondary-digit">@Model.Active.CurrentByType.Icu</p>
     </div>
     <div class="col-lg-4 col-sm-6 border">
         <p class="stats-title">ПОЧИНАЛИ</p>
-        <p class="text-danger primary-digit">@deceased.Total</p>
+        <p class="text-danger primary-digit">@Model.Deceased.Total</p>
         <p class="secondary-title">за последното денонощие</p>
-        <p class="text-danger secondary-digit">@deceased.Last</p>
+        <p class="text-danger secondary-digit">@Model.Deceased.Last</p>
     </div>
     <div class="col-lg-4 col-sm-6 border">
         <p class="stats-title">ОБЩО ПОСТАВЕНИ ДОЗИ</p>
-        <p class="text-primary primary-digit">@vaccinated.Total</p>
+        <p class="text-primary primary-digit">@Model.Vaccinated.Total</p>
         <p class="secondary-title">за последното денонощие</p>
-        <p class="text-primary secondary-digit">@vaccinated.Last</p>
+        <p class="text-primary secondary-digit">@Model.Vaccinated.Last</p>
     </div>
 </div>
 
@@ -77,32 +65,39 @@
                 <tr class="bg-info">
                     <th>Тип</th>
                     <th>Брой</th>
+                    <th>Нови</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>Лекари</td>
-                    <td>@medical.Doctror</td>
+                    <td>@medical.TotalByType.Doctror</td>
+                    <td>@medical.LastByType24.Doctror</td>
                 </tr>
                 <tr>
                     <td>Медицински сестри</td>
-                    <td>@medical.Nurces</td>
+                    <td>@medical.TotalByType.Nurces</td>
+                    <td>@medical.LastByType24.Nurces</td>
                 </tr>
                 <tr>
                     <td>Санитари</td>
-                    <td>@medical.Paramedics_1</td>
+                    <td>@medical.TotalByType.Paramedics_1</td>
+                    <td>@medical.LastByType24.Paramedics_1</td>
                 </tr>
                 <tr>
                     <td>Фелдшери</td>
-                    <td>@medical.Paramedics_2</td>
+                    <td>@medical.TotalByType.Paramedics_2</td>
+                    <td>@medical.LastByType24.Paramedics_2</td>
                 </tr>
                 <tr>
                     <td>Други</td>
-                    <td>@medical.Others</td>
+                    <td>@medical.TotalByType.Others</td>
+                    <td>@medical.LastByType24.Others</td>
                 </tr>
-                <tr>
+                <tr class="bg-secondary">
                     <td>Общо</td>
-                    <td>@confirmed.Medical.Total</td>
+                    <td>@medical.Total</td>
+                    <td>@medical.Last24</td>
                 </tr>
             </tbody>
         </table>
@@ -126,18 +121,18 @@
             <tbody>
                 <tr>
                     <td>RT PCR</td>
-                    <td>@tested.TotalByType.PCR</td>
-                    <td>@tested.TotalByType24.PCR</td>
+                    <td>@Model.Tested.TotalByType.PCR</td>
+                    <td>@Model.Tested.TotalByType24.PCR</td>
                 </tr>
                 <tr>
                     <td>Бърз тест за антигени</td>
-                    <td>@tested.TotalByType.Antigen</td>
-                    <td>@tested.TotalByType24.Antigen</td>
+                    <td>@Model.Tested.TotalByType.Antigen</td>
+                    <td>@Model.Tested.TotalByType24.Antigen</td>
                 </tr>
-                <tr>
+                <tr class="bg-secondary">
                     <td>Общо</td>
-                    <td>@tested.Total</td>
-                    <td>@tested.Last24</td>
+                    <td>@Model.Tested.Total</td>
+                    <td>@Model.Tested.Last24</td>
                 </tr>
             </tbody>
         </table>
@@ -160,18 +155,70 @@
             <tbody>
                 <tr>
                     <td>RT PCR</td>
-                    <td>@confirmed.TotalByType.PCR</td>
-                    <td>@confirmed.TotalByType24.PCR</td>
+                    <td>@Model.Confirmed.TotalByType.PCR</td>
+                    <td>@Model.Confirmed.TotalByType24.PCR</td>
                 </tr>
                 <tr>
                     <td>Бърз тест за антигени</td>
-                    <td>@confirmed.TotalByType.Antigen</td>
-                    <td>@confirmed.TotalByType24.Antigen</td>
+                    <td>@Model.Confirmed.TotalByType.Antigen</td>
+                    <td>@Model.Confirmed.TotalByType24.Antigen</td>
                 </tr>
-                <tr>
+                <tr class="bg-secondary">
                     <td>Общо</td>
-                    <td>@confirmed.Total</td>
-                    <td>@confirmed.Last24</td>
+                    <td>@Model.Confirmed.Total</td>
+                    <td>@Model.Confirmed.Last24</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<hr />
+<div class="row">
+
+    <div class="col-lg-12 col-sm-6">
+        <div class="h-heading">
+            <h4>
+                Потвърдени случаи според тип на лабораторно изследване
+            </h4>
+        </div>
+        <table class="table table-hover table-dark">
+            <thead>
+                <tr id="header" scope="col" class="bg-info">
+                    <th>Област</th>
+                    <th>Общо поставени дози</th>
+                    <th>Comirnaty</th>
+                    <th>Moderna</th>
+                    <th>AstraZeneca</th>
+                    <th>Janssen</th>
+                    <th>
+                        Общ брой лица със завършен ваксинационен
+                        цикъл
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+               @foreach (var currRegion in Model.Regions)
+               {
+                <tr>
+                    <th>@currRegion.Name</th>
+                    <th>@currRegion.RegionStatistics.Vaccinated.Total</th>
+                    <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Comirnaty</th>
+                    <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Moderna</th>
+                    <th>@currRegion.RegionStatistics.Vaccinated.LastByType.AstraZeneca</th>
+                    <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Janssen</th>
+                    <th class="text-right">@currRegion.RegionStatistics.Vaccinated.TotalCompleted</th>
+                </tr>
+               }
+                <tr class="bg-secondary">
+                    <th>Общо</th>
+                    <th>@Model.Vaccinated.Total</th>
+                    <th>@Model.TotalVaccineByType24.TotalComirnaty</th>
+                    <th>@Model.TotalVaccineByType24.TotalModerna</th>
+                    <th>@Model.TotalVaccineByType24.TotalAstraZeneca</th>
+                    <th>@Model.TotalVaccineByType24.TotalJanssen</th>
+                    <th class="text-right">@Model.Vaccinated.TotalCompleted</th>            
                 </tr>
             </tbody>
         </table>

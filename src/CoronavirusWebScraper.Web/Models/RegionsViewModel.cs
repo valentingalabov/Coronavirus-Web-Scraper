@@ -1,10 +1,9 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace CoronavirusWebScraper.Web.Models
+﻿namespace CoronavirusWebScraper.Web.Models
 {
     public class RegionsViewModel
     {
-        [BsonElement("confirmed")]
-        public ConfirmedViewModel Confirmed { get; set; }
+        public string Name { get; set; }
+
+        public RegionStatisticsViewModel RegionStatistics { get; set; }
     }
 }

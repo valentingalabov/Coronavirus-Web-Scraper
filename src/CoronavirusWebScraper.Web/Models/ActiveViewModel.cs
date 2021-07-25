@@ -5,5 +5,6 @@
         public int Curent { get; set; }
 
         public ActiveTypesViewModel CurrentByType { get; set; }
+
     }
 }

@@ -2,7 +2,6 @@
 {
     public class MedicalViewModel
     {
-
         public int Total { get; set; }
 
         public MedicalTypesViewModel TotalByType { get; set; }

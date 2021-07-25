@@ -117,7 +117,7 @@ namespace CoronavirusWebScraper.Services.Impl
             //MedicalTable
             var medicalTableRecords = allTebles[4].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
 
-            var status = "approved";
+            //var status = "approved";
 
 
             var covidStatistics = new CovidStatistic
@@ -186,7 +186,7 @@ namespace CoronavirusWebScraper.Services.Impl
                         TotalByTypePrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(confirmedPcr, totalConfirmed), Antigen = DevideTwoIntiger(confirmedAntigen, totalConfirmed) },
                         LastByTypePrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(confirmedPcr24, totalConfirmed24), Antigen = DevideTwoIntiger(confirmedAntigen24, totalConfirmed24) },
                         //toDo medicalPrc
-                        MedicalPcr = 0
+                        //MedicalPcr = covidStatisti
                     },
                     Active = new ActivePrc
                     {
@@ -195,6 +195,11 @@ namespace CoronavirusWebScraper.Services.Impl
                     }
                 }
             };
+
+            if (covidStatistics.Overall.Confirmed.Medical.Last24 != 0)
+            {
+                covidStatistics.Stats.ConfirmedPrc.MedicalPcr = DevideTwoIntiger(covidStatistics.Overall.Confirmed.Medical.Last24, covidStatistics.Overall.Confirmed.Last24);
+            }
 
             return covidStatistics;
 
@@ -254,7 +259,6 @@ namespace CoronavirusWebScraper.Services.Impl
 
         //}
 
-
         private BsonDocument GetAllRegionsData(IElement[] allTebles)
         {
             var regionsStatistic = new List<BsonDocument>();
@@ -311,8 +315,6 @@ namespace CoronavirusWebScraper.Services.Impl
 
             return bson;
         }
-
-
 
         private Medical GetMedicalStatistics(string[] medicalTableRecords, DateTime currentDate)
         {

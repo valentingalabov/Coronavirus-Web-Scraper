@@ -10,7 +10,9 @@ namespace CoronavirusWebScraper.Services.ServiceModels
 
         public IEnumerable<RegionsServiceModel> Regions { get; set; }
 
+        public TotalVaccineByType24ServiceModel TotalVaccineByType24 { get; set; }
+
         //public Stats Stats { get; set; }
-       
+
     }
 }

@@ -15,8 +15,15 @@ namespace CoronavirusWebScraper.Services.Impl
             var statistics = new CovidStatisticServiceModel
             {
                 Date = covidStatistic.Date,
-                Overall = ConversionOverallServiceModel(covidStatistic.Overall),
-                Regions = ConversionRegionsServiceModel(covidStatistic.Regions)
+                Overall = ConvertToOverallServiceModel(covidStatistic.Overall),
+                Regions = ConvertToRegionsServiceModel(covidStatistic.Regions),
+            };
+            statistics.TotalVaccineByType24 = new TotalVaccineByType24ServiceModel
+            {
+                TotalAstraZeneca = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.AstraZeneca),
+                TotalComirnaty = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Comirnaty),
+                TotalJanssen = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Janssen),
+                TotalModerna = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Moderna)
             };
 
             return statistics;
@@ -64,7 +71,7 @@ namespace CoronavirusWebScraper.Services.Impl
             return regionsWithCodes[region].ToLower();
         }
 
-        private static IEnumerable<RegionsServiceModel> ConversionRegionsServiceModel(BsonDocument regions)
+        private static IEnumerable<RegionsServiceModel> ConvertToRegionsServiceModel(BsonDocument regions)
         {
             var listOfRegins = new List<RegionsServiceModel>();
 
@@ -83,20 +90,20 @@ namespace CoronavirusWebScraper.Services.Impl
 
         }
 
-        private static OverallServiceModel ConversionOverallServiceModel(Overall overall)
+        private static OverallServiceModel ConvertToOverallServiceModel(Overall overall)
         {
             return new OverallServiceModel
             {
-                Active = ConvertActive(overall.Active),
-                Confirmed = ConvertConfirmed(overall.Confirmed),
-                Recovered = ConvertRecovered(overall.Recovered),
-                Deceased = ConvertDeceased(overall.Deceased),
-                Tested = ConvertTested(overall.Tested),
-                Vaccinated = ConverVaccinated(overall.Vaccinated)
+                Active = ConvertToActiveServiceModel(overall.Active),
+                Confirmed = ConvertToConfirmedServiceModel(overall.Confirmed),
+                Recovered = ConvertToRecoveredServiceModel(overall.Recovered),
+                Deceased = ConvertToDeceasedServiceModel(overall.Deceased),
+                Tested = ConvertToTestedServicModel(overall.Tested),
+                Vaccinated = ConverToVaccinatedServiceModel(overall.Vaccinated)
             };
         }
 
-        private static VaccinatedServiceModel ConverVaccinated(Vaccinated vaccinated)
+        private static VaccinatedServiceModel ConverToVaccinatedServiceModel(Vaccinated vaccinated)
         {
             return new VaccinatedServiceModel
             {
@@ -113,7 +120,7 @@ namespace CoronavirusWebScraper.Services.Impl
             };
         }
 
-        private static TestedServiceModel ConvertTested(Tested tested)
+        private static TestedServiceModel ConvertToTestedServicModel(Tested tested)
         {
             return new TestedServiceModel
             {
@@ -132,7 +139,7 @@ namespace CoronavirusWebScraper.Services.Impl
             };
         }
 
-        private static TotalAndLastServiceModel ConvertDeceased(TotalAndLast deceased)
+        private static TotalAndLastServiceModel ConvertToDeceasedServiceModel(TotalAndLast deceased)
         {
             return new TotalAndLastServiceModel
             {
@@ -141,7 +148,7 @@ namespace CoronavirusWebScraper.Services.Impl
             };
         }
 
-        private static TotalAndLastServiceModel ConvertRecovered(TotalAndLast recovered)
+        private static TotalAndLastServiceModel ConvertToRecoveredServiceModel(TotalAndLast recovered)
         {
             return new TotalAndLastServiceModel
             {
@@ -150,7 +157,7 @@ namespace CoronavirusWebScraper.Services.Impl
             };
         }
 
-        private static ConfirmedServiceModel ConvertConfirmed(Confirmed confirmed)
+        private static ConfirmedServiceModel ConvertToConfirmedServiceModel(Confirmed confirmed)
         {
             return new ConfirmedServiceModel
             {
@@ -168,14 +175,14 @@ namespace CoronavirusWebScraper.Services.Impl
                         Others = confirmed.Medical.TotalByType.Others,
                     },
                     Last24 = confirmed.Medical.Last24,
-                    //LastByType24 = new MedicalTypesServiceModel
-                    //{
-                    //    Doctror = confirmed.Medical.LastByType24.Doctror,
-                    //    Nurces = confirmed.Medical.LastByType24.Nurces,
-                    //    Paramedics_1 = confirmed.Medical.LastByType24.Paramedics_1,
-                    //    Paramedics_2 = confirmed.Medical.LastByType24.Paramedics_2,
-                    //    Others = confirmed.Medical.LastByType24.Others,
-                    //}
+                    LastByType24 = new MedicalTypesServiceModel
+                    {
+                        Doctror = confirmed.Medical.LastByType24.Doctror,
+                        Nurces = confirmed.Medical.LastByType24.Nurces,
+                        Paramedics_1 = confirmed.Medical.LastByType24.Paramedics_1,
+                        Paramedics_2 = confirmed.Medical.LastByType24.Paramedics_2,
+                        Others = confirmed.Medical.LastByType24.Others,
+                    }
                 },
                 TotalByType = new TestedByTypeServiceModel
                 {
@@ -190,7 +197,7 @@ namespace CoronavirusWebScraper.Services.Impl
             };
         }
 
-        private static ActiveServiceModel ConvertActive(Active active)
+        private static ActiveServiceModel ConvertToActiveServiceModel(Active active)
         {
             return new ActiveServiceModel
             {

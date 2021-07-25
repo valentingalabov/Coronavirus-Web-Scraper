@@ -25,11 +25,11 @@ namespace CoronavirusWebScraper.Web.Controllers
         {
             var stats = _dataService.GetStatisticForDay(date);
 
-            var viewModel = _mapper.Map<CovidStatisticsViewModel>(stats);
+            //var viewModel = _mapper.Map<CovidStatisticsViewModel>(stats);
             
             //var ser = BsonSerializer.Deserialize<RegionsViewModel>();
 
-            return this.View(viewModel);
+            return this.View();
         }
     }
 }

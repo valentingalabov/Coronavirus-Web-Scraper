@@ -26,7 +26,11 @@ namespace CoronavirusWebScraper.Services.Impl
         {
             var document = await FetchDocument();
 
-            await _repository.InsertOneAsync(document);
+            if (document != null)
+            {
+
+                await _repository.InsertOneAsync(document);
+            }
         }
 
         private async Task<CovidStatistic> FetchDocument()
@@ -54,6 +58,12 @@ namespace CoronavirusWebScraper.Services.Impl
             var dataDate = currDate.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
 
             var dateScraped = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+            var currentDayStatistics = await _repository.FindOneAsync(filter => filter.Date == dataDate);
+            if (currentDayStatistics != null)
+            {
+                return null;
+            }
 
             //Tests
             var totalTestsByTypeTableRecords = allTebles[1].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
@@ -130,7 +140,7 @@ namespace CoronavirusWebScraper.Services.Impl
                         TotalByType = new TestedByType { PCR = confirmedPcr, Antigen = confirmedAntigen },
                         Last24 = totalConfirmed24,
                         TotalByType24 = new TestedByType { PCR = confirmedPcr24, Antigen = confirmedAntigen24 },
-                        Medical = GetMedicalStatistics(medicalTableRecords),
+                        Medical = GetMedicalStatistics(medicalTableRecords, currDate),
                     },
                     Active = new Active
                     {
@@ -257,7 +267,7 @@ namespace CoronavirusWebScraper.Services.Impl
 
             for (int i = 0; i < confirmedByRegionTableRecords.Length; i += 3)
             {
-                var regionCode = GetRegionЕКАТТЕCode(confirmedByRegionTableRecords[i]).ToLower();
+                var regionCode = Conversion.RegionЕКАТТЕCodeConversion(confirmedByRegionTableRecords[i]);
                 var confirmed = IntParser(confirmedByRegionTableRecords[i + 1]);
                 var confirmed24 = IntParser(confirmedByRegionTableRecords[i + 2]);
                 var currentRegionDocument = new BsonDocument();
@@ -302,44 +312,9 @@ namespace CoronavirusWebScraper.Services.Impl
             return bson;
         }
 
-        private string GetRegionЕКАТТЕCode(string region)
-        {
-            var regionsWithCodes = new Dictionary<string, string>()
-            {
-                { "Благоевград", "BLG" },
-                { "Бургас", "BGS" },
-                { "Варна", "VAR" },
-                { "Велико Търново", "VTR" },
-                { "Видин", "VID" },
-                { "Враца", "VRC" },
-                { "Габрово", "GAB" },
-                { "Добрич", "DOB" },
-                { "Кърджали", "KRZ" },
-                { "Кюстендил", "KNL" },
-                { "Ловеч", "LOV" },
-                { "Монтана", "MON" },
-                { "Пазарджик", "PAZ" },
-                { "Перник", "PER" },
-                { "Плевен", "PVN" },
-                { "Пловдив", "PDV" },
-                { "Разград", "RAZ" },
-                { "Русе", "RSE" },
-                { "Силистра", "SLS" },
-                { "Сливен", "SLV" },
-                { "Смолян", "SML" },
-                { "София", "SFO" },
-                { "София (столица)", "SOF" },
-                { "Стара Загора", "SZR" },
-                { "Търговище", "TGV" },
-                { "Хасково", "HKV" },
-                { "Шумен", "SHU" },
-                { "Ямбол", "JAM" },
-            };
 
-            return regionsWithCodes[region];
-        }
 
-        private Medical GetMedicalStatistics(string[] medicalTableRecords)
+        private Medical GetMedicalStatistics(string[] medicalTableRecords, DateTime currentDate)
         {
 
             var totalDoctors = IntParser(medicalTableRecords[1]);
@@ -351,6 +326,38 @@ namespace CoronavirusWebScraper.Services.Impl
 
             //TODO:  data for medical for 24h!
 
+            var previousDate = currentDate.AddDays(-1).ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
+
+            var medialForPreviousDay = _repository
+                .FilterBy(filter => filter.Date == previousDate, projected
+                => projected.Overall.Confirmed.Medical)
+                .FirstOrDefault();
+
+            if (medialForPreviousDay == null)
+            {
+                return new Medical
+                {
+                    Total = totalMedical,
+                    TotalByType = new MedicalTypes
+                    {
+                        Doctror = totalDoctors,
+                        Nurces = totalNurces,
+                        Paramedics_1 = totalParamedics1,
+                        Paramedics_2 = totalParamedics2,
+                        Others = others
+                    },
+                    Last24 = 0,
+                    LastByType24 = new MedicalTypes
+                    {
+                        Doctror = 0,
+                        Nurces = 0,
+                        Paramedics_1 = 0,
+                        Paramedics_2 = 0,
+                        Others = 0
+                    }
+                };
+            }
+
             return new Medical
             {
                 Total = totalMedical,
@@ -361,6 +368,15 @@ namespace CoronavirusWebScraper.Services.Impl
                     Paramedics_1 = totalParamedics1,
                     Paramedics_2 = totalParamedics2,
                     Others = others
+                },
+                Last24 = totalMedical - medialForPreviousDay.Total,
+                LastByType24 = new MedicalTypes
+                {
+                    Doctror = totalDoctors - medialForPreviousDay.TotalByType.Doctror,
+                    Nurces = totalNurces - medialForPreviousDay.TotalByType.Nurces,
+                    Paramedics_1 = totalParamedics1 - medialForPreviousDay.TotalByType.Paramedics_1,
+                    Paramedics_2 = totalParamedics2 - medialForPreviousDay.TotalByType.Paramedics_2,
+                    Others = others - medialForPreviousDay.TotalByType.Others
                 }
             };
         }

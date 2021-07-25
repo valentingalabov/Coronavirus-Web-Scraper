@@ -29,14 +29,10 @@ namespace CoronavirusWebScraper.Services.Impl
         {
             var formatedDate = DateTime.Parse(date).ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
 
-            var currentDayData = _repository.FilterBy(filter => filter.Date == formatedDate, pr => new CovidStatisticServiceModel
-            {
-                Date = date,
-                Overall = Conversion.ConversionOverallServiceModel(pr.Overall)
-            }).FirstOrDefault();
-
-            //var regions = _repository.FilterBy(filter => filter.Date == formatedDate, projection => projection.Regions).FirstOrDefault();
-
+            var currentDayData = _repository
+                .FilterBy(filter => filter.Date == formatedDate,
+                projected => Conversion.ConvertToCovidStatisticServiceModel(projected))
+                .FirstOrDefault();
 
             return currentDayData;
         }

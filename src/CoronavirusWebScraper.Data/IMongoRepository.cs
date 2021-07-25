@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CoronavirusWebScraper.Data
@@ -12,13 +11,15 @@ namespace CoronavirusWebScraper.Data
     {
         Task InsertOneAsync(TDocument document);
 
+        Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression);
+
         IQueryable<TDocument> AsQueryable();
 
-        IEnumerable<TDocument> FilterBy(
-       Expression<Func<TDocument, bool>> filterExpression);
+        IEnumerable<TDocument> FilterBy(Expression<Func<TDocument, bool>> filterExpression);
 
         IEnumerable<TProjected> FilterBy<TProjected>(
-    Expression<Func<TDocument, bool>> filterExpression,
-    Expression<Func<TDocument, TProjected>> projectionExpression);
+            Expression<Func<TDocument, bool>> filterExpression,
+            Expression<Func<TDocument, TProjected>> projectionExpression);
+
     }
 }

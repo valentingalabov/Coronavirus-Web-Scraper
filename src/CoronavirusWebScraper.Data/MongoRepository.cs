@@ -45,6 +45,11 @@ namespace CoronavirusWebScraper.Data
             return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
 
+        public virtual Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression)
+        {
+            return Task.Run(() => _collection.Find(filterExpression).FirstOrDefaultAsync());
+        }
+
         public virtual IQueryable<TDocument> AsQueryable()
         {
             return _collection.AsQueryable();

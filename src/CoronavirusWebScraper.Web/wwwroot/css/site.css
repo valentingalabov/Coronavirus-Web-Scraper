@@ -117,7 +117,7 @@ body {
 }
 
 .blue-mask {
-    background: linear-gradient( 45deg, rgba(29, 236, 197, 0.7), rgba(91, 14, 214, 0.7) 100% );
+    background: linear-gradient(90deg, rgba(157,164,164,1) 21%, rgba(212,214,215,1) 64%);
 }
 
 .calendar-numbers {
@@ -140,4 +140,27 @@ body {
     color: #000;
     text-align: center;
     font: 32px Arial, sans-serif;
+}
+
+#text-paragraph {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: black;
+    font-style: unset;
+    font-size: xx-large;
+}
+
+a {
+    color: black;
+}
+
+    a:hover {
+        background-color: none;
+        color: black;
+    }
+
+.statistic-day {
+    font-style: italic;
+    font-size: xx-large;
+    text-decoration: underline;
+    color: cadetblue;
 }

@@ -15,12 +15,14 @@ namespace CoronavirusWebScraper.Web.Controllers
 
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
             
         }
 
+        [HttpGet]
         public IActionResult Privacy()
         {
             return View();

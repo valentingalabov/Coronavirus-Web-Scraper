@@ -14,11 +14,13 @@ namespace CoronavirusWebScraper.Web.Controllers
             _dataService = dataService;
         }
 
+        [HttpGet]
         public IActionResult Data()
         {
             return this.View();
         }
 
+        [HttpGet]
         public IActionResult DateData(string date)
         {
             var stats = _dataService.GetStatisticForDay(date);

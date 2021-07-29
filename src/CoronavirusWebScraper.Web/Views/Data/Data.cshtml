@@ -1,19 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Statistic Calendar";
+    ViewData["Title"] = "Статистически календар";
     var months = new string[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 }
+
 
 <div>
     <div class="container col-md-12 col-sm-6 text-center">
         <h3 id="monthAndYear"></h3>
         <div class="mx-lg-4">
-            <button class="btn btn-secondary col-md-4" id="previous" onclick="previous()">
+            <button class="btn btn-secondary col-md-4" id="previous">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="25" fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
                     <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1z" />
                 </svg>
                 Предишен
             </button>
-            <button class="btn btn-secondary col-md-4" id="next" onclick="next()">
+            <button class="btn btn-secondary col-md-4" id="next">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="25" fill="currentColor" class="bi bi-arrow-right-square-fill" viewBox="0 0 16 16">
                     <path d="M0 14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12zm4.5-6.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5a.5.5 0 0 1 0-1z" />
                 </svg>
@@ -38,18 +39,17 @@
             </tbody>
         </table>
 
-        <button class="btn btn-secondary col-sm-4" id="next" onclick="currentDate()">Отиди на текущата дата</button>
-
-        <br />
+        <button class="btn btn-secondary col-sm-4" id="current">Отиди на текущата дата</button>
+        <hr />
         <form class="row">
             <label class="col-md-2" for="month">Отиди на:</label>
-            <select class="col-md-4" name="month" id="month" onchange="jump()">
+            <select class="col-md-4" name="month" id="month">
                 @for (int i = 0; i < months.Length; i++)
                 {
                     <option value=@i>@months[i]</option>
                 }
             </select>
-            <label for="year"></label><select class="col-md-4" name="year" id="year" onchange="jump()">
+            <label for="year"></label><select class="col-md-4" name="year" id="year">
                 @for (int i = 2020; i < 2030; i++)
                 {
                     <option value=@i>@i</option>
@@ -59,142 +59,6 @@
     </div>
 </div>
 
-<script>
-    let today = new Date();
-    let currentMonth = today.getMonth();
-    let currentYear = today.getFullYear();
-    let selectYear = document.getElementById("year");
-    let selectMonth = document.getElementById("month");
-
-    let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    let monthAndYear = document.getElementById("monthAndYear");
-    showCalendar(currentMonth, currentYear);
-
-
-    async function getDates() {
-        try {
-            let res = await fetch('/api/Dates');
-            return await res.json();
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    function next() {
-        currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-        currentMonth = (currentMonth + 1) % 12;
-        showCalendar(currentMonth, currentYear);
-    }
-
-    function previous() {
-        currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
-        currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-        showCalendar(currentMonth, currentYear);
-    }
-
-    function jump() {
-        currentYear = parseInt(selectYear.value);
-        currentMonth = parseInt(selectMonth.value);
-        showCalendar(currentMonth, currentYear);
-    }
-
-    function currentDate() {
-        showCalendar(today.getMonth(), today.getFullYear());
-    }
-
-    async function showCalendar(month, year) {
-        var statisticsDates = await getDates();
-        let tbl = document.getElementById("calendar-body");
-
-        tbl.innerHTML = "";
-
-        monthAndYear.innerHTML = months[month] + " " + year;
-        selectYear.value = year;
-        selectMonth.value = month;
-
-        let date = 1;
-        for (let i = 0; i < 6; i++) {
-            let row = document.createElement("tr");
-
-
-            for (let j = 0; j < 7; j++) {
-                if (i === 0 && j < getDay(new Date(year, month))) {
-                    let cell = document.createElement("td");
-                    let cellText = document.createTextNode("");
-                    cell.appendChild(cellText);
-                    row.appendChild(cell);
-                }
-                else if (date > daysInMonth(month, year)) {
-                    break;
-                }
-                else {
-                    let cell = document.createElement("td");
-                    cell.classList.add("calendar-numbers");
-                    let cellText = document.createTextNode(date);
-                    let currDateAtMoment = new Date(year, month, date);
-                    if (date === today.getDate()
-                        && year === today.getFullYear()
-                        && month === today.getMonth()
-                        && isIncluded(statisticsDates, currDateAtMoment)) {
-                        cell.classList.add("circle");
-                        cell.classList.add("text-success");
-
-                        let a = document.createElement("a");
-                        a.href = `DateData?date=${year}-${month + 1}-${date}`;
-                        a.appendChild(cellText);
-                        a.classList.add("statistic-day");
-                        cell.appendChild(a);
-
-                    }
-                    else if (date === today.getDate()
-                        && year === today.getFullYear()
-                        && month === today.getMonth()
-                        && !isIncluded(statisticsDates, currDateAtMoment)) {
-                        cell.appendChild(cellText);
-                    }
-                    else if (isIncluded(statisticsDates, new Date(year, month, date))) {
-                        cell.classList.add("text-success");
-                        let a = document.createElement("a");
-                        a.href = `DateData?date=${year}-${month + 1}-${date}`;
-                        a.classList.add("statistic-day");
-                        a.appendChild(cellText);
-                        cell.appendChild(a);
-                    } else {
-                        cell.appendChild(cellText);
-                    }
-
-                    row.appendChild(cell);
-                    date++;
-                }
-            }
-            tbl.appendChild(row);
-        }
-
-        function getDay(date) {
-            let day = date.getDay();
-            if (day == 0) day = 7;
-            return day - 1;
-        }
-    }
-
-    function isIncluded(listOfDates, currDate) {
-        try {
-            var contains = listOfDates.some(elem => {
-                return JSON.stringify(currDate.getTime()) === JSON.stringify(new Date(elem).getTime());
-            });
-            if (contains) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } catch (e) {
-            return false;
-        }
-    }
-
-    function daysInMonth(iMonth, iYear) {
-        return 32 - new Date(iYear, iMonth, 32).getDate();
-    }
-</script>
+@section scripts {
+    <script type="module" src="~/js/calendar.js"></script>
+}

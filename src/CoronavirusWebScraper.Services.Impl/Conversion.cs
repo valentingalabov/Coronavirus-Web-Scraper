@@ -29,6 +29,20 @@ namespace CoronavirusWebScraper.Services.Impl
             return statistics;
         }
 
+        public static AnalysisServiceModel ConvertToAnalysisServiceModel(CovidStatistic covidStatistic)
+        {
+
+            return new AnalysisServiceModel
+            {
+                Active = covidStatistic.Overall.Active.Curent,
+                Hospitalized = covidStatistic.Overall.Active.CurrentByType.Hospitalized,
+                Icu = covidStatistic.Overall.Active.CurrentByType.Icu,
+                Infected = covidStatistic.Overall.Confirmed.Total,
+                TotalTests = covidStatistic.Overall.Tested.Total,
+                Medical = 
+            };
+        }
+
         public static string RegionЕКАТТЕCodeConversion(string region)
         {
             var regionsWithCodes = new Dictionary<string, string>()

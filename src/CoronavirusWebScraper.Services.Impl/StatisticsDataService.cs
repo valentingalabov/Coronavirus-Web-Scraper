@@ -16,6 +16,16 @@ namespace CoronavirusWebScraper.Services.Impl
             _repository = repository;
         }
 
+        public AnalysisServiceModel GetActiveAndHospitalized()
+        {
+            var currDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            var result = _repository.FilterBy(filter => filter.Date.Contains(currDate),
+                projection => Conversion.ConvertToAnalysisServiceModel(projection)).FirstOrDefault();
+
+            return result;
+        }
+
         public IEnumerable<string> GetAllDates()
         {
             var dates = _repository.FilterBy(
@@ -37,7 +47,7 @@ namespace CoronavirusWebScraper.Services.Impl
 
             var currentDateData = _repository
                 .FilterBy(filter => filter.Date == result.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz"),
-                projected => Conversion.ConvertToCovidStatisticServiceModel(projected))
+                projection => Conversion.ConvertToCovidStatisticServiceModel(projection))
                 .FirstOrDefault();
 
             return currentDateData;

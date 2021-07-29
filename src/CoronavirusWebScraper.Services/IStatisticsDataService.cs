@@ -8,5 +8,7 @@ namespace CoronavirusWebScraper.Services
         IEnumerable<string> GetAllDates();
 
         CovidStatisticServiceModel GetStatisticForDay(string day);
+
+        AnalysisServiceModel GetActiveAndHospitalized();
     }
 }

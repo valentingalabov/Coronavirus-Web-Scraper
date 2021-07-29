@@ -38,8 +38,7 @@ namespace CoronavirusWebScraper.Services.Impl
                 Hospitalized = covidStatistic.Overall.Active.CurrentByType.Hospitalized,
                 Icu = covidStatistic.Overall.Active.CurrentByType.Icu,
                 Infected = covidStatistic.Overall.Confirmed.Total,
-                TotalTests = covidStatistic.Overall.Tested.Total,
-                Medical = 
+                TotalTests = covidStatistic.Overall.Tested.Total,        
             };
         }
 

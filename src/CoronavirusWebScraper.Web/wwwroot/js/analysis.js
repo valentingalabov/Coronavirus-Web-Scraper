@@ -1,17 +1,14 @@
 ﻿import ApiGetFunction from "./getFunction.js";
-
 google.charts.load('current', { 'packages': ['corechart'] });
 
 
-document.getElementById("chart-select").addEventListener("change", draw);
+document.getElementById("chart-select").addEventListener("change", draw, { passive: true });
 
 let statistics = await ApiGetFunction("https://localhost:44305/api/Data/analysis");
 
-console.log(statistics);
-
 var divToDraw = document.getElementById('charts');
 
-async function draw() {
+function draw() {
     let selectElement = document.getElementById("chart-select");
     let title = selectElement.options[selectElement.value].textContent;
 

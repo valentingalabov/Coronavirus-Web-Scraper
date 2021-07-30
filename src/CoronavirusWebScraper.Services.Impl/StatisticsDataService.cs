@@ -28,8 +28,7 @@ namespace CoronavirusWebScraper.Services.Impl
 
         public IEnumerable<string> GetAllDates()
         {
-            var dates = _repository.FilterBy(
-                filter => filter.Date != "",
+            var dates = _repository.FilterBy(filter => true,
                 projection => projection.Date);
 
             return dates;

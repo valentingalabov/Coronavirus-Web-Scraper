@@ -27,6 +27,10 @@ namespace CoronavirusWebScraper.Data.Models
 
         [BsonElement("stats")]
         public Stats Stats { get; set; }
-       
+
+        [BsonElement("condition-result")]
+        public BsonDocument ConditionResult { get; set; }
+
+
     }
 }

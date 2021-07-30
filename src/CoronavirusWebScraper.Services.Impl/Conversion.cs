@@ -84,7 +84,7 @@ namespace CoronavirusWebScraper.Services.Impl
             return regionsWithCodes[region].ToLower();
         }
 
-        private static IEnumerable<RegionsServiceModel> ConvertToRegionsServiceModel(BsonDocument regions)
+        public static IEnumerable<RegionsServiceModel> ConvertToRegionsServiceModel(BsonDocument regions)
         {
             var listOfRegins = new List<RegionsServiceModel>();
 

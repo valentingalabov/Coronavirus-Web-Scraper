@@ -16,7 +16,7 @@ namespace CoronavirusWebScraper.Web.HealthChecks
         {
             this.scraperService = scraperService;
         }
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             var watch = new Stopwatch();
             watch.Start();
@@ -26,11 +26,11 @@ namespace CoronavirusWebScraper.Web.HealthChecks
 
             if (responseTimeForCompleteRequest < 1000)
             {
-                return HealthCheckResult.Healthy($"Current Db response time is {responseTimeForCompleteRequest}");
+                return Task.FromResult(HealthCheckResult.Healthy($"Current Db response time is {responseTimeForCompleteRequest}"));
             }
             else
             {
-                return HealthCheckResult.Unhealthy($"Current Db response time is {responseTimeForCompleteRequest}");
+                return Task.FromResult(HealthCheckResult.Unhealthy($"Current Db response time is {responseTimeForCompleteRequest}"));
             }
 
         }

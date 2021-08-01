@@ -1,6 +1,5 @@
 ﻿import ApiGetFunction from './getFunction.js';
 
-
 let today = new Date();
 let currentMonth = today.getMonth();
 let currentYear = today.getFullYear();
@@ -11,7 +10,6 @@ let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 
 let monthAndYear = document.getElementById("monthAndYear");
 showCalendar(currentMonth, currentYear);
-
 
 
 async function next() {
@@ -37,7 +35,7 @@ async function currentDate() {
 }
 
 async function showCalendar(month, year) {
-    var statisticsDates = await ApiGetFunction("/api/Data/Dates");
+    var statisticsDates = await ApiGetFunction("https://localhost:44305/api/dates");
     let tbl = document.getElementById("calendar-body");
 
     tbl.innerHTML = "";

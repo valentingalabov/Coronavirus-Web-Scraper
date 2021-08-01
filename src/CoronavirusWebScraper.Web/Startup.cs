@@ -30,24 +30,21 @@ namespace CoronavirusWebScraper.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //MongoDbSettings
             services.Configure<MongoDbSettings>(Configuration.GetSection(nameof(MongoDbSettings)));
             services.AddSingleton<IMongoDbSettings>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
-
+            //MongoDbRepository
             services.AddSingleton(typeof(IMongoRepository<>), typeof(MongoRepository<>));
 
+            //Services
             services.AddSingleton<ICovidDataScraperService, CovidDataScraperService>();
             services.AddTransient<IStatisticsDataService, StatisticsDataService>();
 
-            services.AddAutoMapper(typeof(Startup));
-
+            //BackgroundService implementation
             services.AddHostedService<Worker>();
-
-
             services.AddControllersWithViews();
 
-
             //Health checks
-
             services.AddHealthChecks()
              .AddMongoDb(mongodbConnectionString: Configuration["MongoDbSettings:ConnectionString"],
                   name: "MongoDb connection")

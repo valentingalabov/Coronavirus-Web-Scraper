@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CoronavirusWebScraper.Services;
+﻿using CoronavirusWebScraper.Services;
 using CoronavirusWebScraper.Web.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 

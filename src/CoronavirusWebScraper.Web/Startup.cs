@@ -1,15 +1,20 @@
-using AutoMapper;
 using CoronavirusWebScraper.Data;
 using CoronavirusWebScraper.Data.Configuration;
 using CoronavirusWebScraper.Services;
 using CoronavirusWebScraper.Services.Impl;
 using CoronavirusWebScraper.Web.BackgroundServices;
+using CoronavirusWebScraper.Web.HealthChecks;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System;
+using System.ServiceProcess;
 
 namespace CoronavirusWebScraper.Web
 {
@@ -31,21 +36,42 @@ namespace CoronavirusWebScraper.Web
             services.AddSingleton(typeof(IMongoRepository<>), typeof(MongoRepository<>));
 
             services.AddSingleton<ICovidDataScraperService, CovidDataScraperService>();
-            services.AddTransient<IStatisticsDataService, StatisticsDataService >();
+            services.AddTransient<IStatisticsDataService, StatisticsDataService>();
 
             services.AddAutoMapper(typeof(Startup));
-    
+
             services.AddHostedService<Worker>();
 
 
-
             services.AddControllersWithViews();
+
+
+            //Health checks
+
+            services.AddHealthChecks()
+             .AddMongoDb(mongodbConnectionString: Configuration["MongoDbSettings:ConnectionString"],
+                  name: "MongoDb connection")
+             .AddCheck<DBResponseTimeHealthCheck>(name: "Database response time")
+             .AddUrlGroup(new Uri("https://coronavirus.bg/"), "Check https://coronavirus.bg/ page is up")
+             .AddUrlGroup(new Uri("https://coronavirus.bg/bg/statistika"), "Check https://coronavirus.bg/bg/statistika page is up")
+             .AddCheck<CoronaviursPagePingHelthCheck>(name: "coronavirus.bg ping check")
+             .AddDiskStorageHealthCheck(s => s.AddDrive("C:\\", 1024))
+             .AddProcessAllocatedMemoryHealthCheck(512);
+            
+   
+            services.AddHealthChecksUI(opt =>
+            {
+                opt.SetEvaluationTimeInSeconds(10);  
+                opt.MaximumHistoryEntriesPerEndpoint(60);    
+                opt.SetApiMaxActiveRequests(1);   
+            })
+            .AddInMemoryStorage();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
 
             if (env.IsDevelopment())
             {
@@ -64,13 +90,18 @@ namespace CoronavirusWebScraper.Web
 
             app.UseAuthorization();
 
+            app.UseHealthChecksUI();
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                        name: "default",
+                        pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-            
 
         }
     }

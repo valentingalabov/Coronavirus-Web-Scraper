@@ -54,17 +54,5 @@ namespace CoronavirusWebScraper.Data
         {
             return _collection.AsQueryable();
         }
-
-        //public virtual async Task<BsonDocument> ASd()
-        //{
-        //    var projectionDefinition = Builders<BsonDocument>.Projection
-        //                                .Exclude("_id")
-        //                                .Include("date")
-        //                                .Include("overall");
-
-        //    return await _collection.Find(x => x.Id != null)
-        //            .Project(projectionDefinition)
-        //            .FirstAsync();
-        //}
     }
 }

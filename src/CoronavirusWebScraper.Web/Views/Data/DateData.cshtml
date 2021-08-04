@@ -1,14 +1,11 @@
 ﻿@model CovidStatisticViewModel;
-
 @{
     var medical = @Model.Confirmed.Medical;
 }
-
 <br />
 <h1 class="text-center">
     Статистическа Информация към @Model.Date.
 </h1>
-
 <hr />
 <div class="row mask blue-mask">
 
@@ -49,10 +46,8 @@
         <p class="text-primary secondary-digit">@Model.Vaccinated.Last</p>
     </div>
 </div>
-
 <br />
 <hr />
-
 <div class="row">
     <div class="col-lg-4 col-sm-6">
         <div class="h-heading">
@@ -102,7 +97,6 @@
             </tbody>
         </table>
     </div>
-
     <div class="col-lg-4 col-sm-6">
         <div class="h-heading">
             <h4>
@@ -137,7 +131,6 @@
             </tbody>
         </table>
     </div>
-
     <div class="col-lg-4 col-sm-6">
         <div class="h-heading">
             <h4>
@@ -171,9 +164,7 @@
             </tbody>
         </table>
     </div>
-
 </div>
-
 <hr />
 <div class="row">
 
@@ -184,44 +175,46 @@
             </h4>
         </div>
         <table class="table table-hover table-dark">
-            <thead>
-                <tr id="header" scope="col" class="bg-info">
-                    <th>Област</th>
-                    <th>Общо поставени дози</th>
-                    <th>Comirnaty</th>
-                    <th>Moderna</th>
-                    <th>AstraZeneca</th>
-                    <th>Janssen</th>
-                    <th>
+            <thead class="bg-info">
+                <tr id="header" scope="col" >
+                    <th rowspan="2" style="width: initial; vertical-align: top;">Област</th>
+                    <th rowspan="2" style="width: initial; vertical-align: top;">Общо поставени дози</th>
+                    <th class="text-center" colspan="4" style="width: initial; vertical-align: top;">Нови</th>
+                    <th rowspan="2" style="width: initial; vertical-align: top;" class="text-right">
                         Общ брой лица със завършен ваксинационен
                         цикъл
                     </th>
                 </tr>
+                <tr>
+                    <th style="width: initial; text-align: right;">Comirnaty</th>
+                    <th style="width: initial; text-align: right;">Moderna</th>
+                    <th style="width: initial; text-align: right;">AstraZeneca</th>
+                    <th style="width: initial; text-align: right;">Janssen</th>
+                </tr>
             </thead>
             <tbody>
-               @foreach (var currRegion in Model.Regions)
-               {
-                <tr>
-                    <th>@currRegion.Name</th>
-                    <th>@currRegion.RegionStatistics.Vaccinated.Total</th>
-                    <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Comirnaty</th>
-                    <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Moderna</th>
-                    <th>@currRegion.RegionStatistics.Vaccinated.LastByType.AstraZeneca</th>
-                    <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Janssen</th>
-                    <th class="text-right">@currRegion.RegionStatistics.Vaccinated.TotalCompleted</th>
-                </tr>
-               }
-                <tr class="bg-secondary">
+                @foreach (var currRegion in Model.Regions)
+                {
+                    <tr>
+                        <th>@currRegion.Name</th>
+                        <th>@currRegion.RegionStatistics.Vaccinated.Total</th>
+                        <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Comirnaty</th>
+                        <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Moderna</th>
+                        <th>@currRegion.RegionStatistics.Vaccinated.LastByType.AstraZeneca</th>
+                        <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Janssen</th>
+                        <th class="text-right">@currRegion.RegionStatistics.Vaccinated.TotalCompleted</th>
+                    </tr>
+                }
+                <tr class="bg-secondary font-italic font-weight-bold">
                     <th>Общо</th>
                     <th>@Model.Vaccinated.Total</th>
                     <th>@Model.TotalVaccineByType24.TotalComirnaty</th>
                     <th>@Model.TotalVaccineByType24.TotalModerna</th>
                     <th>@Model.TotalVaccineByType24.TotalAstraZeneca</th>
                     <th>@Model.TotalVaccineByType24.TotalJanssen</th>
-                    <th class="text-right">@Model.Vaccinated.TotalCompleted</th>            
+                    <th class="text-right">@Model.Vaccinated.TotalCompleted</th>
                 </tr>
             </tbody>
         </table>
     </div>
-
 </div>

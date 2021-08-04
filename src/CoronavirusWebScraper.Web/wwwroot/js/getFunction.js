@@ -1,4 +1,4 @@
-﻿export default async function ApiGetFunction(url) {
+﻿export default async function ApiGetFunction(url,) {
     try {
         const response = await fetch(url);
         if (response.ok == false) {

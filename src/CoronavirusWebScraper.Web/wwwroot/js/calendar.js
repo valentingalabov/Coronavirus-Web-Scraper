@@ -35,7 +35,8 @@ async function currentDate() {
 }
 
 async function showCalendar(month, year) {
-    var statisticsDates = await ApiGetFunction("https://localhost:44305/api/dates");
+    let url = `https://localhost:44305/api/dates?year=${year}&month=${month+1}`;
+    let statisticsDates = await ApiGetFunction(url);
     let tbl = document.getElementById("calendar-body");
 
     tbl.innerHTML = "";

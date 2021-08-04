@@ -26,30 +26,35 @@ namespace CoronavirusWebScraper.Services.Impl
             return result;
         }
 
-        public IEnumerable<string> GetAllDates()
+        public IEnumerable<string> GetAllDates(string year, string month)
         {
-            var dates = _repository.FilterBy(filter => true,
-                projection => projection.Date);
+            DateTime dateAsDateTime;
+            var dateToFind = DateTime.TryParse(string.Concat(year, "/", month), out dateAsDateTime );
+            if (dateToFind)
+            {
+                var currMonthToFind = dateAsDateTime.ToString("yyyy-MM");
 
-            return dates;
+                return _repository.FilterBy(filter => filter.Date.Contains(currMonthToFind),
+                    projection => projection.Date);
+            }
+
+            return null;
         }
 
         public CovidStatisticServiceModel GetStatisticForDay(string date)
         {
-            DateTime result;
-            var formatedDate = DateTime.TryParse(date, out result);
+            DateTime currDateToFind;
+            var formatedDate = DateTime.TryParse(date, out currDateToFind);
 
-            if (!formatedDate)
+            if (formatedDate)
             {
-                return null;
-            }
-
-            var currentDateData = _repository
-                .FilterBy(filter => filter.Date == result.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz"),
+                return _repository
+                .FilterBy(filter => filter.Date == currDateToFind.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz"),
                 projection => Conversion.ConvertToCovidStatisticServiceModel(projection))
                 .FirstOrDefault();
+            }
 
-            return currentDateData;
+            return null;
         }
 
     }

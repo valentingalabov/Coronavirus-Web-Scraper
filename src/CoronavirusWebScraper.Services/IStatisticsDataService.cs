@@ -5,7 +5,7 @@ namespace CoronavirusWebScraper.Services
 {
     public interface IStatisticsDataService
     {
-        IEnumerable<string> GetAllDates();
+        IEnumerable<string> GetAllDates(string year, string month);
 
         CovidStatisticServiceModel GetStatisticForDay(string day);
 

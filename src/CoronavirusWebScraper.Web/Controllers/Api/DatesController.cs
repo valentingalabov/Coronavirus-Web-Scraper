@@ -15,9 +15,10 @@ namespace CoronavirusWebScraper.Web.Controllers.Api
         }
 
         [HttpGet]
-        public ActionResult Dates()
+        public ActionResult Dates(string year, string month)
         {
-            var dates = _dataService.GetAllDates();
+
+            var dates = _dataService.GetAllDates(year, month);
 
             return Ok(dates);
         }

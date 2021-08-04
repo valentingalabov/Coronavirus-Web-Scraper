@@ -20,7 +20,7 @@ namespace CoronavirusWebScraper.Web.HealthChecks
         {
             var watch = new Stopwatch();
             watch.Start();
-            scraperService.GetAllDates();
+           
             watch.Stop();
             var responseTimeForCompleteRequest = watch.ElapsedMilliseconds;
 

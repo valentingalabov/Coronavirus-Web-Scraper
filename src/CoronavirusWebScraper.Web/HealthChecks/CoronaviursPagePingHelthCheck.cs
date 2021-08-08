@@ -1,13 +1,11 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace CoronavirusWebScraper.Web.HealthChecks
+﻿namespace CoronavirusWebScraper.Web.HealthChecks
 {
+    using System.Net.NetworkInformation;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Microsoft.Extensions.Diagnostics.HealthChecks;
+
     public class CoronaviursPagePingHelthCheck : IHealthCheck
     {
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)

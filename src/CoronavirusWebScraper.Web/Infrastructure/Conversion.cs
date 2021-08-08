@@ -1,10 +1,11 @@
-﻿using CoronavirusWebScraper.Services.ServiceModels;
-using CoronavirusWebScraper.Web.Models;
-using System;
-using System.Collections.Generic;
-
-namespace CoronavirusWebScraper.Web.Infrastructure
+﻿namespace CoronavirusWebScraper.Web.Infrastructure
 {
+    using System;
+    using System.Collections.Generic;
+
+    using CoronavirusWebScraper.Services.ServiceModels;
+    using CoronavirusWebScraper.Web.Models;
+
     public static class Conversion
     {
         public static CovidStatisticViewModel ConvertToCovidStatisticViewModel(CovidStatisticServiceModel covidStatistic)
@@ -19,7 +20,7 @@ namespace CoronavirusWebScraper.Web.Infrastructure
                 Tested = ConvertToTestedViewModel(covidStatistic.Overall.Tested),
                 Vaccinated = ConvertToVaccinatedViewModel(covidStatistic.Overall.Vaccinated),
                 Regions = ConvertToRegionsViewModel(covidStatistic.Regions),
-                TotalVaccineByType24 = ConvertToTotalVaccineByTypeViewModel(covidStatistic.TotalVaccineByType24)
+                TotalVaccineByType24 = ConvertToTotalVaccineByTypeViewModel(covidStatistic.TotalVaccineByType24),
             };
 
             return statistics;
@@ -32,7 +33,7 @@ namespace CoronavirusWebScraper.Web.Infrastructure
                 TotalAstraZeneca = totalVaccineByType24.TotalAstraZeneca,
                 TotalModerna = totalVaccineByType24.TotalModerna,
                 TotalComirnaty = totalVaccineByType24.TotalComirnaty,
-                TotalJanssen = totalVaccineByType24.TotalJanssen
+                TotalJanssen = totalVaccineByType24.TotalJanssen,
             };
         }
 
@@ -49,7 +50,7 @@ namespace CoronavirusWebScraper.Web.Infrastructure
                     {
                         Confirmed = ConversionToConfirmedViewModel(currRegion.RegionStatistics.Confirmed),
                         Vaccinated = ConversionToVaccinatedViewModel(currRegion.RegionStatistics.Vaccinated),
-                    }
+                    },
                 };
                 listOfRegions.Add(regionsToAdd);
             }
@@ -80,10 +81,8 @@ namespace CoronavirusWebScraper.Web.Infrastructure
             {
                 Total = confirmed.Total,
                 Last = confirmed.Last,
-
             };
         }
-
 
         private static VaccinatedViewModel ConvertToVaccinatedViewModel(VaccinatedServiceModel vaccinated)
         {
@@ -96,9 +95,9 @@ namespace CoronavirusWebScraper.Web.Infrastructure
                     AstraZeneca = vaccinated.LastByType.AstraZeneca,
                     Janssen = vaccinated.LastByType.Janssen,
                     Comirnaty = vaccinated.LastByType.Comirnaty,
-                    Moderna = vaccinated.LastByType.Moderna
+                    Moderna = vaccinated.LastByType.Moderna,
                 },
-                TotalCompleted = vaccinated.TotalCompleted
+                TotalCompleted = vaccinated.TotalCompleted,
             };
         }
 
@@ -110,13 +109,13 @@ namespace CoronavirusWebScraper.Web.Infrastructure
                 TotalByType = new TestedByTypeViewModel
                 {
                     PCR = tested.TotalByType.PCR,
-                    Antigen = tested.TotalByType.Antigen
+                    Antigen = tested.TotalByType.Antigen,
                 },
                 Last24 = tested.Last24,
                 TotalByType24 = new TestedByTypeViewModel
                 {
                     PCR = tested.TotalByType24.PCR,
-                    Antigen = tested.TotalByType24.Antigen
+                    Antigen = tested.TotalByType24.Antigen,
                 },
             };
         }
@@ -126,7 +125,7 @@ namespace CoronavirusWebScraper.Web.Infrastructure
             return new TotalAndLastViewModel
             {
                 Total = deceased.Total,
-                Last = deceased.Last
+                Last = deceased.Last,
             };
         }
 
@@ -135,7 +134,7 @@ namespace CoronavirusWebScraper.Web.Infrastructure
             return new TotalAndLastViewModel
             {
                 Total = recovered.Total,
-                Last = recovered.Last
+                Last = recovered.Last,
             };
         }
 
@@ -164,7 +163,7 @@ namespace CoronavirusWebScraper.Web.Infrastructure
                         Paramedics_1 = confirmed.Medical.LastByType24.Paramedics_1,
                         Paramedics_2 = confirmed.Medical.LastByType24.Paramedics_2,
                         Others = confirmed.Medical.LastByType24.Others,
-                    }
+                    },
                 },
                 TotalByType = new TestedByTypeViewModel
                 {
@@ -175,7 +174,7 @@ namespace CoronavirusWebScraper.Web.Infrastructure
                 {
                     PCR = confirmed.TotalByType24.PCR,
                     Antigen = confirmed.TotalByType24.Antigen,
-                }
+                },
             };
         }
 
@@ -187,10 +186,9 @@ namespace CoronavirusWebScraper.Web.Infrastructure
                 CurrentByType = new ActiveTypesViewModel
                 {
                     Hospitalized = active.CurrentByType.Hospitalized,
-                    Icu = active.CurrentByType.Icu
-                }
+                    Icu = active.CurrentByType.Icu,
+                },
             };
         }
-
     }
 }

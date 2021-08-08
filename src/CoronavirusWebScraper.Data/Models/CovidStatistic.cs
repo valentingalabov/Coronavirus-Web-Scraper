@@ -1,15 +1,12 @@
-﻿using CoronavirusWebScraper.Data.Attributes;
-using CoronavirusWebScraper.Data.Models;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
-
-namespace CoronavirusWebScraper.Data.Models
+﻿namespace CoronavirusWebScraper.Data.Models
 {
+    using CoronavirusWebScraper.Data.Attributes;
+    using MongoDB.Bson;
+    using MongoDB.Bson.Serialization.Attributes;
+
     [BsonCollection("CovidStatistics")]
     public class CovidStatistic : Document
     {
-        
         [BsonElement("date")]
         public string Date { get; set; }
 
@@ -30,7 +27,5 @@ namespace CoronavirusWebScraper.Data.Models
 
         [BsonElement("condition-result")]
         public BsonDocument ConditionResult { get; set; }
-
-
     }
 }

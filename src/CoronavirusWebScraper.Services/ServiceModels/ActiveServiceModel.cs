@@ -5,6 +5,5 @@
         public int Curent { get; set; }
 
         public ActiveTypesServiceModel CurrentByType { get; set; }
-
     }
 }

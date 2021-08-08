@@ -1,28 +1,28 @@
-﻿using CoronavirusWebScraper.Web.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics;
-
-namespace CoronavirusWebScraper.Web.Controllers
+﻿namespace CoronavirusWebScraper.Web.Controllers
 {
+    using System.Diagnostics;
+
+    using CoronavirusWebScraper.Web.Models;
+    using Microsoft.AspNetCore.Mvc;
+
     public class HomeController : Controller
     {
         [HttpGet]
         public IActionResult Index()
         {
-            return View();       
+            return this.View();
         }
 
         [HttpGet]
         public IActionResult Privacy()
         {
-            return View();
+            return this.View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
         }
     }
 }

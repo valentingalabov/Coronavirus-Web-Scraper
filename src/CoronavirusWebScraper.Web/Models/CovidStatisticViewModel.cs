@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CoronavirusWebScraper.Web.Models
+﻿namespace CoronavirusWebScraper.Web.Models
 {
+    using System.Collections.Generic;
+
     public class CovidStatisticViewModel
-    {  
+    {
         public string Date { get; set; }
 
         public TestedViewModel Tested { get; set; }
@@ -22,6 +21,5 @@ namespace CoronavirusWebScraper.Web.Models
         public IEnumerable<RegionsViewModel> Regions { get; set; }
 
         public TotalVaccineByType24ViewModel TotalVaccineByType24 { get; set; }
-
     }
 }

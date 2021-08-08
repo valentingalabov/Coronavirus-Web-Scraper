@@ -1,57 +1,61 @@
-﻿using CoronavirusWebScraper.Data.Attributes;
-using CoronavirusWebScraper.Data.Configuration;
-using CoronavirusWebScraper.Data.Models;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-
-namespace CoronavirusWebScraper.Data
+﻿namespace CoronavirusWebScraper.Data
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+
+    using CoronavirusWebScraper.Data.Attributes;
+    using CoronavirusWebScraper.Data.Configuration;
+    using CoronavirusWebScraper.Data.Models;
+    using MongoDB.Driver;
+
     public class MongoRepository<TDocument> : IMongoRepository<TDocument>
     where TDocument : IDocument
     {
-        private readonly IMongoCollection<TDocument> _collection;
+        private readonly IMongoCollection<TDocument> collection;
+
         public MongoRepository(IMongoDbSettings settings)
         {
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
-            _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
+            this.collection = database.GetCollection<TDocument>(this.GetCollectionName(typeof(TDocument)));
         }
-        private protected string GetCollectionName(Type documentType)
-        {
-            return ((BsonCollectionAttribute)documentType.GetCustomAttributes(
-                    typeof(BsonCollectionAttribute),
-                    true)
-                .FirstOrDefault())?.CollectionName;
-        }
+
         public async Task InsertOneAsync(TDocument document)
         {
-            await _collection.InsertOneAsync(document);
+            await this.collection.InsertOneAsync(document);
         }
 
         public virtual IEnumerable<TDocument> FilterBy(
       Expression<Func<TDocument, bool>> filterExpression)
         {
-            return _collection.Find(filterExpression).ToEnumerable();
+            return this.collection.Find(filterExpression).ToEnumerable();
         }
 
         public virtual IEnumerable<TProjected> FilterBy<TProjected>(
        Expression<Func<TDocument, bool>> filterExpression,
        Expression<Func<TDocument, TProjected>> projectionExpression)
         {
-            return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
+            return this.collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
 
         public virtual Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression)
         {
-            return Task.Run(() => _collection.Find(filterExpression).FirstOrDefaultAsync());
+            return Task.Run(() => this.collection.Find(filterExpression).FirstOrDefaultAsync());
         }
 
         public virtual IQueryable<TDocument> AsQueryable()
         {
-            return _collection.AsQueryable();
+            return this.collection.AsQueryable();
+        }
+
+        private protected string GetCollectionName(Type documentType)
+        {
+            return ((BsonCollectionAttribute)documentType.GetCustomAttributes(
+                    typeof(BsonCollectionAttribute),
+                    true)
+                .FirstOrDefault())?.CollectionName;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace CoronavirusWebScraper.Services.ServiceModels
+﻿namespace CoronavirusWebScraper.Services.ServiceModels
 {
+    using MongoDB.Bson.Serialization.Attributes;
+
     public class RegionStatisticsServiceModel
     {
         [BsonElement("confirmed")]

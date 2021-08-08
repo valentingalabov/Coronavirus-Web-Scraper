@@ -1,7 +1,7 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace CoronavirusWebScraper.Data.Models
+﻿namespace CoronavirusWebScraper.Data.Models
 {
+    using MongoDB.Bson.Serialization.Attributes;
+
     public class Active
     {
         [BsonElement("current")]
@@ -9,6 +9,5 @@ namespace CoronavirusWebScraper.Data.Models
 
         [BsonElement("current_by_type")]
         public ActiveTypes CurrentByType { get; set; }
-
     }
 }

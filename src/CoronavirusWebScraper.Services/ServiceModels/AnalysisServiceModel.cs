@@ -11,6 +11,5 @@
         public int Infected { get; set; }
 
         public int TotalTests { get; set; }
-
     }
 }

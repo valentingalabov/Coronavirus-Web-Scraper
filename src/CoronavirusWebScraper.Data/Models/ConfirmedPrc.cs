@@ -1,7 +1,7 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace CoronavirusWebScraper.Data.Models
+﻿namespace CoronavirusWebScraper.Data.Models
 {
+    using MongoDB.Bson.Serialization.Attributes;
+
     public class ConfirmedPrc
     {
         [BsonElement("total_per_tested_prc")]

@@ -1,7 +1,7 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace CoronavirusWebScraper.Data.Models
+﻿namespace CoronavirusWebScraper.Data.Models
 {
+    using MongoDB.Bson.Serialization.Attributes;
+
     public class MedicalTypes
     {
         [BsonElement("doctor")]
@@ -18,6 +18,5 @@ namespace CoronavirusWebScraper.Data.Models
 
         [BsonElement("others")]
         public int Others { get; set; }
-
     }
 }

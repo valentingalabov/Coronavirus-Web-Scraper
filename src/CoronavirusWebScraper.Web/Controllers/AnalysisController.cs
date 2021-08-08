@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace CoronavirusWebScraper.Web.Controllers
+﻿namespace CoronavirusWebScraper.Web.Controllers
 {
+    using Microsoft.AspNetCore.Mvc;
+
     public class AnalysisController : Controller
     {
         [HttpGet]

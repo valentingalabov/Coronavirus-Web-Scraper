@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace CoronavirusWebScraper.Data.Attributes
+﻿namespace CoronavirusWebScraper.Data.Attributes
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class BsonCollectionAttribute : Attribute
     {
@@ -9,7 +9,7 @@ namespace CoronavirusWebScraper.Data.Attributes
 
         public BsonCollectionAttribute(string collectionName)
         {
-            CollectionName = collectionName;
+            this.CollectionName = collectionName;
         }
     }
 }

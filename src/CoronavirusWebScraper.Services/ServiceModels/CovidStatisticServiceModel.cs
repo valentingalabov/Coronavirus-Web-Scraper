@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace CoronavirusWebScraper.Services.ServiceModels
+﻿namespace CoronavirusWebScraper.Services.ServiceModels
 {
+    using System.Collections.Generic;
+
     public class CovidStatisticServiceModel
-    {  
+    {
         public string Date { get; set; }
 
         public OverallServiceModel Overall { get; set; }
@@ -11,8 +11,5 @@ namespace CoronavirusWebScraper.Services.ServiceModels
         public IEnumerable<RegionsServiceModel> Regions { get; set; }
 
         public TotalVaccineByType24ServiceModel TotalVaccineByType24 { get; set; }
-
-        //public Stats Stats { get; set; }
-
     }
 }

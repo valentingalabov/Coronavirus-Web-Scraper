@@ -1,13 +1,12 @@
-﻿
-
-using CoronavirusWebScraper.Services;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace CoronavirusWebScraper.Web.HealthChecks
+﻿namespace CoronavirusWebScraper.Web.HealthChecks
 {
+    using System.Diagnostics;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using CoronavirusWebScraper.Services;
+    using Microsoft.Extensions.Diagnostics.HealthChecks;
+
     public class DBResponseTimeHealthCheck : IHealthCheck
     {
         private readonly IStatisticsDataService scraperService;
@@ -16,11 +15,11 @@ namespace CoronavirusWebScraper.Web.HealthChecks
         {
             this.scraperService = scraperService;
         }
+
         public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             var watch = new Stopwatch();
             watch.Start();
-           
             watch.Stop();
             var responseTimeForCompleteRequest = watch.ElapsedMilliseconds;
 
@@ -32,7 +31,6 @@ namespace CoronavirusWebScraper.Web.HealthChecks
             {
                 return Task.FromResult(HealthCheckResult.Unhealthy($"Current Db response time is {responseTimeForCompleteRequest}"));
             }
-
         }
     }
 }

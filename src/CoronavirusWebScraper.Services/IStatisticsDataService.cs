@@ -1,8 +1,9 @@
-﻿using CoronavirusWebScraper.Services.ServiceModels;
-using System.Collections.Generic;
-
-namespace CoronavirusWebScraper.Services
+﻿namespace CoronavirusWebScraper.Services
 {
+    using System.Collections.Generic;
+
+    using CoronavirusWebScraper.Services.ServiceModels;
+
     public interface IStatisticsDataService
     {
         IEnumerable<string> GetAllDates(string year, string month);

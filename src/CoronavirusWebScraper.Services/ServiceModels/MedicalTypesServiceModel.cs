@@ -11,6 +11,5 @@
         public int Paramedics_2 { get; set; }
 
         public int Others { get; set; }
-
     }
 }

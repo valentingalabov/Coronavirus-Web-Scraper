@@ -1,7 +1,7 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace CoronavirusWebScraper.Data.Models
+﻿namespace CoronavirusWebScraper.Data.Models
 {
+    using MongoDB.Bson.Serialization.Attributes;
+
     public class Vaccinated
     {
         [BsonElement("total")]
@@ -15,6 +15,5 @@ namespace CoronavirusWebScraper.Data.Models
 
         [BsonElement("total_completed")]
         public int TotalCompleted { get; set; }
-
     }
 }

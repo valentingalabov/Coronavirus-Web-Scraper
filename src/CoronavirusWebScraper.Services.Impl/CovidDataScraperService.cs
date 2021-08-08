@@ -1,35 +1,36 @@
-﻿using AngleSharp;
-using AngleSharp.Dom;
-using CoronavirusWebScraper.Data;
-using CoronavirusWebScraper.Data.Models;
-using CoronavirusWebScraper.Services.ServiceModels;
-using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CoronavirusWebScraper.Services.Impl
+﻿namespace CoronavirusWebScraper.Services.Impl
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using AngleSharp;
+    using AngleSharp.Dom;
+    using CoronavirusWebScraper.Data;
+    using CoronavirusWebScraper.Data.Models;
+    using CoronavirusWebScraper.Services.ServiceModels;
+    using MongoDB.Bson;
+
     public class CovidDataScraperService : ICovidDataScraperService
     {
-        const string covidUrl = "https://coronavirus.bg/";
+        private const string CovidUrl = "https://coronavirus.bg/";
 
-        private readonly IMongoRepository<CovidStatistic> _repository;
+        private readonly IMongoRepository<CovidStatistic> repository;
 
         public CovidDataScraperService(IMongoRepository<CovidStatistic> repository)
         {
-            _repository = repository;
+            this.repository = repository;
         }
 
         public async Task ScrapeData()
         {
-            var document = await FetchDocument();
+            var document = await this.FetchDocument();
 
             if (document != null)
             {
-                await _repository.InsertOneAsync(document);
+                await this.repository.InsertOneAsync(document);
             }
         }
 
@@ -38,15 +39,15 @@ namespace CoronavirusWebScraper.Services.Impl
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);
 
-            var document = await context.OpenAsync(covidUrl);
+            var document = await context.OpenAsync(CovidUrl);
 
-            var covidStatisticUrl = covidUrl + document.QuerySelector(".statistics-sub-header.nsi").GetAttribute("href");
+            var covidStatisticUrl = CovidUrl + document.QuerySelector(".statistics-sub-header.nsi").GetAttribute("href");
             var statisticDocument = await context.OpenAsync(covidStatisticUrl);
 
             var statistics = document.QuerySelectorAll(".statistics-container > div > p").Select(x => x.TextContent).ToArray();
             var allTebles = statisticDocument.QuerySelectorAll(".table").ToArray();
 
-            //Date
+            // Date
             var currentDateSpan = document.QuerySelector(".statistics-header-wrapper span").TextContent.Split(" ");
             var time = currentDateSpan[2];
             var date = currentDateSpan[5];
@@ -59,63 +60,63 @@ namespace CoronavirusWebScraper.Services.Impl
 
             var dateScraped = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
-            //No scrape data if already scraped for current day
-            var currentDayStatistics = await _repository.FindOneAsync(filter => filter.Date == dataDate);
+            // No scrape data if already scraped for current day
+            var currentDayStatistics = await this.repository.FindOneAsync(filter => filter.Date == dataDate);
             if (currentDayStatistics != null)
             {
                 return null;
             }
 
-            //Tests
+            // Tests
             var totalTestsByTypeTableRecords = allTebles[1].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
 
-            var totalTests = IntParser(statistics[0]);
-            var totalPcr = IntParser(totalTestsByTypeTableRecords[1]);
-            var totalAntigen = IntParser(totalTestsByTypeTableRecords[4]);
+            var totalTests = this.IntParser(statistics[0]);
+            var totalPcr = this.IntParser(totalTestsByTypeTableRecords[1]);
+            var totalAntigen = this.IntParser(totalTestsByTypeTableRecords[4]);
 
-            var totalTests24 = IntParser(statistics[2]);
-            var totalPcr24 = IntParser(totalTestsByTypeTableRecords[2]);
-            var totalAntigen24 = IntParser(totalTestsByTypeTableRecords[5]);
+            var totalTests24 = this.IntParser(statistics[2]);
+            var totalPcr24 = this.IntParser(totalTestsByTypeTableRecords[2]);
+            var totalAntigen24 = this.IntParser(totalTestsByTypeTableRecords[5]);
 
-            //confirmed
+            // Confirmed
             var confirmedTestsByTypeTableRecords = allTebles[2].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
             var confirmedByRegionTableRecords = allTebles[3].QuerySelectorAll("td").SkipLast(3).Select(x => x.TextContent).ToArray();
 
-            var totalConfirmed = IntParser(statistics[4]);
-            var confirmedPcr = IntParser(confirmedTestsByTypeTableRecords[1]);
-            var confirmedAntigen = IntParser(confirmedTestsByTypeTableRecords[4]);
+            var totalConfirmed = this.IntParser(statistics[4]);
+            var confirmedPcr = this.IntParser(confirmedTestsByTypeTableRecords[1]);
+            var confirmedAntigen = this.IntParser(confirmedTestsByTypeTableRecords[4]);
 
-            var confirmedPcr24 = IntParser(confirmedTestsByTypeTableRecords[2]);
-            var confirmedAntigen24 = IntParser(confirmedTestsByTypeTableRecords[5]);
-            var totalConfirmed24 = IntParser(confirmedTestsByTypeTableRecords[8]);
+            var confirmedPcr24 = this.IntParser(confirmedTestsByTypeTableRecords[2]);
+            var confirmedAntigen24 = this.IntParser(confirmedTestsByTypeTableRecords[5]);
+            var totalConfirmed24 = this.IntParser(confirmedTestsByTypeTableRecords[8]);
 
-            //active 
-            var active = IntParser(statistics[6]);
+            // Active
+            int active = this.IntParser(statistics[6]);
 
-            var hospitalized = IntParser(statistics[12]);
-            var intensiveCare = IntParser(statistics[14]);
+            var hospitalized = this.IntParser(statistics[12]);
+            var intensiveCare = this.IntParser(statistics[14]);
 
-            //recovered
-            var totalRecovered = IntParser(statistics[8]);
-            var totalRecovered24 = IntParser(statistics[10]);
+            // Recovered
+            var totalRecovered = this.IntParser(statistics[8]);
+            var totalRecovered24 = this.IntParser(statistics[10]);
 
-            //deceased
-            var deceased = IntParser(statistics[16]);
-            var deceased24 = IntParser(statistics[18]);
+            // Deceased
+            var deceased = this.IntParser(statistics[16]);
+            var deceased24 = this.IntParser(statistics[18]);
 
-            //vaccinated
-            var vaccinated = IntParser(statistics[20]);
-            var vaccinated24 = IntParser(statistics[22]);
+            // Vaccinated
+            var vaccinated = this.IntParser(statistics[20]);
+            var vaccinated24 = this.IntParser(statistics[22]);
 
             var vaccinatedTableRecords = allTebles[5].QuerySelectorAll("tr").Last().QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
 
-            var comirnaty = IntParser(vaccinatedTableRecords[2]);
-            var moderna = IntParser(vaccinatedTableRecords[3]);
-            var astraZeneca = IntParser(vaccinatedTableRecords[4]);
-            var janssen = IntParser(vaccinatedTableRecords[5]);
-            var totalVaccinatedComplate = IntParser(vaccinatedTableRecords[6]);
+            var comirnaty = this.IntParser(vaccinatedTableRecords[2]);
+            var moderna = this.IntParser(vaccinatedTableRecords[3]);
+            var astraZeneca = this.IntParser(vaccinatedTableRecords[4]);
+            var janssen = this.IntParser(vaccinatedTableRecords[5]);
+            var totalVaccinatedComplate = this.IntParser(vaccinatedTableRecords[6]);
 
-            //MedicalTable
+            // MedicalTable
             var medicalTableRecords = allTebles[4].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
 
             var covidStatistics = new CovidStatistic
@@ -138,22 +139,22 @@ namespace CoronavirusWebScraper.Services.Impl
                         TotalByType = new TestedByType { PCR = confirmedPcr, Antigen = confirmedAntigen },
                         Last24 = totalConfirmed24,
                         TotalByType24 = new TestedByType { PCR = confirmedPcr24, Antigen = confirmedAntigen24 },
-                        Medical = GetMedicalStatistics(medicalTableRecords, currDate),
+                        Medical = this.GetMedicalStatistics(medicalTableRecords, currDate),
                     },
                     Active = new Active
                     {
                         Curent = active,
-                        CurrentByType = new ActiveTypes { Hospitalized = hospitalized, Icu = intensiveCare }
+                        CurrentByType = new ActiveTypes { Hospitalized = hospitalized, Icu = intensiveCare },
                     },
                     Recovered = new TotalAndLast
                     {
                         Total = totalRecovered,
-                        Last = totalRecovered24
+                        Last = totalRecovered24,
                     },
                     Deceased = new TotalAndLast
                     {
                         Total = deceased,
-                        Last = deceased24
+                        Last = deceased24,
                     },
                     Vaccinated = new Vaccinated
                     {
@@ -164,44 +165,44 @@ namespace CoronavirusWebScraper.Services.Impl
                             Comirnaty = comirnaty,
                             Moderna = moderna,
                             AstraZeneca = astraZeneca,
-                            Janssen = janssen
+                            Janssen = janssen,
                         },
-                        TotalCompleted = totalVaccinatedComplate
-                    }
+                        TotalCompleted = totalVaccinatedComplate,
+                    },
                 },
-                Regions = GetAllRegionsData(allTebles),
+                Regions = this.GetAllRegionsData(allTebles),
                 Stats = new Stats
                 {
                     TestedPrc = new TestedPrc
                     {
-                        TotalByTyprPrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(totalPcr, totalTests), Antigen = DevideTwoIntiger(totalAntigen, totalTests) },
-                        LastByTypePrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(totalPcr24, totalTests24), Antigen = DevideTwoIntiger(totalAntigen24, totalTests24) },
+                        TotalByTyprPrc = new PcrAntigenPrc { PCR = this.DevideTwoIntiger(totalPcr, totalTests), Antigen = this.DevideTwoIntiger(totalAntigen, totalTests) },
+                        LastByTypePrc = new PcrAntigenPrc { PCR = this.DevideTwoIntiger(totalPcr24, totalTests24), Antigen = this.DevideTwoIntiger(totalAntigen24, totalTests24) },
                     },
                     ConfirmedPrc = new ConfirmedPrc
                     {
-                        TotalPerTestedPrc = DevideTwoIntiger(totalConfirmed, totalTests),
-                        LastPerTestedPrc = DevideTwoIntiger(totalConfirmed24, totalTests24),
-                        TotalByTypePrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(confirmedPcr, totalConfirmed), Antigen = DevideTwoIntiger(confirmedAntigen, totalConfirmed) },
-                        LastByTypePrc = new PcrAntigenPrc { PCR = DevideTwoIntiger(confirmedPcr24, totalConfirmed24), Antigen = DevideTwoIntiger(confirmedAntigen24, totalConfirmed24) },
+                        TotalPerTestedPrc = this.DevideTwoIntiger(totalConfirmed, totalTests),
+                        LastPerTestedPrc = this.DevideTwoIntiger(totalConfirmed24, totalTests24),
+                        TotalByTypePrc = new PcrAntigenPrc { PCR = this.DevideTwoIntiger(confirmedPcr, totalConfirmed), Antigen = this.DevideTwoIntiger(confirmedAntigen, totalConfirmed) },
+                        LastByTypePrc = new PcrAntigenPrc { PCR = this.DevideTwoIntiger(confirmedPcr24, totalConfirmed24), Antigen = this.DevideTwoIntiger(confirmedAntigen24, totalConfirmed24) },
                     },
                     Active = new ActivePrc
                     {
-                        HospotalizedPerActive = DevideTwoIntiger(hospitalized, active),
-                        IcuPerHospitalized = DevideTwoIntiger(intensiveCare, hospitalized)
-                    }
-                }
+                        HospotalizedPerActive = this.DevideTwoIntiger(hospitalized, active),
+                        IcuPerHospitalized = this.DevideTwoIntiger(intensiveCare, hospitalized),
+                    },
+                },
             };
 
             if (covidStatistics.Overall.Confirmed.Medical.Last24 != 0)
             {
                 covidStatistics.Stats.ConfirmedPrc.MedicalPcr
-                    = DevideTwoIntiger(covidStatistics.Overall.Confirmed.Medical.Last24, covidStatistics.Overall.Confirmed.Last24);
+                    = this.DevideTwoIntiger(covidStatistics.Overall.Confirmed.Medical.Last24, covidStatistics.Overall.Confirmed.Last24);
             }
 
             var convertedRegions = Conversion.ConvertToRegionsServiceModel(covidStatistics.Regions);
 
             covidStatistics.ConditionResult =
-                GetConditionResult(covidStatistics.Overall.Tested, covidStatistics.Overall.Confirmed, covidStatistics.Overall.Vaccinated, convertedRegions);
+                this.GetConditionResult(covidStatistics.Overall.Tested, covidStatistics.Overall.Confirmed, covidStatistics.Overall.Vaccinated, convertedRegions);
 
             return covidStatistics;
         }
@@ -217,27 +218,29 @@ namespace CoronavirusWebScraper.Services.Impl
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total tests must be equal to sum of antigen and  pcr total tests!");
                 conditionResult.Add("tested/total", new BsonDocument { { "expected", tested.Total }, { "actual", tested.TotalByType.PCR + tested.TotalByType.Antigen } });
-
             }
+
             if (tested.TotalByType24.PCR + tested.TotalByType24.Antigen != tested.Last24)
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total tests for last 24h must be equal to sum of antigen and pcr total tests for last 24h!");
                 conditionResult.Add("tested/last", new BsonDocument { { "expected", tested.Last24 }, { "actual", tested.TotalByType24.PCR + tested.TotalByType24.Antigen } });
-
             }
+
             if (confirmed.Total != confirmed.TotalByType.PCR + confirmed.TotalByType.Antigen)
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total confirmed tests is not equal to sum of total confirmed antigen and pcr tests!");
                 conditionResult.Add("confirmed/total ", new BsonDocument { { "expected", confirmed.Total }, { "actual", confirmed.TotalByType.PCR + confirmed.TotalByType.Antigen } });
             }
+
             if (confirmed.Last24 != confirmed.TotalByType24.PCR + confirmed.TotalByType24.Antigen)
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total confirmed tests for last 24h is not equal to sum of total confirmed antigen and pcr tests for last 24h!");
                 conditionResult.Add("confirmed/last ", new BsonDocument { { "expected", confirmed.Last24 }, { "actual", confirmed.TotalByType24.PCR + confirmed.TotalByType24.Antigen } });
             }
+
             if (vaccinated.Last != vaccinated.LastByType.AstraZeneca + vaccinated.LastByType.Comirnaty + vaccinated.LastByType.Moderna + vaccinated.LastByType.Janssen)
             {
                 condition = "discrepancy";
@@ -251,24 +254,28 @@ namespace CoronavirusWebScraper.Services.Impl
                 sb.AppendLine($"Sum of total confirmed tests is not equal to sum of total confirmed tests for all regions!");
                 conditionResult.Add("confirmed/total ", new BsonDocument { { "expected", confirmed.Total }, { "actual", convertedRegions.Sum(x => x.RegionStatistics.Confirmed.Total) } });
             }
+
             if (confirmed.Last24 != convertedRegions.Sum(x => x.RegionStatistics.Confirmed.Last))
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total confirmed tests for last 24h is not equal to sum of total confirmed tests for all regions for last 24h!");
                 conditionResult.Add("confirmed/last ", new BsonDocument { { "expected", confirmed.Last24 }, { "actual", convertedRegions.Sum(x => x.RegionStatistics.Confirmed.Last) } });
             }
+
             if (vaccinated.Total != convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Total))
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total vaccinated is not equal to sum of vaccinated for all regions!");
                 conditionResult.Add("vaccinated/total ", new BsonDocument { { "expected", vaccinated.Total }, { "actual", convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Total) } });
             }
+
             if (vaccinated.Last != convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Last))
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total vaccinated for last 24h is not equal to sum of vaccinated for all regions for last 24h!");
                 conditionResult.Add("vaccinated/last ", new BsonDocument { { "expected", vaccinated.Last }, { "actual", convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Last) } });
             }
+
             if (vaccinated.Last != convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.AstraZeneca) +
                 convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Comirnaty) +
                 convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Janssen) +
@@ -276,15 +283,21 @@ namespace CoronavirusWebScraper.Services.Impl
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total vaccinated for last 24h is not equal to sum of vaccinated for all regions by type for last 24h!");
-                conditionResult.Add("vaccinated/last ", new BsonDocument { { "expected", vaccinated.Last }, { "actual",convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.AstraZeneca) +
-                convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Comirnaty) +
-                convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Janssen) +
-                convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Moderna) } });
+                conditionResult.Add("vaccinated/last ", new BsonDocument
+                {
+                    { "expected", vaccinated.Last },
+                    {
+                    "actual", convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.AstraZeneca) +
+                         convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Comirnaty) +
+                         convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Janssen) +
+                         convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Moderna)
+                    },
+                });
             }
 
             var result = new BsonDocument
             {
-                { "condition" , condition}
+                { "condition", condition },
             };
 
             if (condition == "discrepancy")
@@ -317,39 +330,46 @@ namespace CoronavirusWebScraper.Services.Impl
             for (int i = 0; i < confirmedByRegionTableRecords.Length; i += 3)
             {
                 var regionCode = Conversion.RegionЕКАТТЕCodeConversion(confirmedByRegionTableRecords[i]);
-                var confirmed = IntParser(confirmedByRegionTableRecords[i + 1]);
-                var confirmed24 = IntParser(confirmedByRegionTableRecords[i + 2]);
+                var confirmed = this.IntParser(confirmedByRegionTableRecords[i + 1]);
+                var confirmed24 = this.IntParser(confirmedByRegionTableRecords[i + 2]);
 
                 regionsNames.Add(regionCode);
-                regionsStatistics.Add(new BsonDocument {
-                    { "confirmed", new BsonDocument {
-                        { "total", confirmed }, { "last", confirmed24 } }
-                    }
+                regionsStatistics.Add(new BsonDocument
+                {
+                    {
+                        "confirmed", new BsonDocument
+                        {
+                            { "total", confirmed }, { "last", confirmed24 },
+                        }
+                    },
                 });
             }
 
             var counter = 0;
             for (int i = 0; i < vaccinatedByRegions.Length; i += 7)
             {
-                var totalVaccinated = IntParser(vaccinatedByRegions[i + 1]);
-                var comirnaty = IntParser(vaccinatedByRegions[i + 2]);
-                var moderna = IntParser(vaccinatedByRegions[i + 3]);
-                var astrazeneca = IntParser(vaccinatedByRegions[i + 4]);
-                var janssen = IntParser(vaccinatedByRegions[i + 5]);
-                var totalVaccinedComplate = IntParser(vaccinatedByRegions[i + 6]);
+                var totalVaccinated = this.IntParser(vaccinatedByRegions[i + 1]);
+                var comirnaty = this.IntParser(vaccinatedByRegions[i + 2]);
+                var moderna = this.IntParser(vaccinatedByRegions[i + 3]);
+                var astrazeneca = this.IntParser(vaccinatedByRegions[i + 4]);
+                var janssen = this.IntParser(vaccinatedByRegions[i + 5]);
+                var totalVaccinedComplate = this.IntParser(vaccinatedByRegions[i + 6]);
                 var totalVaccinated24 = comirnaty + moderna + astrazeneca + janssen;
 
                 regionsStatistics[counter].Add("vaccinated", new BsonDocument
                 {
                     { "total", totalVaccinated },
                     { "last", totalVaccinated24 },
-                    { "last_by_type", new BsonDocument {
-                        { "comirnaty", comirnaty },
-                        { "moderna", moderna },
-                        { "astrazeneca", astrazeneca },
-                        { "janssen", janssen } } 
+                    {
+                        "last_by_type", new BsonDocument
+                        {
+                            { "comirnaty", comirnaty },
+                            { "moderna", moderna },
+                            { "astrazeneca", astrazeneca },
+                            { "janssen", janssen },
+                        }
                     },
-                    { "total_completed", totalVaccinedComplate}
+                    { "total_completed", totalVaccinedComplate },
                 });
                 counter++;
             }
@@ -364,16 +384,16 @@ namespace CoronavirusWebScraper.Services.Impl
 
         private Medical GetMedicalStatistics(string[] medicalTableRecords, DateTime currentDate)
         {
-            var totalDoctors = IntParser(medicalTableRecords[1]);
-            var totalNurces = IntParser(medicalTableRecords[3]);
-            var totalParamedics1 = IntParser(medicalTableRecords[5]);
-            var totalParamedics2 = IntParser(medicalTableRecords[7]);
-            var others = IntParser(medicalTableRecords[9]);
-            var totalMedical = IntParser(medicalTableRecords[11]);
+            var totalDoctors = this.IntParser(medicalTableRecords[1]);
+            var totalNurces = this.IntParser(medicalTableRecords[3]);
+            var totalParamedics1 = this.IntParser(medicalTableRecords[5]);
+            var totalParamedics2 = this.IntParser(medicalTableRecords[7]);
+            var others = this.IntParser(medicalTableRecords[9]);
+            var totalMedical = this.IntParser(medicalTableRecords[11]);
 
             var previousDate = currentDate.AddDays(-1).ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
 
-            var medialForPreviousDay = _repository
+            var medialForPreviousDay = this.repository
                 .FilterBy(filter => filter.Date == previousDate, projected
                 => projected.Overall.Confirmed.Medical)
                 .FirstOrDefault();
@@ -389,7 +409,7 @@ namespace CoronavirusWebScraper.Services.Impl
                         Nurces = totalNurces,
                         Paramedics_1 = totalParamedics1,
                         Paramedics_2 = totalParamedics2,
-                        Others = others
+                        Others = others,
                     },
                     Last24 = 0,
                     LastByType24 = new MedicalTypes
@@ -398,8 +418,8 @@ namespace CoronavirusWebScraper.Services.Impl
                         Nurces = 0,
                         Paramedics_1 = 0,
                         Paramedics_2 = 0,
-                        Others = 0
-                    }
+                        Others = 0,
+                    },
                 };
             }
 
@@ -412,7 +432,7 @@ namespace CoronavirusWebScraper.Services.Impl
                     Nurces = totalNurces,
                     Paramedics_1 = totalParamedics1,
                     Paramedics_2 = totalParamedics2,
-                    Others = others
+                    Others = others,
                 },
                 Last24 = totalMedical - medialForPreviousDay.Total,
                 LastByType24 = new MedicalTypes
@@ -421,12 +441,12 @@ namespace CoronavirusWebScraper.Services.Impl
                     Nurces = totalNurces - medialForPreviousDay.TotalByType.Nurces,
                     Paramedics_1 = totalParamedics1 - medialForPreviousDay.TotalByType.Paramedics_1,
                     Paramedics_2 = totalParamedics2 - medialForPreviousDay.TotalByType.Paramedics_2,
-                    Others = others - medialForPreviousDay.TotalByType.Others
-                }
+                    Others = others - medialForPreviousDay.TotalByType.Others,
+                },
             };
         }
 
-        private static int IntParser(string num)
+        private int IntParser(string num)
         {
             if (num == "-")
             {
@@ -436,10 +456,9 @@ namespace CoronavirusWebScraper.Services.Impl
             return int.Parse(num.Trim().Replace(" ", string.Empty));
         }
 
-        private static double DevideTwoIntiger(int num1, int num2)
+        private double DevideTwoIntiger(int num1, int num2)
         {
-            return Math.Round(((double)(num1) / num2), 4);
+            return Math.Round((double)num1 / num2, 4);
         }
-
     }
 }

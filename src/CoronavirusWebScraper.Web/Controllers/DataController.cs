@@ -1,16 +1,16 @@
-﻿using CoronavirusWebScraper.Services;
-using CoronavirusWebScraper.Web.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
-
-namespace CoronavirusWebScraper.Web.Controllers
+﻿namespace CoronavirusWebScraper.Web.Controllers
 {
+    using CoronavirusWebScraper.Services;
+    using CoronavirusWebScraper.Web.Infrastructure;
+    using Microsoft.AspNetCore.Mvc;
+
     public class DataController : Controller
     {
-        private readonly IStatisticsDataService _dataService;
+        private readonly IStatisticsDataService dataService;
 
         public DataController(IStatisticsDataService dataService)
         {
-            _dataService = dataService;
+            this.dataService = dataService;
         }
 
         [HttpGet]
@@ -22,12 +22,13 @@ namespace CoronavirusWebScraper.Web.Controllers
         [HttpGet]
         public IActionResult DateData(string date)
         {
-            var stats = _dataService.GetStatisticForDay(date);
+            var stats = this.dataService.GetStatisticForDay(date);
             if (stats == null)
             {
                 return this.RedirectToAction("Data");
             }
-            var viewModel = Conversion.ConvertToCovidStatisticViewModel(stats);       
+
+            var viewModel = Conversion.ConvertToCovidStatisticViewModel(stats);
 
             return this.View(viewModel);
         }

@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace CoronavirusWebScraper.Web.Models
+﻿namespace CoronavirusWebScraper.Web.Models
 {
     public class VaccineTypeViewModel
     {

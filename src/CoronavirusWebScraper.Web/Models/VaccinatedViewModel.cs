@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace CoronavirusWebScraper.Web.Models
+﻿namespace CoronavirusWebScraper.Web.Models
 {
     public class VaccinatedViewModel
     {
@@ -11,6 +9,5 @@ namespace CoronavirusWebScraper.Web.Models
         public VaccineTypeViewModel LastByType { get; set; }
 
         public int TotalCompleted { get; set; }
-
     }
 }

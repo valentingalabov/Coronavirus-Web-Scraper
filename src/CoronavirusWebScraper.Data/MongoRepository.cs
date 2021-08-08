@@ -1,7 +1,6 @@
 ﻿using CoronavirusWebScraper.Data.Attributes;
 using CoronavirusWebScraper.Data.Configuration;
 using CoronavirusWebScraper.Data.Models;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;

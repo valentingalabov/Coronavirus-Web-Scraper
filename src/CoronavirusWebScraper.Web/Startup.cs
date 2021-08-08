@@ -31,6 +31,7 @@ namespace CoronavirusWebScraper.Web
         public void ConfigureServices(IServiceCollection services)
         {
             //MongoDbSettings
+            
             services.Configure<MongoDbSettings>(Configuration.GetSection(nameof(MongoDbSettings)));
             services.AddSingleton<IMongoDbSettings>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
             //MongoDbRepository
@@ -41,7 +42,10 @@ namespace CoronavirusWebScraper.Web
             services.AddTransient<IStatisticsDataService, StatisticsDataService>();
 
             //BackgroundService implementation
+            services.Configure<BackgroundServiceConfiguration>(Configuration.GetSection(nameof(BackgroundServiceConfiguration)));
+            services.AddSingleton<IBackgroundServiceConfiguration>(serviceProvider => serviceProvider.GetRequiredService<IOptions<BackgroundServiceConfiguration>>().Value);
             services.AddHostedService<Worker>();
+
             services.AddControllersWithViews();
 
             //Health checks
@@ -54,15 +58,15 @@ namespace CoronavirusWebScraper.Web
              .AddCheck<CoronaviursPagePingHelthCheck>(name: "coronavirus.bg ping check")
              .AddDiskStorageHealthCheck(s => s.AddDrive("C:\\", 1024))
              .AddProcessAllocatedMemoryHealthCheck(512);
-            
-   
-            services.AddHealthChecksUI(opt =>
-            {
-                opt.SetEvaluationTimeInSeconds(10);  
-                opt.MaximumHistoryEntriesPerEndpoint(60);    
-                opt.SetApiMaxActiveRequests(1);   
-            })
-            .AddInMemoryStorage();
+
+            services.AddHealthChecksUI().AddInMemoryStorage();
+            //         services.AddHealthChecksUI(opt =>
+            ////{
+            ////    opt.SetEvaluationTimeInSeconds(10);  
+            ////    opt.MaximumHistoryEntriesPerEndpoint(60);    
+            ////    opt.SetApiMaxActiveRequests(1);   
+            ////})
+            //.AddInMemoryStorage();
 
         }
 

@@ -1,4 +1,5 @@
 ﻿using CoronavirusWebScraper.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading;
@@ -8,33 +9,33 @@ namespace CoronavirusWebScraper.Web.BackgroundServices
 {
     public class Worker : BackgroundService
     {
-        private readonly ICovidDataScraperService covidScraper;
+        private readonly ICovidDataScraperService _covidScraper;
+        private readonly IBackgroundServiceConfiguration _configuration;
 
-        public Worker(ICovidDataScraperService covidScraper)
+        public Worker(ICovidDataScraperService covidScraper, IBackgroundServiceConfiguration configuration)
         {
-            this.covidScraper = covidScraper;
+            _covidScraper = covidScraper;
+            _configuration = configuration;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            do
+            while (!stoppingToken.IsCancellationRequested)
             {
-                await covidScraper.ScrapeData();
-                int hourSpan = 24 - DateTime.Now.Hour;
-                int numberOfHours = hourSpan;
-
-                if (hourSpan == 24)
+                try
                 {
-                    await this.covidScraper.ScrapeData();
-
-                    numberOfHours = 24;
+                    await _covidScraper.ScrapeData();
                 }
+                catch (Exception e)
+                {
 
-                await Task.Delay(TimeSpan.FromHours(numberOfHours), stoppingToken);
+                    throw new Exception(e.Message);
+                }
+                await Task.Delay(TimeSpan.FromHours(_configuration.Hours), stoppingToken);
             }
 
-            while (!stoppingToken.IsCancellationRequested);
-
+            
         }
+
     }
 }

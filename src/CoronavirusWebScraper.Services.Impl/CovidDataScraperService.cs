@@ -52,7 +52,7 @@ namespace CoronavirusWebScraper.Services.Impl
             var date = currentDateSpan[5];
             var month = currentDateSpan[6];
             var year = currentDateSpan[7];
-            var currDateAsString = date + " " + month + " " + year + " " + time;
+            var currDateAsString = string.Join(" ", date, month, year, time);
             var currDate = DateTime.Parse(currDateAsString);
 
             var dataDate = currDate.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
@@ -203,9 +203,7 @@ namespace CoronavirusWebScraper.Services.Impl
             covidStatistics.ConditionResult =
                 GetConditionResult(covidStatistics.Overall.Tested, covidStatistics.Overall.Confirmed, covidStatistics.Overall.Vaccinated, convertedRegions);
 
-
             return covidStatistics;
-
         }
 
         private BsonDocument GetConditionResult(Tested tested, Confirmed confirmed, Vaccinated vaccinated, IEnumerable<RegionsServiceModel> convertedRegions)
@@ -295,32 +293,39 @@ namespace CoronavirusWebScraper.Services.Impl
                 result.Add("tested-fields", conditionResult);
             }
 
-
             return result;
         }
 
-       
-
         private BsonDocument GetAllRegionsData(IElement[] allTebles)
         {
-            var regionsStatistic = new List<BsonDocument>();
             var regionsNames = new List<string>();
-            var dictionary = new Dictionary<string, object>();
+            var regionsStatistics = new List<BsonDocument>();
+            var regionsStatisticsData
+                = new Dictionary<string, BsonDocument>();
 
-            var vaccinatedByRegions = allTebles[5].QuerySelectorAll("td").SkipLast(7).Select(x => x.TextContent).ToArray();
-            var confirmedByRegionTableRecords = allTebles[3].QuerySelectorAll("td").SkipLast(3).Select(x => x.TextContent).ToArray();
-
+            var vaccinatedByRegions = allTebles[5]
+                .QuerySelectorAll("td")
+                .SkipLast(7)
+                .Select(x => x.TextContent)
+                .ToArray();
+            var confirmedByRegionTableRecords = allTebles[3]
+                .QuerySelectorAll("td")
+                .SkipLast(3)
+                .Select(x => x.TextContent)
+                .ToArray();
 
             for (int i = 0; i < confirmedByRegionTableRecords.Length; i += 3)
             {
                 var regionCode = Conversion.RegionЕКАТТЕCodeConversion(confirmedByRegionTableRecords[i]);
                 var confirmed = IntParser(confirmedByRegionTableRecords[i + 1]);
                 var confirmed24 = IntParser(confirmedByRegionTableRecords[i + 2]);
-                var currentRegionDocument = new BsonDocument();
+
                 regionsNames.Add(regionCode);
-                regionsStatistic.Add(new BsonDocument { { "confirmed", new BsonDocument { { "total", confirmed }, { "last", confirmed24 } } } });
-
-
+                regionsStatistics.Add(new BsonDocument {
+                    { "confirmed", new BsonDocument {
+                        { "total", confirmed }, { "last", confirmed24 } }
+                    }
+                });
             }
 
             var counter = 0;
@@ -334,14 +339,16 @@ namespace CoronavirusWebScraper.Services.Impl
                 var totalVaccinedComplate = IntParser(vaccinatedByRegions[i + 6]);
                 var totalVaccinated24 = comirnaty + moderna + astrazeneca + janssen;
 
-
-
-
-                regionsStatistic[counter].Add("vaccinated", new BsonDocument
+                regionsStatistics[counter].Add("vaccinated", new BsonDocument
                 {
                     { "total", totalVaccinated },
                     { "last", totalVaccinated24 },
-                    { "last_by_type", new BsonDocument { { "comirnaty", comirnaty }, { "moderna", moderna }, { "astrazeneca", astrazeneca }, { "janssen", janssen } } },
+                    { "last_by_type", new BsonDocument {
+                        { "comirnaty", comirnaty },
+                        { "moderna", moderna },
+                        { "astrazeneca", astrazeneca },
+                        { "janssen", janssen } } 
+                    },
                     { "total_completed", totalVaccinedComplate}
                 });
                 counter++;
@@ -349,26 +356,20 @@ namespace CoronavirusWebScraper.Services.Impl
 
             for (int i = 0; i < regionsNames.Count; i++)
             {
-                dictionary.Add(regionsNames[i], regionsStatistic[i]);
+                regionsStatisticsData.Add(regionsNames[i], regionsStatistics[i]);
             }
 
-            var bson = new BsonDocument();
-            bson.AddRange(dictionary);
-
-            return bson;
+            return regionsStatisticsData.ToBsonDocument();
         }
 
         private Medical GetMedicalStatistics(string[] medicalTableRecords, DateTime currentDate)
         {
-
             var totalDoctors = IntParser(medicalTableRecords[1]);
             var totalNurces = IntParser(medicalTableRecords[3]);
             var totalParamedics1 = IntParser(medicalTableRecords[5]);
             var totalParamedics2 = IntParser(medicalTableRecords[7]);
             var others = IntParser(medicalTableRecords[9]);
             var totalMedical = IntParser(medicalTableRecords[11]);
-
-            //TODO:  data for medical for 24h!
 
             var previousDate = currentDate.AddDays(-1).ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
 

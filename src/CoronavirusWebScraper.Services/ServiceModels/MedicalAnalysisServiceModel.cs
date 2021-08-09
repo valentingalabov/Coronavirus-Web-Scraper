@@ -1,6 +1,6 @@
 ﻿namespace CoronavirusWebScraper.Services.ServiceModels
 {
-    public class MedicalTypesServiceModel
+    public class MedicalAnalysisServiceModel
     {
         public int Doctor { get; set; }
 

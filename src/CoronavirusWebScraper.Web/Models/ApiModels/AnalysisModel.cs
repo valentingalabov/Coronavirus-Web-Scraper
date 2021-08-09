@@ -1,6 +1,6 @@
-﻿namespace CoronavirusWebScraper.Services.ServiceModels
+﻿namespace CoronavirusWebScraper.Web.Models.ApiModels
 {
-    public class AnalysisServiceModel
+    public class AnalysisModel
     {
         public string Date { get; set; }
 
@@ -14,6 +14,6 @@
 
         public int TotalTests { get; set; }
 
-        public MedicalAnalysisServiceModel TotalMedicalAnalisys { get; set; }
+        public MedicalAnalysisModel TotalMedicalAnalisys { get; set; }
     }
 }

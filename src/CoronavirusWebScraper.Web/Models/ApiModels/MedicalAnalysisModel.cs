@@ -1,6 +1,6 @@
-﻿namespace CoronavirusWebScraper.Services.ServiceModels
+﻿namespace CoronavirusWebScraper.Web.Models.ApiModels
 {
-    public class MedicalTypesServiceModel
+    public class MedicalAnalysisModel
     {
         public int Doctor { get; set; }
 

@@ -4,14 +4,16 @@
 }
 
 <div class="text-center">
-    <h1>Анализ</h1>
+    <h1>Анализ на данни към:</h1>
 
-    <label class="col-md-2">Избери графика:</label>
+    <div id="date"></div>
+    <label class="col-md-2">Избери анализ:</label>
     <select class="col-md-4" id="chart-select">
-        <option value=0>Изберете графика</option>
+        <option value=0>Изберете анализ</option>
         <option value=1>Активни / Хоспитализирани</option>
         <option value=2>Хоспитализирани / Интензивно отделение</option>
         <option value=3>Заразени / Тествани</option>
+        <option value=4>Потвърден медицински персонал по тип общо</option>
     </select>
     <hr />
     <div class="col-md-12 col-md-4">
@@ -23,6 +25,5 @@
 @section scripts {
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="module" src="~/js/analysis.js"></script>
-
 }
 

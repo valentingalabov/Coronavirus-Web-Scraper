@@ -5,12 +5,13 @@
 
     using CoronavirusWebScraper.Services.ServiceModels;
     using CoronavirusWebScraper.Web.Models;
+    using CoronavirusWebScraper.Web.Models.ApiModels;
 
     public static class Conversion
     {
         public static CovidStatisticViewModel ConvertToCovidStatisticViewModel(CovidStatisticServiceModel covidStatistic)
         {
-            var statistics = new CovidStatisticViewModel
+            return new CovidStatisticViewModel
             {
                 Date = DateTime.Parse(covidStatistic.Date).ToString("HH:mm,dd MMM yyy"),
                 Active = ConvertToActiveViewModel(covidStatistic.Overall.Active),
@@ -22,8 +23,27 @@
                 Regions = ConvertToRegionsViewModel(covidStatistic.Regions),
                 TotalVaccineByType24 = ConvertToTotalVaccineByTypeViewModel(covidStatistic.TotalVaccineByType24),
             };
+        }
 
-            return statistics;
+        public static AnalysisModel ConvertToAnalysisModel(AnalysisServiceModel analysis)
+        {
+            return new AnalysisModel
+            {
+                Date = DateTime.Parse(analysis.Date).ToString("dd MMM yyy"),
+                Active = analysis.Active,
+                Hospitalized = analysis.Hospitalized,
+                Icu = analysis.Icu,
+                Infected = analysis.Infected,
+                TotalTests = analysis.TotalTests,
+                TotalMedicalAnalisys = new MedicalAnalysisModel
+                {
+                    Doctor = analysis.TotalMedicalAnalisys.Doctor,
+                    Nurces = analysis.TotalMedicalAnalisys.Nurces,
+                    Paramedics_1 = analysis.TotalMedicalAnalisys.Paramedics_1,
+                    Paramedics_2 = analysis.TotalMedicalAnalisys.Paramedics_2,
+                    Other = analysis.TotalMedicalAnalisys.Other,
+                },
+            };
         }
 
         private static TotalVaccineByType24ViewModel ConvertToTotalVaccineByTypeViewModel(TotalVaccineByType24ServiceModel totalVaccineByType24)
@@ -149,20 +169,20 @@
                     Total = confirmed.Medical.Total,
                     TotalByType = new MedicalTypesViewModel
                     {
-                        Doctror = confirmed.Medical.TotalByType.Doctror,
+                        Doctror = confirmed.Medical.TotalByType.Doctor,
                         Nurces = confirmed.Medical.TotalByType.Nurces,
                         Paramedics_1 = confirmed.Medical.TotalByType.Paramedics_1,
                         Paramedics_2 = confirmed.Medical.TotalByType.Paramedics_2,
-                        Others = confirmed.Medical.TotalByType.Others,
+                        Others = confirmed.Medical.TotalByType.Other,
                     },
                     Last24 = confirmed.Medical.Last24,
                     LastByType24 = new MedicalTypesViewModel
                     {
-                        Doctror = confirmed.Medical.LastByType24.Doctror,
+                        Doctror = confirmed.Medical.LastByType24.Doctor,
                         Nurces = confirmed.Medical.LastByType24.Nurces,
                         Paramedics_1 = confirmed.Medical.LastByType24.Paramedics_1,
                         Paramedics_2 = confirmed.Medical.LastByType24.Paramedics_2,
-                        Others = confirmed.Medical.LastByType24.Others,
+                        Others = confirmed.Medical.LastByType24.Other,
                     },
                 },
                 TotalByType = new TestedByTypeViewModel

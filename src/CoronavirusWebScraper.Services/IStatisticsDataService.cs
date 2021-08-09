@@ -10,6 +10,6 @@
 
         CovidStatisticServiceModel GetStatisticForDay(string day);
 
-        AnalysisServiceModel GetActiveAndHospitalized();
+        AnalysisServiceModel GetAnalysisData();
     }
 }

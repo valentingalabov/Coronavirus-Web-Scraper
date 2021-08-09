@@ -33,11 +33,25 @@
         {
             return new AnalysisServiceModel
             {
+                Date = covidStatistic.Date,
                 Active = covidStatistic.Overall.Active.Curent,
                 Hospitalized = covidStatistic.Overall.Active.CurrentByType.Hospitalized,
                 Icu = covidStatistic.Overall.Active.CurrentByType.Icu,
                 Infected = covidStatistic.Overall.Confirmed.Total,
                 TotalTests = covidStatistic.Overall.Tested.Total,
+                TotalMedicalAnalisys = GetTotalMedicalConfirmedByType(covidStatistic.Overall.Confirmed),
+            };
+        }
+
+        private static MedicalAnalysisServiceModel GetTotalMedicalConfirmedByType(Confirmed confirmed)
+        {
+            return new MedicalAnalysisServiceModel
+            {
+                Doctor = confirmed.Medical.TotalByType.Doctror,
+                Nurces = confirmed.Medical.TotalByType.Nurces,
+                Paramedics_1 = confirmed.Medical.TotalByType.Paramedics_1,
+                Paramedics_2 = confirmed.Medical.TotalByType.Paramedics_2,
+                Other = confirmed.Medical.TotalByType.Others,
             };
         }
 
@@ -77,10 +91,14 @@
 
             if (regionsWithCodes.ContainsValue(region.ToUpper()))
             {
-                return regionsWithCodes.Where(x => x.Value == region.ToUpper()).Select(x => x.Key).FirstOrDefault();
+                return regionsWithCodes
+                    .Where(x => x.Value == region.ToUpper())
+                    .Select(x => x.Key)
+                    .FirstOrDefault();
             }
 
-            return regionsWithCodes[region].ToLower();
+            return regionsWithCodes[region]
+                .ToLower();
         }
 
         public static IEnumerable<RegionsServiceModel> ConvertToRegionsServiceModel(BsonDocument regions)
@@ -179,20 +197,20 @@
                     Total = confirmed.Medical.Total,
                     TotalByType = new MedicalTypesServiceModel
                     {
-                        Doctror = confirmed.Medical.TotalByType.Doctror,
+                        Doctor = confirmed.Medical.TotalByType.Doctror,
                         Nurces = confirmed.Medical.TotalByType.Nurces,
                         Paramedics_1 = confirmed.Medical.TotalByType.Paramedics_1,
                         Paramedics_2 = confirmed.Medical.TotalByType.Paramedics_2,
-                        Others = confirmed.Medical.TotalByType.Others,
+                        Other = confirmed.Medical.TotalByType.Others,
                     },
                     Last24 = confirmed.Medical.Last24,
                     LastByType24 = new MedicalTypesServiceModel
                     {
-                        Doctror = confirmed.Medical.LastByType24.Doctror,
+                        Doctor = confirmed.Medical.LastByType24.Doctror,
                         Nurces = confirmed.Medical.LastByType24.Nurces,
                         Paramedics_1 = confirmed.Medical.LastByType24.Paramedics_1,
                         Paramedics_2 = confirmed.Medical.LastByType24.Paramedics_2,
-                        Others = confirmed.Medical.LastByType24.Others,
+                        Other = confirmed.Medical.LastByType24.Others,
                     },
                 },
                 TotalByType = new TestedByTypeServiceModel

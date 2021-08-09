@@ -217,63 +217,99 @@
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total tests must be equal to sum of antigen and  pcr total tests!");
-                conditionResult.Add("tested/total", new BsonDocument { { "expected", tested.Total }, { "actual", tested.TotalByType.PCR + tested.TotalByType.Antigen } });
+                conditionResult.Add("tested/total", new BsonDocument
+                {
+                    { "expected", tested.Total },
+                    { "actual", tested.TotalByType.PCR + tested.TotalByType.Antigen },
+                });
             }
 
             if (tested.TotalByType24.PCR + tested.TotalByType24.Antigen != tested.Last24)
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total tests for last 24h must be equal to sum of antigen and pcr total tests for last 24h!");
-                conditionResult.Add("tested/last", new BsonDocument { { "expected", tested.Last24 }, { "actual", tested.TotalByType24.PCR + tested.TotalByType24.Antigen } });
+                conditionResult.Add("tested/last", new BsonDocument
+                {
+                    { "expected", tested.Last24 },
+                    { "actual", tested.TotalByType24.PCR + tested.TotalByType24.Antigen },
+                });
             }
 
             if (confirmed.Total != confirmed.TotalByType.PCR + confirmed.TotalByType.Antigen)
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total confirmed tests is not equal to sum of total confirmed antigen and pcr tests!");
-                conditionResult.Add("confirmed/total ", new BsonDocument { { "expected", confirmed.Total }, { "actual", confirmed.TotalByType.PCR + confirmed.TotalByType.Antigen } });
+                conditionResult.Add("confirmed/total ", new BsonDocument
+                {
+                    { "expected", confirmed.Total },
+                    { "actual", confirmed.TotalByType.PCR + confirmed.TotalByType.Antigen },
+                });
             }
 
             if (confirmed.Last24 != confirmed.TotalByType24.PCR + confirmed.TotalByType24.Antigen)
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total confirmed tests for last 24h is not equal to sum of total confirmed antigen and pcr tests for last 24h!");
-                conditionResult.Add("confirmed/last ", new BsonDocument { { "expected", confirmed.Last24 }, { "actual", confirmed.TotalByType24.PCR + confirmed.TotalByType24.Antigen } });
+                conditionResult.Add("confirmed/last ", new BsonDocument
+                {
+                    { "expected", confirmed.Last24 },
+                    { "actual", confirmed.TotalByType24.PCR + confirmed.TotalByType24.Antigen },
+                });
             }
 
             if (vaccinated.Last != vaccinated.LastByType.AstraZeneca + vaccinated.LastByType.Comirnaty + vaccinated.LastByType.Moderna + vaccinated.LastByType.Janssen)
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total vaccinated for last 24h is not equal to sum of total vaccinated by vaccine type for last 24h!");
-                conditionResult.Add("vaccinated/last ", new BsonDocument { { "expected", vaccinated.Last }, { "actual", vaccinated.LastByType.AstraZeneca + vaccinated.LastByType.Comirnaty + vaccinated.LastByType.Moderna + vaccinated.LastByType.Janssen } });
+                conditionResult.Add("vaccinated/last ", new BsonDocument
+                {
+                    { "expected", vaccinated.Last },
+                    { "actual", vaccinated.LastByType.AstraZeneca + vaccinated.LastByType.Comirnaty + vaccinated.LastByType.Moderna + vaccinated.LastByType.Janssen },
+                });
             }
 
             if (confirmed.Total != convertedRegions.Sum(x => x.RegionStatistics.Confirmed.Total))
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total confirmed tests is not equal to sum of total confirmed tests for all regions!");
-                conditionResult.Add("confirmed/total ", new BsonDocument { { "expected", confirmed.Total }, { "actual", convertedRegions.Sum(x => x.RegionStatistics.Confirmed.Total) } });
+                conditionResult.Add("confirmed/total ", new BsonDocument
+                {
+                    { "expected", confirmed.Total },
+                    { "actual", convertedRegions.Sum(x => x.RegionStatistics.Confirmed.Total) },
+                });
             }
 
             if (confirmed.Last24 != convertedRegions.Sum(x => x.RegionStatistics.Confirmed.Last))
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total confirmed tests for last 24h is not equal to sum of total confirmed tests for all regions for last 24h!");
-                conditionResult.Add("confirmed/last ", new BsonDocument { { "expected", confirmed.Last24 }, { "actual", convertedRegions.Sum(x => x.RegionStatistics.Confirmed.Last) } });
+                conditionResult.Add("confirmed/last ", new BsonDocument
+                {
+                    { "expected", confirmed.Last24 },
+                    { "actual", convertedRegions.Sum(x => x.RegionStatistics.Confirmed.Last) },
+                });
             }
 
             if (vaccinated.Total != convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Total))
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total vaccinated is not equal to sum of vaccinated for all regions!");
-                conditionResult.Add("vaccinated/total ", new BsonDocument { { "expected", vaccinated.Total }, { "actual", convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Total) } });
+                conditionResult.Add("vaccinated/total ", new BsonDocument
+                {
+                    { "expected", vaccinated.Total },
+                    { "actual", convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Total) },
+                });
             }
 
             if (vaccinated.Last != convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Last))
             {
                 condition = "discrepancy";
                 sb.AppendLine($"Sum of total vaccinated for last 24h is not equal to sum of vaccinated for all regions for last 24h!");
-                conditionResult.Add("vaccinated/last ", new BsonDocument { { "expected", vaccinated.Last }, { "actual", convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Last) } });
+                conditionResult.Add("vaccinated/last ", new BsonDocument
+                {
+                    { "expected", vaccinated.Last },
+                    { "actual", convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.Last) },
+                });
             }
 
             if (vaccinated.Last != convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.AstraZeneca) +
@@ -287,7 +323,7 @@
                 {
                     { "expected", vaccinated.Last },
                     {
-                    "actual", convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.AstraZeneca) +
+                        "actual", convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.AstraZeneca) +
                          convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Comirnaty) +
                          convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Janssen) +
                          convertedRegions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Moderna)

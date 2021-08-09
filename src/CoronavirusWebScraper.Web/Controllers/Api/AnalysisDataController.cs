@@ -1,6 +1,7 @@
 ﻿namespace CoronavirusWebScraper.Web.Controllers.Api
 {
     using CoronavirusWebScraper.Services;
+    using CoronavirusWebScraper.Web.Infrastructure;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
@@ -17,9 +18,9 @@
         [HttpGet]
         public ActionResult Analysis()
         {
-            var result = this.dataService.GetActiveAndHospitalized();
+            var analysis = Conversion.ConvertToAnalysisModel(this.dataService.GetAnalysisData());
 
-            return this.Ok(result);
+            return this.Ok(analysis);
         }
     }
 }

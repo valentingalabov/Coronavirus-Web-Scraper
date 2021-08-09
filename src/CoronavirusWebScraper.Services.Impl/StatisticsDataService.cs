@@ -17,7 +17,7 @@
             this.repository = repository;
         }
 
-        public AnalysisServiceModel GetActiveAndHospitalized()
+        public AnalysisServiceModel GetAnalysisData()
         {
             var currDate = DateTime.Now.ToString("yyyy-MM-dd");
 
@@ -32,7 +32,8 @@
         {
             DateTime dateAsDateTime;
             var dateToFind = DateTime.TryParse(string.Concat(year, "/", month), out dateAsDateTime);
-            if (dateToFind)
+
+            if (dateToFind == true)
             {
                 var currMonthToFind = dateAsDateTime.ToString("yyyy-MM");
 
@@ -49,7 +50,7 @@
             DateTime currDateToFind;
             var formatedDate = DateTime.TryParse(date, out currDateToFind);
 
-            if (formatedDate)
+            if (formatedDate == true)
             {
                 return this.repository
                 .FilterBy(

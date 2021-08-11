@@ -17,7 +17,7 @@
         [HttpGet]
         public ActionResult Dates(string year, string month)
         {
-            var dates = this.dataService.GetAllDates(year, month);
+            var dates = this.dataService.GetAllDatesForSpecificMonthAndYear(year, month);
 
             return this.Ok(dates);
         }

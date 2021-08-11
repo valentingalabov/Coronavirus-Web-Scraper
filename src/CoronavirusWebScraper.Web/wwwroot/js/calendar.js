@@ -3,12 +3,12 @@
 let today = new Date();
 let currentMonth = today.getMonth();
 let currentYear = today.getFullYear();
-let selectYear = document.getElementById('year');
-let selectMonth = document.getElementById('month');
+let selectYear = document.getElementById("year");
+let selectMonth = document.getElementById("month");
 
-let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-let monthAndYear = document.getElementById('monthAndYear');
+let monthAndYear = document.getElementById("monthAndYear");
 showCalendar(currentMonth, currentYear);
 
 
@@ -37,23 +37,23 @@ async function currentDate() {
 async function showCalendar(month, year) {
     let url = `https://localhost:44305/api/dates?year=${year}&month=${month+1}`;
     let statisticsDates = await ApiGetFunction(url);
-    let tbl = document.getElementById('lendar-body');
+    let tbl = document.getElementById("calendar-body");
 
-    tbl.innerHTML = '';
+    tbl.innerHTML = "";
 
-    monthAndYear.innerHTML = months[month] + ' ' + year;
+    monthAndYear.innerHTML = months[month] + " " + year;
     selectYear.value = year;
     selectMonth.value = month;
 
     let date = 1;
     for (let i = 0; i < 6; i++) {
-        let row = document.createElement('tr');
+        let row = document.createElement("tr");
 
 
         for (let j = 0; j < 7; j++) {
             if (i === 0 && j < getDay(new Date(year, month))) {
-                let cell = document.createElement('td');
-                let cellText = document.createTextNode('');
+                let cell = document.createElement("td");
+                let cellText = document.createTextNode("");
                 cell.appendChild(cellText);
                 row.appendChild(cell);
             }
@@ -61,21 +61,21 @@ async function showCalendar(month, year) {
                 break;
             }
             else {
-                let cell = document.createElement('td');
-                cell.classList.add('calendar-numbers');
+                let cell = document.createElement("td");
+                cell.classList.add("calendar-numbers");
                 let cellText = document.createTextNode(date);
                 let currDateAtMoment = new Date(year, month, date);
                 if (date === today.getDate()
                     && year === today.getFullYear()
                     && month === today.getMonth()
                     && isIncluded(statisticsDates, currDateAtMoment)) {
-                    cell.classList.add('circle');
-                    cell.classList.add('text-success');
+                    cell.classList.add("circle");
+                    cell.classList.add("text-success");
 
-                    let a = document.createElement('a');
+                    let a = document.createElement("a");
                     a.href = `DateData?date=${year}-${month + 1}-${date}`;
                     a.appendChild(cellText);
-                    a.classList.add('statistic-day');
+                    a.classList.add("statistic-day");
                     cell.appendChild(a);
 
                 }
@@ -86,10 +86,10 @@ async function showCalendar(month, year) {
                     cell.appendChild(cellText);
                 }
                 else if (isIncluded(statisticsDates, new Date(year, month, date))) {
-                    cell.classList.add('text-success');
-                    let a = document.createElement('a');
+                    cell.classList.add("text-success");
+                    let a = document.createElement("a");
                     a.href = `DateData?date=${year}-${month + 1}-${date}`;
-                    a.classList.add('statistic-day');
+                    a.classList.add("statistic-day");
                     a.appendChild(cellText);
                     cell.appendChild(a);
                 } else {
@@ -130,8 +130,8 @@ function daysInMonth(iMonth, iYear) {
     return 32 - new Date(iYear, iMonth, 32).getDate();
 }
 
-document.getElementById('next').addEventListener('click', await next);
-document.getElementById('current').addEventListener('click', await currentDate);
-document.getElementById('previous').addEventListener('click', await previous);
-document.getElementById('month').addEventListener('change', await jump);
-document.getElementById('year').addEventListener('change', await jump);
+document.getElementById("next").addEventListener("click", await next);
+document.getElementById("current").addEventListener("click", await currentDate);
+document.getElementById("previous").addEventListener("click", await previous);
+document.getElementById("month").addEventListener("change", await jump);
+document.getElementById("year").addEventListener("change", await jump);

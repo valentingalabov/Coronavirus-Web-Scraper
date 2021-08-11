@@ -6,7 +6,7 @@
 
     public interface IStatisticsDataService
     {
-        IEnumerable<string> GetAllDates(string year, string month);
+        IEnumerable<string> GetAllDatesForSpecificMonthAndYear(string year, string month);
 
         CovidStatisticServiceModel GetStatisticForDay(string day);
 

@@ -166,55 +166,59 @@
     </div>
 </div>
 <hr />
-<div class="row">
 
-    <div class="col-lg-12 col-sm-6">
-        <div class="h-heading">
-            <h4>
-                Потвърдени случаи според тип на лабораторно изследване
-            </h4>
-        </div>
-        <table class="table table-hover table-dark">
-            <thead class="bg-info">
-                <tr id="header" scope="col" >
-                    <th rowspan="2" style="width: initial; vertical-align: top;">Област</th>
-                    <th rowspan="2" style="width: initial; vertical-align: top;">Общо поставени дози</th>
-                    <th class="text-center" colspan="4" style="width: initial; vertical-align: top;">Нови</th>
-                    <th rowspan="2" style="width: initial; vertical-align: top;" class="text-right">
-                        Общ брой лица със завършен ваксинационен
-                        цикъл
-                    </th>
-                </tr>
-                <tr>
-                    <th style="width: initial; text-align: right;">Comirnaty</th>
-                    <th style="width: initial; text-align: right;">Moderna</th>
-                    <th style="width: initial; text-align: right;">AstraZeneca</th>
-                    <th style="width: initial; text-align: right;">Janssen</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var currRegion in Model.Regions)
-                {
-                    <tr>
-                        <th>@currRegion.Name</th>
-                        <th>@currRegion.RegionStatistics.Vaccinated.Total</th>
-                        <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Comirnaty</th>
-                        <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Moderna</th>
-                        <th>@currRegion.RegionStatistics.Vaccinated.LastByType.AstraZeneca</th>
-                        <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Janssen</th>
-                        <th class="text-right">@currRegion.RegionStatistics.Vaccinated.TotalCompleted</th>
+
+<div class="container-fluid">
+    <div class="h-heading">
+        <h4>
+            Потвърдени случаи според тип на лабораторно изследване
+        </h4>
+    </div>
+    <div class="">
+        <div class="table-responsive">
+            <table class="table table-hover table-dark">
+                <thead class="bg-info">
+                    <tr id="header" scope="col">
+                        <th rowspan="2" style="width: initial; vertical-align: top;">Област</th>
+                        <th rowspan="2" style="width: initial; vertical-align: top;">Общо поставени дози</th>
+                        <th class="text-center" colspan="4" style="width: initial; vertical-align: top;">Нови</th>
+                        <th rowspan="2" style="width: initial; vertical-align: top;" class="text-right">
+                            Общ брой лица със завършен ваксинационен
+                            цикъл
+                        </th>
                     </tr>
-                }
-                <tr class="bg-secondary font-italic font-weight-bold">
-                    <th>Общо</th>
-                    <th>@Model.Vaccinated.Total</th>
-                    <th>@Model.TotalVaccineByType24.TotalComirnaty</th>
-                    <th>@Model.TotalVaccineByType24.TotalModerna</th>
-                    <th>@Model.TotalVaccineByType24.TotalAstraZeneca</th>
-                    <th>@Model.TotalVaccineByType24.TotalJanssen</th>
-                    <th class="text-right">@Model.Vaccinated.TotalCompleted</th>
-                </tr>
-            </tbody>
-        </table>
+                    <tr>
+                        <th style="width: initial; text-align: right;">Comirnaty</th>
+                        <th style="width: initial; text-align: right;">Moderna</th>
+                        <th style="width: initial; text-align: right;">AstraZeneca</th>
+                        <th style="width: initial; text-align: right;">Janssen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var currRegion in Model.Regions)
+                    {
+                        <tr>
+                            <th>@currRegion.Name</th>
+                            <th>@currRegion.RegionStatistics.Vaccinated.Total</th>
+                            <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Comirnaty</th>
+                            <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Moderna</th>
+                            <th>@currRegion.RegionStatistics.Vaccinated.LastByType.AstraZeneca</th>
+                            <th>@currRegion.RegionStatistics.Vaccinated.LastByType.Janssen</th>
+                            <th class="text-right">@currRegion.RegionStatistics.Vaccinated.TotalCompleted</th>
+                        </tr>
+                    }
+                    <tr class="bg-secondary font-italic font-weight-bold">
+                        <th>Общо</th>
+                        <th>@Model.Vaccinated.Total</th>
+                        <th>@Model.TotalVaccineByType24.TotalComirnaty</th>
+                        <th>@Model.TotalVaccineByType24.TotalModerna</th>
+                        <th>@Model.TotalVaccineByType24.TotalAstraZeneca</th>
+                        <th>@Model.TotalVaccineByType24.TotalJanssen</th>
+                        <th class="text-right">@Model.Vaccinated.TotalCompleted</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+    

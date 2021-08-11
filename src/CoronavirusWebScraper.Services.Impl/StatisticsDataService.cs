@@ -28,7 +28,7 @@
             return result;
         }
 
-        public IEnumerable<string> GetAllDates(string year, string month)
+        public IEnumerable<string> GetAllDatesForSpecificMonthAndYear(string year, string month)
         {
             DateTime dateAsDateTime;
             var dateToFind = DateTime.TryParse(string.Concat(year, "/", month), out dateAsDateTime);

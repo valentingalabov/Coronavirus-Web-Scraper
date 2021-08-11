@@ -25,9 +25,8 @@ function draw() {
         google.charts.setOnLoadCallback(drawPieChart(title, statistics.infected, statistics.totalTests));
     } else if (selectElement.value == 4) {
         google.charts.setOnLoadCallback(drawMedicalBarChart);
-    }
-    else {
-        document.getElementById("charts").innerHTML = "";
+    } else {
+        divToDraw.innerHTML = "";
     }
 }
 

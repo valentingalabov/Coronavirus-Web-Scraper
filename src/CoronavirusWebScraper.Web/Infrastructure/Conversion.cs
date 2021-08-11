@@ -33,8 +33,9 @@
                 Active = analysis.Active,
                 Hospitalized = analysis.Hospitalized,
                 Icu = analysis.Icu,
-                Infected = analysis.Infected,
+                Confirmed = analysis.Confirmed,
                 TotalTests = analysis.TotalTests,
+                TotalRecovered = analysis.TotalRecovered,
                 TotalMedicalAnalisys = new MedicalAnalysisModel
                 {
                     Doctor = analysis.TotalMedicalAnalisys.Doctor,

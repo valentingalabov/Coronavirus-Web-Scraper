@@ -22,9 +22,11 @@ function draw() {
     } else if (selectElement.value == 2) {
         google.charts.setOnLoadCallback(drawPieChart(title, statistics.hospitalized, statistics.icu));
     } else if (selectElement.value == 3) {
-        google.charts.setOnLoadCallback(drawPieChart(title, statistics.infected, statistics.totalTests));
+        google.charts.setOnLoadCallback(drawPieChart(title, statistics.confirmed, statistics.totalTests));
     } else if (selectElement.value == 4) {
         google.charts.setOnLoadCallback(drawMedicalBarChart);
+    } else if (selectElement.value == 5) {
+        google.charts.setOnLoadCallback(drawColumnChart(statistics.confirmed, statistics.totalRecovered));
     } else {
         divToDraw.innerHTML = "";
     }
@@ -68,3 +70,35 @@ function drawMedicalBarChart() {
     chart.draw(data, options);
 }
 
+function drawColumnChart(confirmed, recovored) {
+    var data = google.visualization.arrayToDataTable([
+        ['Тип', 'Брой', { role: 'style' }],
+        ['Потвърдени случаи', confirmed, 'red'],
+        ['Излекувани', recovored, 'green'],
+    ]);
+
+    var view = new google.visualization.DataView(data);
+    view.setColumns([0, 1,
+        {
+            calc: "stringify",
+            sourceColumn: 1,
+            type: "string",
+            role: "annotation"
+        },
+        2]);
+
+
+    var options = {
+        title: "Потвърдени случаи / Излекувани",
+        bar: { groupWidth: "95%" },
+        legend: { position: "none" },
+        vAxis: {
+            viewWindow: {
+                min: 0,
+            }
+        }
+    };
+
+    var chart = new google.visualization.ColumnChart(divToDraw);
+    chart.draw(view, options);
+}

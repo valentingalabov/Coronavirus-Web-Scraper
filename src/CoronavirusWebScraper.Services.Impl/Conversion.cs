@@ -37,9 +37,10 @@
                 Active = covidStatistic.Overall.Active.Curent,
                 Hospitalized = covidStatistic.Overall.Active.CurrentByType.Hospitalized,
                 Icu = covidStatistic.Overall.Active.CurrentByType.Icu,
-                Infected = covidStatistic.Overall.Confirmed.Total,
+                Confirmed = covidStatistic.Overall.Confirmed.Total,
                 TotalTests = covidStatistic.Overall.Tested.Total,
                 TotalMedicalAnalisys = GetTotalMedicalConfirmedByType(covidStatistic.Overall.Confirmed),
+                TotalRecovered = covidStatistic.Overall.Recovered.Total,
             };
         }
 

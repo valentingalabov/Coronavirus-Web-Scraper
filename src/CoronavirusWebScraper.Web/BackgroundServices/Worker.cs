@@ -25,13 +25,12 @@
                 try
                 {
                     await this.covidScraper.ScrapeData();
+                    await Task.Delay(TimeSpan.FromHours(this.configuration.Hours), stoppingToken);
                 }
                 catch (Exception e)
                 {
                     throw new Exception(e.Message);
                 }
-
-                await Task.Delay(TimeSpan.FromHours(this.configuration.Hours), stoppingToken);
             }
         }
     }

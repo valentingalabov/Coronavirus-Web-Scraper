@@ -18,15 +18,16 @@ function draw() {
     let title = selectElement.options[selectElement.value].textContent;
 
     if (selectElement.value == 1) {
-        google.charts.setOnLoadCallback(drawPieChart(title, statistics.active, statistics.hospitalized));
+        divToDraw.innerHTML = "";
+        google.charts.setOnLoadCallback(drawColumnChart(title, statistics.active, statistics.hospitalized));
     } else if (selectElement.value == 2) {
         google.charts.setOnLoadCallback(drawPieChart(title, statistics.hospitalized, statistics.icu));
     } else if (selectElement.value == 3) {
-        google.charts.setOnLoadCallback(drawPieChart(title, statistics.confirmed, statistics.totalTests));
+        google.charts.setOnLoadCallback(drawColumnChart(title, statistics.confirmed, statistics.totalTests));
     } else if (selectElement.value == 4) {
         google.charts.setOnLoadCallback(drawMedicalBarChart);
     } else if (selectElement.value == 5) {
-        google.charts.setOnLoadCallback(drawColumnChart(statistics.confirmed, statistics.totalRecovered));
+        google.charts.setOnLoadCallback(drawColumnChart(title,statistics.confirmed, statistics.totalRecovered));
     } else {
         divToDraw.innerHTML = "";
     }
@@ -70,11 +71,13 @@ function drawMedicalBarChart() {
     chart.draw(data, options);
 }
 
-function drawColumnChart(confirmed, recovored) {
+function drawColumnChart(title, el1, el2) {
+    let chartData = title.split("/");
+
     var data = google.visualization.arrayToDataTable([
         ['Тип', 'Брой', { role: 'style' }],
-        ['Потвърдени случаи', confirmed, 'red'],
-        ['Излекувани', recovored, 'green'],
+        [chartData[0], el1, 'red'],
+        [chartData[1], el2, 'green'],
     ]);
 
     var view = new google.visualization.DataView(data);
@@ -89,7 +92,7 @@ function drawColumnChart(confirmed, recovored) {
 
 
     var options = {
-        title: "Потвърдени случаи / Излекувани",
+        title: title,
         bar: { groupWidth: "95%" },
         legend: { position: "none" },
         vAxis: {
@@ -102,3 +105,4 @@ function drawColumnChart(confirmed, recovored) {
     var chart = new google.visualization.ColumnChart(divToDraw);
     chart.draw(view, options);
 }
+

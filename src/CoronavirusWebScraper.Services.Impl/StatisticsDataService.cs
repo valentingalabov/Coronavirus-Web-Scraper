@@ -19,11 +19,11 @@
 
         public AnalysisServiceModel GetAnalysisData()
         {
-            var currDate = DateTime.Now.ToString("yyyy-MM-dd");
-
-            var result = this.repository.FilterBy(
-                filter => filter.Date.Contains(currDate),
-                projection => Conversion.ConvertToAnalysisServiceModel(projection)).FirstOrDefault();
+            var result = Conversion
+                .ConvertToAnalysisServiceModel(this.repository
+                .AsQueryable()
+                .OrderByDescending(x => x.Date)
+                .FirstOrDefault());
 
             return result;
         }

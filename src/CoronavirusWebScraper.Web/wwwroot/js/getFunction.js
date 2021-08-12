@@ -1,6 +1,7 @@
-﻿export default async function ApiGetFunction(url,) {
+﻿export default async function ApiGetFunction(path) {
     try {
-        const response = await fetch(url);
+
+        const response = await fetch(window.location.origin + path);
         if (response.ok == false) {
             const error = await response.json();
             throw new Error(error.message);

@@ -4,7 +4,7 @@ google.charts.load('current', { 'packages': ['corechart'] });
 
 document.getElementById("chart-select").addEventListener("change", draw, { passive: true });
 
-let statistics = await ApiGetFunction("https://localhost:44305/api/analaysis");
+let statistics = await ApiGetFunction("/api/analaysis");
 
 let divToDraw = document.getElementById('charts');
 

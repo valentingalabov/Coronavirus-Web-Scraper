@@ -1,4 +1,4 @@
- #Coronavirus Web Scraper#
+# Coronavirus Web Scraper
  
 ## Описание
 

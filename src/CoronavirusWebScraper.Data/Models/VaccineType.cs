@@ -2,6 +2,9 @@
 {
     using MongoDB.Bson.Serialization.Attributes;
 
+/// <summary>
+/// <remark>
+/// </summary>
     public class VaccineType
     {
         [BsonElement("comirnaty")]

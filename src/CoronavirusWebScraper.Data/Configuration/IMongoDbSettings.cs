@@ -1,6 +1,8 @@
 ﻿namespace CoronavirusWebScraper.Data.Configuration
 {
-    /// <remarks> Hold MongoDB settings data.
+    /// <summary>
+    /// Hold MongoDB settings data.
+    /// </summary>
     public interface IMongoDbSettings
     {
         /// <summary>

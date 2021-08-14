@@ -7,7 +7,6 @@
     /// </summary>
     public class Active
     {
-
         /// <summary>
         /// Gets or sets count of current infected people.
         /// </summary>

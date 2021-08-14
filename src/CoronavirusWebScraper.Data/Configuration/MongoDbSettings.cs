@@ -3,14 +3,10 @@
     /// <remarks> Hold MongoDB settings data.
     public class MongoDbSettings : IMongoDbSettings
     {
-        /// <summary>
-        /// Gets or sets connection string for MongoDB.
-        /// </summary>
+        /// <inheritdoc />
         public string ConnectionString { get; set; }
 
-        /// <summary>
-        /// Gets or sets database name in MongoDB.
-        /// </summary>
+        /// <inheritdoc />
         public string DatabaseName { get; set; }
     }
 }

@@ -8,11 +8,18 @@
     using CoronavirusWebScraper.Data.Models;
     using CoronavirusWebScraper.Services.ServiceModels;
 
+    /// <summary>
+    /// Reading covid statistical data.
+    /// </summary>
     public class StatisticsDataService : IStatisticsDataService
     {
-        private readonly IMongoRepository<CovidStatistic> repository;
+        private readonly IMongoRepository<CovidStatistics> repository;
 
-        public StatisticsDataService(IMongoRepository<CovidStatistic> repository)
+        /// <summary>
+        /// Contructor Implementation repository to read covid statistics data.
+        /// </summary>
+        /// <param name="repository">Mongo db repository.</param>
+        public StatisticsDataService(IMongoRepository<CovidStatistics> repository)
         {
             this.repository = repository;
         }
@@ -28,6 +35,7 @@
             return result;
         }
 
+        /// <inheritdoc />
         public IEnumerable<string> GetAllDatesForSpecificMonthAndYear(string year, string month)
         {
             DateTime dateAsDateTime;
@@ -45,7 +53,8 @@
             return null;
         }
 
-        public CovidStatisticServiceModel GetStatisticForDay(string date)
+        /// <inheritdoc />
+        public CovidStatisticServiceModel GetStatisticsForSpecificDay(string date)
         {
             DateTime currDateToFind;
             var formatedDate = DateTime.TryParse(date, out currDateToFind);

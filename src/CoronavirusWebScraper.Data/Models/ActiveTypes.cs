@@ -14,7 +14,7 @@
         public int Hospitalized { get; set; }
 
         /// <summary>
-        /// Gets or sets count of current people int the intensive care unit.
+        /// Gets or sets count of current people in intensive care unit.
         /// </summary>
         [BsonElement("icu")]
         public int Icu { get; set; }

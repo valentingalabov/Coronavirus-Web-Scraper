@@ -9,8 +9,7 @@
     using CoronavirusWebScraper.Data.Models;
 
     /// <summary>
-    ///  The contract for repository implementation
-    /// must follow.
+    /// MongoDB repository interface.
     /// </summary>
     /// <typeparam name="TDocument">Entity to store as document.</typeparam>
     public interface IMongoRepository<TDocument>

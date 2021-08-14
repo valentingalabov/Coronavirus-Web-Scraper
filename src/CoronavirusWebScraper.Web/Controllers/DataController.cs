@@ -22,7 +22,7 @@
         [HttpGet]
         public IActionResult DateData(string date)
         {
-            var stats = this.dataService.GetStatisticForDay(date);
+            var stats = this.dataService.GetStatisticsForSpecificDay(date);
             if (stats == null)
             {
                 return this.RedirectToAction("Data");

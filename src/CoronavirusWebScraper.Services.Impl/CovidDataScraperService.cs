@@ -13,17 +13,25 @@
     using CoronavirusWebScraper.Services.ServiceModels;
     using MongoDB.Bson;
 
+    /// <summary>
+    /// Data scraper implementation let you scrape data and add it to database.
+    /// </summary>
     public class CovidDataScraperService : ICovidDataScraperService
     {
         private const string CovidUrl = "https://coronavirus.bg/";
 
-        private readonly IMongoRepository<CovidStatistic> repository;
+        private readonly IMongoRepository<CovidStatistics> repository;
 
-        public CovidDataScraperService(IMongoRepository<CovidStatistic> repository)
+        /// <summary>
+        /// Contructor Implementation repository to store covid statistics data.
+        /// </summary>
+        /// <param name="repository">Mongo db repository.</param>
+        public CovidDataScraperService(IMongoRepository<CovidStatistics> repository)
         {
             this.repository = repository;
         }
 
+        /// <inheritdoc />
         public async Task ScrapeData()
         {
             var document = await this.FetchDocument();
@@ -34,7 +42,7 @@
             }
         }
 
-        private async Task<CovidStatistic> FetchDocument()
+        private async Task<CovidStatistics> FetchDocument()
         {
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);
@@ -119,7 +127,7 @@
             // MedicalTable
             var medicalTableRecords = allTebles[4].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
 
-            var covidStatistics = new CovidStatistic
+            var covidStatistics = new CovidStatistics
             {
                 Date = dataDate,
                 ScrapedDate = dateScraped,

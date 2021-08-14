@@ -3,7 +3,8 @@
     using MongoDB.Bson.Serialization.Attributes;
 
     /// <summary>
-    /// Hold percentage information abaut people hospitalized and intensive care unit.
+    /// Hold percentage information 
+    /// people hospitalized and intensive care unit.
     /// </summary>
     public class ActivePrc
     {

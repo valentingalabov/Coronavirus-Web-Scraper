@@ -8,9 +8,17 @@
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization;
 
+    /// <summary>
+    /// Convertion methods which conver database models to service models.
+    /// </summary>
     public static class Conversion
     {
-        public static CovidStatisticServiceModel ConvertToCovidStatisticServiceModel(CovidStatistic covidStatistic)
+        /// <summary>
+        /// Convert database CovidStatistics model to CovidStatisticsServiceModel.
+        /// </summary>
+        /// <param name="covidStatistic">Database entity.</param>
+        /// <returns>Return converted CovidStatistics as CovidStatisticServiceModel</returns>
+        public static CovidStatisticServiceModel ConvertToCovidStatisticServiceModel(CovidStatistics covidStatistic)
         {
             var statistics = new CovidStatisticServiceModel
             {
@@ -29,7 +37,12 @@
             return statistics;
         }
 
-        public static AnalysisServiceModel ConvertToAnalysisServiceModel(CovidStatistic covidStatistic)
+        /// <summary>
+        /// Convert database CovidStatistics model to AnalysisServiceModel.
+        /// </summary>
+        /// <param name="covidStatistic">Database entity.</param>
+        /// <returns>Return converted CovidStatistics as AnalysisServiceModel.</returns>
+        public static AnalysisServiceModel ConvertToAnalysisServiceModel(CovidStatistics covidStatistic)
         {
             return new AnalysisServiceModel
             {
@@ -44,18 +57,11 @@
             };
         }
 
-        private static MedicalAnalysisServiceModel GetTotalMedicalConfirmedByType(Confirmed confirmed)
-        {
-            return new MedicalAnalysisServiceModel
-            {
-                Doctor = confirmed.Medical.TotalByType.Doctror,
-                Nurces = confirmed.Medical.TotalByType.Nurces,
-                Paramedics_1 = confirmed.Medical.TotalByType.Paramedics_1,
-                Paramedics_2 = confirmed.Medical.TotalByType.Paramedics_2,
-                Other = confirmed.Medical.TotalByType.Others,
-            };
-        }
-
+        /// <summary>
+        /// Convertion Region name / EKKATE code depend of imput parameter.
+        /// </summary>
+        /// <param name="region">String representation of region.</param>
+        /// <returns>Converted region name.</returns>
         public static string RegionЕКАТТЕCodeConversion(string region)
         {
             var regionsWithCodes = new Dictionary<string, string>()
@@ -102,6 +108,11 @@
                 .ToLower();
         }
 
+        /// <summary>
+        /// Convert database regions to RegionsServiceModel.
+        /// </summary>
+        /// <param name="regions">Regions infromation as bsondocument.</param>
+        /// <returns>Return regions infromation as RegionsServiceModel.</returns>
         public static IEnumerable<RegionsServiceModel> ConvertToRegionsServiceModel(BsonDocument regions)
         {
             var listOfRegins = new List<RegionsServiceModel>();
@@ -118,6 +129,18 @@
             }
 
             return listOfRegins;
+        }
+
+        private static MedicalAnalysisServiceModel GetTotalMedicalConfirmedByType(Confirmed confirmed)
+        {
+            return new MedicalAnalysisServiceModel
+            {
+                Doctor = confirmed.Medical.TotalByType.Doctror,
+                Nurces = confirmed.Medical.TotalByType.Nurces,
+                Paramedics_1 = confirmed.Medical.TotalByType.Paramedics_1,
+                Paramedics_2 = confirmed.Medical.TotalByType.Paramedics_2,
+                Other = confirmed.Medical.TotalByType.Others,
+            };
         }
 
         private static OverallServiceModel ConvertToOverallServiceModel(Overall overall)

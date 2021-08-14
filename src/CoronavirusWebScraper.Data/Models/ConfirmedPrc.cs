@@ -3,7 +3,7 @@
     using MongoDB.Bson.Serialization.Attributes;
 
     /// <summary>
-    /// Hold percentage information abaut confirmed cases.
+    /// Hold percentage information about confirmed cases.
     /// </summary>
     public class ConfirmedPrc
     {
@@ -32,7 +32,7 @@
         public PcrAntigenPrc LastByTypePrc { get; set; }
 
         /// <summary>
-        /// Gets or sets percantage abaut medical staff per confirmed for last 24 hours.
+        /// Gets or sets percantage about medical staff per confirmed for last 24 hours.
         /// </summary>
         [BsonElement("medical_prc")]
         public double MedicalPcr { get; set; }

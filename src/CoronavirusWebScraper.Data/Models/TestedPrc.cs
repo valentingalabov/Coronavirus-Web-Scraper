@@ -3,7 +3,7 @@
     using MongoDB.Bson.Serialization.Attributes;
 
     /// <summary>
-    /// Hold percentage information abaut tested.
+    /// Hold percentage information about tested.
     /// </summary>
     public class TestedPrc
     {

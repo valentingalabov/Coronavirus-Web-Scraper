@@ -3,8 +3,7 @@
     using MongoDB.Bson.Serialization.Attributes;
 
     /// <summary>
-    /// Hold information about Total and last 24 
-    /// s count.
+    /// Hold information about total and last 24 hours counts.
     /// </summary>
     public class TotalAndLast
     {

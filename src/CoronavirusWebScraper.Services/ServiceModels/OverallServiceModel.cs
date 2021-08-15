@@ -21,8 +21,7 @@
         public ActiveServiceModel Active { get; set; }
 
         /// <summary>
-        /// Gets or sets values 
-        /// recovered cases.
+        /// Gets or sets values about recovered cases.
         /// </summary>
         public TotalAndLastServiceModel Recovered { get; set; }
 

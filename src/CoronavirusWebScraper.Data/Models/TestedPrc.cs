@@ -14,9 +14,7 @@
         public PcrAntigenPrc TotalByTyprPrc { get; set; }
 
         /// <summary>
-        /// Gets or Sets percentage of test by their types for last 24 
-        /// 
-        /// s.
+        /// Gets or Sets percentage of test by their types for last 24.
         /// </summary>
         [BsonElement("last_by_type_prc")]
         public PcrAntigenPrc LastByTypePrc { get; set; }

@@ -20,8 +20,7 @@
         public TestedByType TotalByType { get; set; }
 
         /// <summary>
-        /// Gets or sets count of total tests for last 24 
-        /// s.
+        /// Gets or sets count of total tests for last 24 hours.
         /// </summary>
         [BsonElement("last")]
         public int Last24 { get; set; }

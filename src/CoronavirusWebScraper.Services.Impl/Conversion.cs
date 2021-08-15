@@ -17,7 +17,7 @@
         /// Convert database CovidStatistics model to CovidStatisticsServiceModel.
         /// </summary>
         /// <param name="covidStatistic">Database entity.</param>
-        /// <returns>Return converted CovidStatistics as CovidStatisticServiceModel</returns>
+        /// <returns>Return converted CovidStatistics as CovidStatisticServiceModel.</returns>
         public static CovidStatisticServiceModel ConvertToCovidStatisticServiceModel(CovidStatistics covidStatistic)
         {
             var statistics = new CovidStatisticServiceModel

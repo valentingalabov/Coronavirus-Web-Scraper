@@ -20,7 +20,7 @@
         public double LastPerTestedPrc { get; set; }
 
         /// <summary>
-        /// Gets or sets confirmed percantage by type of test. 
+        /// Gets or sets confirmed percantage by type of test.
         /// </summary>
         [BsonElement("total_by_type_prc")]
         public PcrAntigenPrc TotalByTypePrc { get; set; }

@@ -2,7 +2,7 @@
 {
     public class MedicalAnalysisModel
     {
-        public int Doctor { get; set; }
+        public int Doctors { get; set; }
 
         public int Nurces { get; set; }
 

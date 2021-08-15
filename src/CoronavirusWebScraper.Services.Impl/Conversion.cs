@@ -28,10 +28,10 @@
             };
             statistics.TotalVaccineByType24 = new TotalVaccineByType24ServiceModel
             {
-                TotalAstraZeneca = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.AstraZeneca),
-                TotalComirnaty = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Comirnaty),
-                TotalJanssen = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Janssen),
-                TotalModerna = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Moderna),
+                AstraZeneca = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.AstraZeneca),
+                Comirnaty = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Comirnaty),
+                Janssen = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Janssen),
+                Moderna = statistics.Regions.Sum(x => x.RegionStatistics.Vaccinated.LastByType.Moderna),
             };
 
             return statistics;
@@ -135,7 +135,7 @@
         {
             return new MedicalAnalysisServiceModel
             {
-                Doctor = confirmed.Medical.TotalByType.Doctror,
+                Doctors = confirmed.Medical.TotalByType.Doctror,
                 Nurces = confirmed.Medical.TotalByType.Nurces,
                 Paramedics_1 = confirmed.Medical.TotalByType.Paramedics_1,
                 Paramedics_2 = confirmed.Medical.TotalByType.Paramedics_2,
@@ -162,7 +162,7 @@
             {
                 Total = vaccinated.Total,
                 Last = vaccinated.Last,
-                LastByType = new VaccineTypeServiceModel
+                LastByType = new TotalVaccineByType24ServiceModel
                 {
                     AstraZeneca = vaccinated.LastByType.AstraZeneca,
                     Janssen = vaccinated.LastByType.Janssen,
@@ -221,7 +221,7 @@
                     Total = confirmed.Medical.Total,
                     TotalByType = new MedicalTypesServiceModel
                     {
-                        Doctor = confirmed.Medical.TotalByType.Doctror,
+                        Doctors = confirmed.Medical.TotalByType.Doctror,
                         Nurces = confirmed.Medical.TotalByType.Nurces,
                         Paramedics_1 = confirmed.Medical.TotalByType.Paramedics_1,
                         Paramedics_2 = confirmed.Medical.TotalByType.Paramedics_2,
@@ -230,7 +230,7 @@
                     Last24 = confirmed.Medical.Last24,
                     LastByType24 = new MedicalTypesServiceModel
                     {
-                        Doctor = confirmed.Medical.LastByType24.Doctror,
+                        Doctors = confirmed.Medical.LastByType24.Doctror,
                         Nurces = confirmed.Medical.LastByType24.Nurces,
                         Paramedics_1 = confirmed.Medical.LastByType24.Paramedics_1,
                         Paramedics_2 = confirmed.Medical.LastByType24.Paramedics_2,

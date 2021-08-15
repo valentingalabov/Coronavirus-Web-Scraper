@@ -14,7 +14,8 @@
         public int Total { get; set; }
 
         /// <summary>
-        /// Gets or sets count of vaccinated for last 24 hours.
+        /// Gets or sets count of vaccinated for last 24 
+        /// s.
         /// </summary>
         [BsonElement("last")]
         public int Last { get; set; }

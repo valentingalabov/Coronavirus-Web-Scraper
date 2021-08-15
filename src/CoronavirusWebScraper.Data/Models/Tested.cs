@@ -3,7 +3,7 @@
     using MongoDB.Bson.Serialization.Attributes;
 
     /// <summary>
-    /// Hold information about caunt of tested cases.
+    /// Hold information about count of tested cases.
     /// </summary>
     public class Tested
     {
@@ -20,7 +20,8 @@
         public TestedByType TotalByType { get; set; }
 
         /// <summary>
-        /// Gets or sets count of total tests for last 24 hours.
+        /// Gets or sets count of total tests for last 24 
+        /// s.
         /// </summary>
         [BsonElement("last")]
         public int Last24 { get; set; }

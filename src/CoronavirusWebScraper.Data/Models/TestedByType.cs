@@ -3,7 +3,7 @@
     using MongoDB.Bson.Serialization.Attributes;
 
     /// <summary>
-    /// Hold information about values by type of test.
+    /// Hold information about tested by type.
     /// </summary>
     public class TestedByType
     {

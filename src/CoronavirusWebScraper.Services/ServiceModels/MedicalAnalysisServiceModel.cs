@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets or sets the value of confirmed doctors.
         /// </summary>
-        public int Doctror { get; set; }
+        public int Doctors { get; set; }
 
         /// <summary>
         /// Gets or sets the value of confirmed nurces.
@@ -28,6 +28,6 @@
         /// <summary>
         /// Gets or sets the value of others medical staff.
         /// </summary>
-        public int Others { get; set; }
+        public int Other { get; set; }
     }
 }

@@ -38,7 +38,7 @@
                 TotalRecovered = analysis.TotalRecovered,
                 TotalMedicalAnalisys = new MedicalAnalysisModel
                 {
-                    Doctor = analysis.TotalMedicalAnalisys.Doctor,
+                    Doctors = analysis.TotalMedicalAnalisys.Doctors,
                     Nurces = analysis.TotalMedicalAnalisys.Nurces,
                     Paramedics_1 = analysis.TotalMedicalAnalisys.Paramedics_1,
                     Paramedics_2 = analysis.TotalMedicalAnalisys.Paramedics_2,
@@ -51,10 +51,10 @@
         {
             return new TotalVaccineByType24ViewModel
             {
-                TotalAstraZeneca = totalVaccineByType24.TotalAstraZeneca,
-                TotalModerna = totalVaccineByType24.TotalModerna,
-                TotalComirnaty = totalVaccineByType24.TotalComirnaty,
-                TotalJanssen = totalVaccineByType24.TotalJanssen,
+                TotalAstraZeneca = totalVaccineByType24.AstraZeneca,
+                TotalModerna = totalVaccineByType24.Moderna,
+                TotalComirnaty = totalVaccineByType24.Comirnaty,
+                TotalJanssen = totalVaccineByType24.Janssen,
             };
         }
 
@@ -170,7 +170,7 @@
                     Total = confirmed.Medical.Total,
                     TotalByType = new MedicalTypesViewModel
                     {
-                        Doctror = confirmed.Medical.TotalByType.Doctor,
+                        Doctror = confirmed.Medical.TotalByType.Doctors,
                         Nurces = confirmed.Medical.TotalByType.Nurces,
                         Paramedics_1 = confirmed.Medical.TotalByType.Paramedics_1,
                         Paramedics_2 = confirmed.Medical.TotalByType.Paramedics_2,
@@ -179,7 +179,7 @@
                     Last24 = confirmed.Medical.Last24,
                     LastByType24 = new MedicalTypesViewModel
                     {
-                        Doctror = confirmed.Medical.LastByType24.Doctor,
+                        Doctror = confirmed.Medical.LastByType24.Doctors,
                         Nurces = confirmed.Medical.LastByType24.Nurces,
                         Paramedics_1 = confirmed.Medical.LastByType24.Paramedics_1,
                         Paramedics_2 = confirmed.Medical.LastByType24.Paramedics_2,

@@ -22,7 +22,9 @@
         /// </summary>
         public IEnumerable<RegionsServiceModel> Regions { get; set; }
 
-
+        /// <summary>
+        /// Gets or sets information about vaccinated by vaccine type for last 24 hours.
+        /// </summary>
         public TotalVaccineByType24ServiceModel TotalVaccineByType24 { get; set; }
     }
 }

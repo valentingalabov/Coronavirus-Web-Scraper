@@ -1,5 +1,8 @@
 ﻿namespace CoronavirusWebScraper.Services.ServiceModels
 {
+    /// <summary>
+    /// Hold information about infected medical staff by their type.
+    /// </summary>
     public class MedicalTypesServiceModel
     {
         /// <summary>

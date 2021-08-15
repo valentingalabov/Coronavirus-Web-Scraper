@@ -52,7 +52,6 @@ namespace CoronavirusWebScraper.Web
              .AddMongoDb(
                  mongodbConnectionString: this.Configuration["MongoDbSettings:ConnectionString"],
                  name: "MongoDb connection")
-             .AddCheck<DBResponseTimeHealthCheck>(name: "Database response time")
              .AddUrlGroup(new Uri("https://coronavirus.bg/"), "Check https://coronavirus.bg/ page is up")
              .AddUrlGroup(new Uri("https://coronavirus.bg/bg/statistika"), "Check https://coronavirus.bg/bg/statistika page is up")
              .AddCheck<CoronaviursPagePingHelthCheck>(name: "coronavirus.bg ping check")

@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
-    /// Api controller which get statistical infromation for analisys.
+    /// Retrive statistical infromation for analisys.
     /// </summary>
     [ApiController]
     [Route("api/analysis")]
@@ -23,9 +23,9 @@
         }
 
         /// <summary>
-        /// Api ActionResult which get analysis data and return it on api/analysis.
+        /// Retrive analysis data and return it on api/analysis.
         /// </summary>
-        /// <returns>Statistical infomation about covid.</returns>
+        /// <returns>Statistical infomation about covid 19.</returns>
         [HttpGet]
         public ActionResult Analysis()
         {

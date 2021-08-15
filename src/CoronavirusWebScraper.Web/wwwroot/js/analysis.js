@@ -13,6 +13,7 @@ let h1 = document.createElement('h1');
 h1.textContent = statistics.date;
 dateDiv.appendChild(h1);
 
+/*Draw selected chart with needed data.*/
 function draw() {
     let selectElement = document.getElementById("chart-select");
     let title = selectElement.options[selectElement.value].textContent;
@@ -33,6 +34,7 @@ function draw() {
     }
 }
 
+/*Draw pie chart with given title and two elements.*/
 function drawPieChart(title, el1, el2) {
     let chartData = title.split("/");
     var data = google.visualization.arrayToDataTable([
@@ -52,10 +54,11 @@ function drawPieChart(title, el1, el2) {
     chart.draw(data, options);
 }
 
+/*Draw bar chart with statistical information about medical staff.*/
 function drawMedicalBarChart() {
     var data = google.visualization.arrayToDataTable([
         ['Тип', 'Брой', { role: 'style' }, { role: 'annotation' }],
-        ['Доктори', statistics.totalMedicalAnalisys.doctor, '#b87333', 'Доктори'],
+        ['Доктори', statistics.totalMedicalAnalisys.doctors, '#b87333', 'Доктори'],
         ['Медицински сестри', statistics.totalMedicalAnalisys.nurces, 'silver', 'Медицински сестри'],
         ['Санитари', statistics.totalMedicalAnalisys.paramedics_1, 'gold', 'Санитари'],
         ['Фелдшери', statistics.totalMedicalAnalisys.paramedics_2, 'color: #e5e4e2', 'Фелдшери'],
@@ -71,6 +74,7 @@ function drawMedicalBarChart() {
     chart.draw(data, options);
 }
 
+/*Draw column chart with given title and two elements.*/
 function drawColumnChart(title, el1, el2) {
     let chartData = title.split("/");
 

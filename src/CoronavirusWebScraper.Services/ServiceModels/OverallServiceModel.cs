@@ -16,7 +16,7 @@
         public ConfirmedServiceModel Confirmed { get; set; }
 
         /// <summary>
-        /// Gets or sets values about active cases.
+        /// Gets or sets values about currently infected people.
         /// </summary>
         public ActiveServiceModel Active { get; set; }
 

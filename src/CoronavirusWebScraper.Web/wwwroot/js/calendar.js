@@ -11,29 +11,33 @@ let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 let monthAndYear = document.getElementById("monthAndYear");
 showCalendar(currentMonth, currentYear);
 
-
+/*Visulize calendar for next month.*/
 async function next() {
     currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
     currentMonth = (currentMonth + 1) % 12;
     await showCalendar(currentMonth, currentYear);
 }
 
+/*Visulize calendar for previous month.*/
 async function previous() {
     currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
     currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
     await showCalendar(currentMonth, currentYear);
 }
 
+/*Visualize calendar for selected month and year from dropdown.*/
 async function jump() {
     currentYear = parseInt(selectYear.value);
     currentMonth = parseInt(selectMonth.value);
     await showCalendar(currentMonth, currentYear);
 }
 
+/*Visualize calendar for current month and year.*/
 async function currentDate() {
     await showCalendar(today.getMonth(), today.getFullYear());
 }
 
+/*Visualize calendar for given month and year.*/
 async function showCalendar(month, year) {
     let path = `/api/dates?year=${year}&month=${month+1}`;
     let statisticsDates = await ApiGetFunction(path);
@@ -63,8 +67,10 @@ async function showCalendar(month, year) {
             else {
                 let cell = document.createElement("td");
                 cell.classList.add("calendar-numbers");
+
                 let cellText = document.createTextNode(date);
                 let currDateAtMoment = new Date(year, month, date);
+
                 if (date === today.getDate()
                     && year === today.getFullYear()
                     && month === today.getMonth()
@@ -78,14 +84,12 @@ async function showCalendar(month, year) {
                     a.classList.add("statistic-day");
                     cell.appendChild(a);
 
-                }
-                else if (date === today.getDate()
+                } else if (date === today.getDate()
                     && year === today.getFullYear()
                     && month === today.getMonth()
                     && !isIncluded(statisticsDates, currDateAtMoment)) {
                     cell.appendChild(cellText);
-                }
-                else if (isIncluded(statisticsDates, new Date(year, month, date))) {
+                } else if (isIncluded(statisticsDates, new Date(year, month, date))) {
                     cell.classList.add("text-success");
                     let a = document.createElement("a");
                     a.href = `DateData?date=${year}-${month + 1}-${date}`;
@@ -100,6 +104,7 @@ async function showCalendar(month, year) {
                 date++;
             }
         }
+
         tbl.appendChild(row);
     }
 
@@ -110,6 +115,7 @@ async function showCalendar(month, year) {
     }
 }
 
+/*Check if returned form api list of dates contains current date.*/
 function isIncluded(listOfDates, currDate) {
     try {
         var contains = listOfDates.some(elem => {
@@ -126,10 +132,12 @@ function isIncluded(listOfDates, currDate) {
     }
 }
 
+/*Return count of dates for given month and year.*/
 function daysInMonth(iMonth, iYear) {
     return 32 - new Date(iYear, iMonth, 32).getDate();
 }
 
+/*Implement event listeners.*/
 document.getElementById("next").addEventListener("click", await next);
 document.getElementById("current").addEventListener("click", await currentDate);
 document.getElementById("previous").addEventListener("click", await previous);

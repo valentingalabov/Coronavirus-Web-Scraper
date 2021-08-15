@@ -1,8 +1,8 @@
 ﻿namespace CoronavirusWebScraper.Services.ServiceModels
 {
     /// <summary>
-    /// Hold information about confirmed cases total and for last 24.
-    /// s for Medical staff.
+    /// Hold information about confirmed cases total and for last 24
+    /// hours for Medical staff.
     /// </summary>
     public class MedicalServiceModel
     {

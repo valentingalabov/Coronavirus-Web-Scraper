@@ -1,13 +1,28 @@
 ﻿namespace CoronavirusWebScraper.Web.Models
 {
+    /// <summary>
+    /// Hold infromation of vaccinated by type of vaccine for last 24 hours.
+    /// </summary>
     public class TotalVaccineByType24ViewModel
     {
-        public int TotalComirnaty { get; set; }
+        /// <summary>
+        /// Gets or sets count of vaccinated with comirnaty.
+        /// </summary>
+        public int Comirnaty { get; set; }
 
-        public int TotalModerna { get; set; }
+        /// <summary>
+        /// Gets or sets count of vaccinated with moderna.
+        /// </summary>
+        public int Moderna { get; set; }
 
-        public int TotalAstraZeneca { get; set; }
+        /// <summary>
+        /// Gets or sets count of vaccinated with astrazeneca.
+        /// </summary>
+        public int AstraZeneca { get; set; }
 
-        public int TotalJanssen { get; set; }
+        /// <summary>
+        /// Gets or sets count of vaccinated with janssen.
+        /// </summary>
+        public int Janssen { get; set; }
     }
 }

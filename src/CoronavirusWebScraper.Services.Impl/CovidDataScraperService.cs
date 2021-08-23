@@ -18,8 +18,6 @@
     /// </summary>
     public class CovidDataScraperService : ICovidDataScraperService
     {
-        private const string CovidUrl = "https://coronavirus.bg/";
-
         private readonly IMongoRepository<CovidStatistics> repository;
 
         /// <summary>
@@ -47,9 +45,9 @@
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);
 
-            var document = await context.OpenAsync(CovidUrl);
+            var document = await context.OpenAsync(Constants.CovidUrl);
 
-            var covidStatisticUrl = CovidUrl + document.QuerySelector(".statistics-sub-header.nsi").GetAttribute("href");
+            var covidStatisticUrl = Constants.CovidUrl + document.QuerySelector(".statistics-sub-header.nsi").GetAttribute("href");
             var statisticDocument = await context.OpenAsync(covidStatisticUrl);
 
             var statistics = document.QuerySelectorAll(".statistics-container > div > p").Select(x => x.TextContent).ToArray();
@@ -64,9 +62,9 @@
             var currDateAsString = string.Join(" ", date, month, year, time);
             var currDate = DateTime.Parse(currDateAsString);
 
-            var dataDate = currDate.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
+            var dataDate = currDate.ToString(Constants.DateTimeFormatISO8601WithTimeZone);
 
-            var dateScraped = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            var dateScraped = DateTime.UtcNow.ToString(Constants.DateTimeFormatISO8601);
 
             // No scrape data if already scraped for current day
             var currentDayStatistics = await this.repository.FindOneAsync(filter => filter.Date == dataDate);

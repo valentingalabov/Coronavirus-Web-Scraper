@@ -22,11 +22,11 @@ function draw() {
         divToDraw.innerHTML = "";
         google.charts.setOnLoadCallback(drawColumnChart(title, statistics.active, statistics.hospitalized));
     } else if (selectElement.value == 2) {
-        google.charts.setOnLoadCallback(drawPieChart(title, statistics.hospitalized, statistics.icu));
+        google.charts.setOnLoadCallback(drawColumnChart(title, statistics.hospitalized, statistics.icu));
     } else if (selectElement.value == 3) {
         google.charts.setOnLoadCallback(drawColumnChart(title, statistics.confirmed, statistics.totalTests));
     } else if (selectElement.value == 4) {
-        google.charts.setOnLoadCallback(drawMedicalBarChart);
+        google.charts.setOnLoadCallback(drawMedicalPieChart);
     } else if (selectElement.value == 5) {
         google.charts.setOnLoadCallback(drawColumnChart(title,statistics.confirmed, statistics.totalRecovered));
     } else {
@@ -46,7 +46,6 @@ function drawPieChart(title, el1, el2) {
     var options = {
         pieSliceText: 'label',
         title: title,
-        pieStartAngle: 100,
         is3D: true
     };
 
@@ -54,23 +53,25 @@ function drawPieChart(title, el1, el2) {
     chart.draw(data, options);
 }
 
-/*Draw bar chart with statistical information about medical staff.*/
-function drawMedicalBarChart() {
+/*Draw pie chart with statistical information about medical staff.*/
+function drawMedicalPieChart() {
     var data = google.visualization.arrayToDataTable([
-        ['Тип', 'Брой', { role: 'style' }, { role: 'annotation' }],
-        ['Доктори', statistics.totalMedicalAnalisys.doctors, '#b87333', 'Доктори'],
-        ['Медицински сестри', statistics.totalMedicalAnalisys.nurces, 'silver', 'Медицински сестри'],
-        ['Санитари', statistics.totalMedicalAnalisys.paramedics_1, 'gold', 'Санитари'],
-        ['Фелдшери', statistics.totalMedicalAnalisys.paramedics_2, 'color: #e5e4e2', 'Фелдшери'],
-        ['Друг мед. персонал', statistics.totalMedicalAnalisys.other, 'green', 'Друг мед. персонал']
+        ['Тип', 'Брой'],
+        ['Доктори', statistics.totalMedicalAnalisys.doctors],
+        ['Медицински сестри', statistics.totalMedicalAnalisys.nurces],
+        ['Санитари', statistics.totalMedicalAnalisys.paramedics_1],
+        ['Фелдшери', statistics.totalMedicalAnalisys.paramedics_2],
+        ['Друг мед. персонал', statistics.totalMedicalAnalisys.other]
     ]);
 
     var options = {
+        pieSliceText: 'label',
         title: "Потвърдени случаи за медицински персонал по тип",
-        bar: { groupWidth: "95%" },
-        legend: { position: 'none' },
+        pieStartAngle: 100,
+        is3D: true
     };
-    var chart = new google.visualization.BarChart(divToDraw);
+
+    var chart = new google.visualization.PieChart(divToDraw);
     chart.draw(data, options);
 }
 

@@ -9,7 +9,7 @@ let selectMonth = document.getElementById("month");
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 let monthAndYear = document.getElementById("monthAndYear");
-showCalendar(currentMonth, currentYear);
+await showCalendar(currentMonth, currentYear);
 
 /*Visulize calendar for next month.*/
 async function next() {
@@ -34,7 +34,9 @@ async function jump() {
 
 /*Visualize calendar for current month and year.*/
 async function currentDate() {
-    await showCalendar(today.getMonth(), today.getFullYear());
+    currentYear = today.getFullYear();
+    currentMonth = today.getMonth();
+    await showCalendar(currentMonth, currentYear);
 }
 
 /*Visualize calendar for given month and year.*/

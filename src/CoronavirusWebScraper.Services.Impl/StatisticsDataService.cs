@@ -16,7 +16,7 @@
         private readonly IMongoRepository<CovidStatistics> repository;
 
         /// <summary>
-        /// Contructor Implementation repository to read covid statistics data.
+        /// Contructor Implementation repository to read covid19 statistics data.
         /// </summary>
         /// <param name="repository">Mongo db repository.</param>
         public StatisticsDataService(IMongoRepository<CovidStatistics> repository)
@@ -43,7 +43,7 @@
 
             if (dateToFind == true)
             {
-                var currMonthToFind = dateAsDateTime.ToString("yyyy-MM");
+                var currMonthToFind = dateAsDateTime.ToString(Constants.DateTimeYearAndMonthFormat);
 
                 return this.repository.FilterBy(
                     filter => filter.Date.Contains(currMonthToFind),
@@ -63,7 +63,7 @@
             {
                 return this.repository
                 .FilterBy(
-                    filter => filter.Date == currDateToFind.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz"),
+                    filter => filter.Date == currDateToFind.ToString(Constants.DateTimeFormatISO8601WithTimeZone),
                     projection => Conversion.ConvertToCovidStatisticServiceModel(projection))
                 .FirstOrDefault();
             }

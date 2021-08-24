@@ -6,14 +6,17 @@
 
     using CoronavirusWebScraper.Services;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
 
     public class Worker : BackgroundService
     {
+        private readonly ILogger<Worker> logger;
         private readonly ICovidDataScraperService covidScraper;
         private readonly IBackgroundServiceConfiguration configuration;
 
-        public Worker(ICovidDataScraperService covidScraper, IBackgroundServiceConfiguration configuration)
+        public Worker(ILogger<Worker> logger, ICovidDataScraperService covidScraper, IBackgroundServiceConfiguration configuration)
         {
+            this.logger = logger;
             this.covidScraper = covidScraper;
             this.configuration = configuration;
         }
@@ -29,7 +32,7 @@
                 }
                 catch (Exception e)
                 {
-                    throw new Exception(e.Message);
+                    this.logger.LogWarning(e.Message);
                 }
             }
         }

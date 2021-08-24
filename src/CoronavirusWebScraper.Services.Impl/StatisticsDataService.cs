@@ -38,8 +38,7 @@
         /// <inheritdoc />
         public IEnumerable<string> GetAllDatesForSpecificMonthAndYear(string year, string month)
         {
-            DateTime dateAsDateTime;
-            var dateToFind = DateTime.TryParse(string.Concat(year, "/", month), out dateAsDateTime);
+            var dateToFind = DateTime.TryParse(string.Concat(year, "/", month), out DateTime dateAsDateTime);
 
             if (dateToFind == true)
             {
@@ -56,8 +55,7 @@
         /// <inheritdoc />
         public CovidStatisticServiceModel GetStatisticsForSpecificDay(string date)
         {
-            DateTime currDateToFind;
-            var formatedDate = DateTime.TryParse(date, out currDateToFind);
+            var formatedDate = DateTime.TryParse(date, out DateTime currDateToFind);
 
             if (formatedDate == true)
             {

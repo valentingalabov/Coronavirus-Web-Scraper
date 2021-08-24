@@ -14,7 +14,7 @@
         /// <summary>
         /// Constructor implementing interface for reading data.
         /// </summary>
-        /// <param name="dataService">Reading data interfac.</param>
+        /// <param name="dataService">Reading data interface.</param>
         public DataController(IStatisticsDataService dataService)
         {
             this.dataService = dataService;

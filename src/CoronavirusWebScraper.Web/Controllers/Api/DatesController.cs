@@ -26,11 +26,16 @@
         /// </summary>
         /// <param name="year">Year to search information for.</param>
         /// <param name="month">Month to search information for.</param>
-        /// <returns>Collection of dates for which have statistical information in database.</returns>
+        /// <returns>Collection of dates for which have statistical information in database or not faund if doesn't have information.</returns>
         [HttpGet]
         public ActionResult Dates(string year, string month)
         {
             var dates = this.dataService.GetAllDatesForSpecificMonthAndYear(year, month);
+
+            if (dates == null)
+            {
+                return this.NotFound();
+            }
 
             return this.Ok(dates);
         }

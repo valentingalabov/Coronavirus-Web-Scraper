@@ -11,7 +11,7 @@
     /// </summary>
     public class CoronaviursPagePingHelthCheck : IHealthCheck
     {
-        private const string CovidUrl = "https://coronavirus.bg/";
+        private const string CovidUrl = "coronavirus.bg";
 
         /// <summary>
         /// Check ping of CovidUrl.
@@ -41,7 +41,7 @@
             }
             catch
             {
-                return HealthCheckResult.Unhealthy($"Current ping is more than 120ms.");
+                return HealthCheckResult.Unhealthy($"Page not responding.");
             }
         }
     }

@@ -25,11 +25,16 @@
         /// <summary>
         /// Retrive analysis data and return it on api/analysis.
         /// </summary>
-        /// <returns>Statistical infomation about covid 19.</returns>
+        /// <returns>Statistical infomation about covid 19 ot not faund if doesn't have information.</returns>
         [HttpGet]
         public ActionResult Analysis()
         {
             var analysis = Conversion.ConvertToAnalysisModel(this.dataService.GetAnalysisData());
+
+            if (analysis == null)
+            {
+                return this.NotFound();
+            }
 
             return this.Ok(analysis);
         }

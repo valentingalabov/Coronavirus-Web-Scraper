@@ -10,7 +10,6 @@
         /// </summary>
         public int Total { get; set; }
 
-
         /// <summary>
         /// Gets or sets count of vaccinated for last 24 hours.
         /// </summary>

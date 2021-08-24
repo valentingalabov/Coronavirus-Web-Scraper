@@ -1,4 +1,4 @@
-﻿namespace CoronavirusWebScraper.Data.Models
+﻿namespace CoronavirusWebScraper.Data.Models.BaseModels
 {
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization.Attributes;

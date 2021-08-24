@@ -8,7 +8,7 @@
 
     using CoronavirusWebScraper.Data.Attributes;
     using CoronavirusWebScraper.Data.Configuration;
-    using CoronavirusWebScraper.Data.Models;
+    using CoronavirusWebScraper.Data.Models.BaseModels;
     using MongoDB.Driver;
 
     /// <summary>
@@ -69,7 +69,7 @@
         /// Gets documents collection by type of document provided in parameter.
         /// </summary>
         /// <param name="documentType">Current document type.</param>
-        /// <returns>Collection name</returns>
+        /// <returns>Collection name.</returns>
         private protected string GetCollectionName(Type documentType)
         {
             return ((BsonCollectionAttribute)documentType.GetCustomAttributes(

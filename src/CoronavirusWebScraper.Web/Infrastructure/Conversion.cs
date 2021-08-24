@@ -21,7 +21,7 @@
         {
             return new CovidStatisticViewModel
             {
-                Date = DateTime.Parse(covidStatistic.Date).ToString("HH:mm,dd MMM yyy"),
+                Date = covidStatistic.Date,
                 Active = ConvertToActiveViewModel(covidStatistic.Overall.Active),
                 Confirmed = ConvertToConfirmedViewModel(covidStatistic.Overall.Confirmed),
                 Recovered = ConverToRecoveredViewModel(covidStatistic.Overall.Recovered),
@@ -42,7 +42,7 @@
         {
             return new AnalysisModel
             {
-                Date = DateTime.Parse(analysis.Date).ToString("dd MMM yyy"),
+                Date = analysis.Date,
                 Active = analysis.Active,
                 Hospitalized = analysis.Hospitalized,
                 Icu = analysis.Icu,

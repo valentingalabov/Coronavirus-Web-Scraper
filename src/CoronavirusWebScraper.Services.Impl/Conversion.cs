@@ -1,5 +1,6 @@
 ﻿namespace CoronavirusWebScraper.Services.Impl
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -22,7 +23,7 @@
         {
             var statistics = new CovidStatisticServiceModel
             {
-                Date = covidStatistic.Date,
+                Date = DateTime.Parse(covidStatistic.Date).ToString(Constants.TimeAndDateFormat),
                 Overall = ConvertToOverallServiceModel(covidStatistic.Overall),
                 Regions = ConvertToRegionsServiceModel(covidStatistic.Regions),
             };
@@ -46,7 +47,7 @@
         {
             return new AnalysisServiceModel
             {
-                Date = covidStatistic.Date,
+                Date = DateTime.Parse(covidStatistic.Date).ToString(Constants.DateFormat),
                 Active = covidStatistic.Overall.Active.Curent,
                 Hospitalized = covidStatistic.Overall.Active.CurrentByType.Hospitalized,
                 Icu = covidStatistic.Overall.Active.CurrentByType.Icu,

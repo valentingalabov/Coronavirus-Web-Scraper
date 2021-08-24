@@ -52,8 +52,8 @@ namespace CoronavirusWebScraper.Web
              .AddMongoDb(
                  mongodbConnectionString: this.Configuration["MongoDbSettings:ConnectionString"],
                  name: "MongoDb connection")
-             .AddUrlGroup(new Uri("https://coronavirus.bg/"), "Check https://coronavirus.bg/ page is up")
-             .AddUrlGroup(new Uri("https://coronavirus.bg/bg/statistika"), "Check https://coronavirus.bg/bg/statistika page is up")
+             .AddUrlGroup(new Uri("https://coronavirus.bg/"), "Check coronavirus.bg page is up")
+             .AddUrlGroup(new Uri("https://coronavirus.bg/bg/statistika"), "Check coronavirus.bg/bg/statistika page is up")
              .AddCheck<CoronaviursPagePingHelthCheck>(name: "coronavirus.bg ping check")
              .AddDiskStorageHealthCheck(s => s.AddDrive("C:\\", 1024))
              .AddProcessAllocatedMemoryHealthCheck(512);

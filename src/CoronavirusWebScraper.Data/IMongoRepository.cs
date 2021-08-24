@@ -6,7 +6,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
-    using CoronavirusWebScraper.Data.Models;
+    using CoronavirusWebScraper.Data.Models.BaseModels;
 
     /// <summary>
     /// MongoDB repository interface.

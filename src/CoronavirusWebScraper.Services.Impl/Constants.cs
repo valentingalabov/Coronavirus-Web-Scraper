@@ -24,5 +24,15 @@
         /// DatiTime format containing only year and month.
         /// </summary>
         public const string DateTimeYearAndMonthFormat = "yyyy-MM";
+
+        /// <summary>
+        /// DateTime format containing hour and minutes with date.
+        /// </summary>
+        public const string TimeAndDateFormat = "HH:mm,dd MMM yyy";
+
+        /// <summary>
+        /// DateTime format containing only date.
+        /// </summary>
+        public const string DateFormat = "dd MMM yyy";
     }
 }

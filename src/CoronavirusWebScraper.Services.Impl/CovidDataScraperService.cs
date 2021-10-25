@@ -68,6 +68,7 @@
 
             // No scrape data if already scraped for current day
             var currentDayStatistics = await this.repository.FindOneAsync(filter => filter.Date == dataDate);
+
             if (currentDayStatistics != null)
             {
                 return null;
@@ -125,6 +126,50 @@
             // MedicalTable
             var medicalTableRecords = allTebles[4].QuerySelectorAll("td").Select(x => x.TextContent).ToArray();
 
+            // TotalByTypePrc
+            var totalTestedPcrPercentage = this.DevideTwoIntiger(totalPcr, totalTests);
+            var totalTestedAntigenPercentage = this.DevideTwoIntiger(totalAntigen, totalTests);
+
+            // Last24hByTypePrc
+            var last24PcrPercentage = this.DevideTwoIntiger(totalPcr24, totalTests24);
+            var last24AntigenPercentage = this.DevideTwoIntiger(totalAntigen24, totalTests24);
+
+            // TotalConfirmed/TotalTested
+            var totalPerTestedPrcPercentage = this.DevideTwoIntiger(totalConfirmed, totalTests);
+
+            // ConfirmedFor24h/TotalTestedFor24h
+            var last24PerTestedPrcPercentage = this.DevideTwoIntiger(totalConfirmed24, totalTests24);
+
+            // TotalConfirmedByTypePercentage
+            var totalConfirmedPcrPercentage = this.DevideTwoIntiger(confirmedPcr, totalConfirmed);
+            var totalConfirmedAntigenPercentage = this.DevideTwoIntiger(confirmedAntigen, totalConfirmed);
+
+            var last24ConfirmedPcrPercentage = this.DevideTwoIntiger(confirmedPcr24, totalConfirmed24);
+            var last24ConfirmedAntigenPercentage = this.DevideTwoIntiger(confirmedAntigen24, totalConfirmed24);
+
+            // ActivePercentage
+            var hospitalizedPerActive = this.DevideTwoIntiger(hospitalized, active);
+            var icuPerHospitalized = this.DevideTwoIntiger(intensiveCare, hospitalized);
+
+            // MedicalInformation
+            var previousDate = currDate.AddDays(-1).ToString(Constants.DateTimeFormatISO8601WithTimeZone);
+
+            var totalMedical = this.IntParser(medicalTableRecords[11]);
+
+            // Check having information about medics for prev day.
+            var medicalInformationForPreviousDay = this.repository
+                        .FilterBy(filter => filter.Date == previousDate, projected
+                        => projected.Overall.Confirmed.Medical)
+                        .FirstOrDefault();
+
+            // Get information about medicalConfirmed/totalConfirmed for 24h if have one.
+            double medicalPrc = 0;
+            if (medicalInformationForPreviousDay != null)
+            {
+                medicalPrc
+                      = this.DevideTwoIntiger(totalMedical - medicalInformationForPreviousDay.Total, totalConfirmed24);
+            }
+
             var covidStatistics = new CovidStatistics
             {
                 Date = dataDate,
@@ -145,7 +190,7 @@
                         TotalByType = new TestedByType { PCR = confirmedPcr, Antigen = confirmedAntigen },
                         Last24 = totalConfirmed24,
                         TotalByType24 = new TestedByType { PCR = confirmedPcr24, Antigen = confirmedAntigen24 },
-                        Medical = this.GetMedicalStatistics(medicalTableRecords, currDate),
+                        Medical = this.GetMedicalStatistics(totalMedical, medicalTableRecords, medicalInformationForPreviousDay),
                     },
                     Active = new Active
                     {
@@ -181,28 +226,27 @@
                 {
                     TestedPrc = new TestedPrc
                     {
-                        TotalByTyprPrc = new PcrAntigenPrc { PCR = this.DevideTwoIntiger(totalPcr, totalTests), Antigen = this.DevideTwoIntiger(totalAntigen, totalTests) },
-                        LastByTypePrc = new PcrAntigenPrc { PCR = this.DevideTwoIntiger(totalPcr24, totalTests24), Antigen = this.DevideTwoIntiger(totalAntigen24, totalTests24) },
+                        TotalByTyprPrc = new PcrAntigenPrc { PCR = totalTestedPcrPercentage, Antigen = totalTestedAntigenPercentage },
+                        LastByTypePrc = new PcrAntigenPrc { PCR = last24PcrPercentage, Antigen = last24AntigenPercentage },
                     },
                     ConfirmedPrc = new ConfirmedPrc
                     {
-                        TotalPerTestedPrc = this.DevideTwoIntiger(totalConfirmed, totalTests),
-                        LastPerTestedPrc = this.DevideTwoIntiger(totalConfirmed24, totalTests24),
-                        TotalByTypePrc = new PcrAntigenPrc { PCR = this.DevideTwoIntiger(confirmedPcr, totalConfirmed), Antigen = this.DevideTwoIntiger(confirmedAntigen, totalConfirmed) },
-                        LastByTypePrc = new PcrAntigenPrc { PCR = this.DevideTwoIntiger(confirmedPcr24, totalConfirmed24), Antigen = this.DevideTwoIntiger(confirmedAntigen24, totalConfirmed24) },
+                        TotalPerTestedPrc = totalPerTestedPrcPercentage,
+                        LastPerTestedPrc = last24PerTestedPrcPercentage,
+                        TotalByTypePrc = new PcrAntigenPrc { PCR = totalConfirmedPcrPercentage, Antigen = totalConfirmedAntigenPercentage },
+                        LastByTypePrc = new PcrAntigenPrc { PCR = last24ConfirmedPcrPercentage, Antigen = last24ConfirmedAntigenPercentage },
                     },
                     Active = new ActivePrc
                     {
-                        HospotalizedPerActive = this.DevideTwoIntiger(hospitalized, active),
-                        IcuPerHospitalized = this.DevideTwoIntiger(intensiveCare, hospitalized),
+                        HospotalizedPerActive = hospitalizedPerActive,
+                        IcuPerHospitalized = icuPerHospitalized,
                     },
                 },
             };
 
-            if (covidStatistics.Overall.Confirmed.Medical.Last24 != 0)
+            if (medicalPrc != 0)
             {
-                covidStatistics.Stats.ConfirmedPrc.MedicalPcr
-                    = this.DevideTwoIntiger(covidStatistics.Overall.Confirmed.Medical.Last24, covidStatistics.Overall.Confirmed.Last24);
+                covidStatistics.Stats.ConfirmedPrc.MedicalPcr = medicalPrc;
             }
 
             var convertedRegions = Conversion.ConvertToRegionsServiceModel(covidStatistics.Regions);
@@ -388,7 +432,7 @@
             }
 
             var counter = 0;
-            for (int i = 0; i < vaccinatedByRegions.Length; i += 7)
+            for (int i = 0; i < vaccinatedByRegions.Length - 1; i += 8)
             {
                 var totalVaccinated = this.IntParser(vaccinatedByRegions[i + 1]);
                 var comirnaty = this.IntParser(vaccinatedByRegions[i + 2]);
@@ -424,23 +468,15 @@
             return regionsStatisticsData.ToBsonDocument();
         }
 
-        private Medical GetMedicalStatistics(string[] medicalTableRecords, DateTime currentDate)
+        private Medical GetMedicalStatistics(int totalMedical, string[] medicalTableRecords, Medical medicalPrevDay)
         {
             var totalDoctors = this.IntParser(medicalTableRecords[1]);
             var totalNurces = this.IntParser(medicalTableRecords[3]);
             var totalParamedics1 = this.IntParser(medicalTableRecords[5]);
             var totalParamedics2 = this.IntParser(medicalTableRecords[7]);
             var others = this.IntParser(medicalTableRecords[9]);
-            var totalMedical = this.IntParser(medicalTableRecords[11]);
 
-            var previousDate = currentDate.AddDays(-1).ToString("yyyy-MM-ddTHH\\:mm\\:sszzz");
-
-            var medialForPreviousDay = this.repository
-                .FilterBy(filter => filter.Date == previousDate, projected
-                => projected.Overall.Confirmed.Medical)
-                .FirstOrDefault();
-
-            if (medialForPreviousDay == null)
+            if (medicalPrevDay == null)
             {
                 return new Medical
                 {
@@ -476,14 +512,14 @@
                     Paramedics_2 = totalParamedics2,
                     Others = others,
                 },
-                Last24 = totalMedical - medialForPreviousDay.Total,
+                Last24 = totalMedical - medicalPrevDay.Total,
                 LastByType24 = new MedicalTypes
                 {
-                    Doctror = totalDoctors - medialForPreviousDay.TotalByType.Doctror,
-                    Nurces = totalNurces - medialForPreviousDay.TotalByType.Nurces,
-                    Paramedics_1 = totalParamedics1 - medialForPreviousDay.TotalByType.Paramedics_1,
-                    Paramedics_2 = totalParamedics2 - medialForPreviousDay.TotalByType.Paramedics_2,
-                    Others = others - medialForPreviousDay.TotalByType.Others,
+                    Doctror = totalDoctors - medicalPrevDay.TotalByType.Doctror,
+                    Nurces = totalNurces - medicalPrevDay.TotalByType.Nurces,
+                    Paramedics_1 = totalParamedics1 - medicalPrevDay.TotalByType.Paramedics_1,
+                    Paramedics_2 = totalParamedics2 - medicalPrevDay.TotalByType.Paramedics_2,
+                    Others = others - medicalPrevDay.TotalByType.Others,
                 },
             };
         }

@@ -32,7 +32,7 @@
                 }
                 catch (Exception e)
                 {
-                    this.logger.LogWarning(e.Message);
+                    throw new Exception(e.Message);
                 }
             }
         }

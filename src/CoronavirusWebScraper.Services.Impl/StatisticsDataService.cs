@@ -24,15 +24,17 @@
             this.repository = repository;
         }
 
-        public AnalysisServiceModel GetAnalysisData()
+        public AnalysisServiceModel GetAnalysisDataForLastDay()
         {
-            var result = Conversion
-                .ConvertToAnalysisServiceModel(this.repository
-                .AsQueryable()
-                .OrderByDescending(x => x.Date)
-                .FirstOrDefault());
+            var lastDayData = this.repository.AsQueryable().OrderByDescending(x => x.Date).FirstOrDefault();
 
-            return result;
+            if (lastDayData != null)
+            {
+                return Conversion.ConvertToAnalysisServiceModel(lastDayData);
+            }
+
+            return null;
+
         }
 
         /// <inheritdoc />

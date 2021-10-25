@@ -28,6 +28,6 @@
         /// Get statistical information for analisys for the last day.
         /// </summary>
         /// <returns>Analysis information for last day.</returns>
-        AnalysisServiceModel GetAnalysisData();
+        AnalysisServiceModel GetAnalysisDataForLastDay();
     }
 }

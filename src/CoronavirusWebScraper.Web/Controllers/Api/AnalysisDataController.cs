@@ -29,13 +29,14 @@
         [HttpGet]
         public ActionResult Analysis()
         {
-            var data = this.dataService.GetAnalysisData();
-            var analysis = Conversion.ConvertToAnalysisModel(data);
+            var data = this.dataService.GetAnalysisDataForLastDay();
 
-            if (analysis == null)
+            if (data == null)
             {
                 return this.NotFound();
             }
+
+            var analysis = Conversion.ConvertToAnalysisModel(data);
 
             return this.Ok(analysis);
         }

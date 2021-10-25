@@ -1,18 +1,18 @@
 namespace CoronavirusWebScraper.Web
 {
-    using System;
-
     using CoronavirusWebScraper.Data;
     using CoronavirusWebScraper.Data.Configuration;
     using CoronavirusWebScraper.Services;
     using CoronavirusWebScraper.Services.Impl;
     using CoronavirusWebScraper.Web.BackgroundServices;
+    using CoronavirusWebScraper.Web.HealthChecks;
     using global::HealthChecks.UI.Client;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Options;
 
@@ -42,6 +42,7 @@ namespace CoronavirusWebScraper.Web
             // BackgroundService implementation
             services.Configure<HostedServiceOptions>(this.Configuration.GetSection(HostedServiceOptions.HostedService));
             services.AddHostedService<WebScraperHostedService>();
+            services.AddSingleton<StartupHostedServiceHealthCheck>();
 
             services.AddControllersWithViews();
 
@@ -49,7 +50,10 @@ namespace CoronavirusWebScraper.Web
             services.AddHealthChecks()
              .AddMongoDb(
                  mongodbConnectionString: this.Configuration["MongoDbSettings:ConnectionString"],
-                 name: "MongoDb connection");
+                 name: "MongoDb connection")
+             .AddCheck<StartupHostedServiceHealthCheck>(
+                 "hosted_service_startup",
+                 failureStatus: HealthStatus.Degraded);
 
             services.AddHealthChecksUI().AddInMemoryStorage();
         }

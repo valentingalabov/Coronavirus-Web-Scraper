@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
 
     using CoronavirusWebScraper.Services;
+    using CoronavirusWebScraper.Web.HealthChecks;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -14,13 +15,19 @@
         private readonly ICovidDataScraperService covidScraper;
         private readonly ILogger<WebScraperHostedService> logger;
         private readonly IOptions<HostedServiceOptions> webScraperOptions;
+        private readonly StartupHostedServiceHealthCheck startupHostedServiceHealthCheck;
         private Timer timer;
 
-        public WebScraperHostedService(ICovidDataScraperService covidScraper, ILogger<WebScraperHostedService> logger, IOptions<HostedServiceOptions> webScraperOptions)
+        public WebScraperHostedService(
+            ICovidDataScraperService covidScraper,
+            ILogger<WebScraperHostedService> logger,
+            IOptions<HostedServiceOptions> webScraperOptions,
+            StartupHostedServiceHealthCheck startupHostedServiceHealthCheck)
         {
             this.covidScraper = covidScraper;
             this.logger = logger;
             this.webScraperOptions = webScraperOptions;
+            this.startupHostedServiceHealthCheck = startupHostedServiceHealthCheck;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
@@ -37,6 +44,7 @@
         public Task StopAsync(CancellationToken stoppingToken)
         {
             this.logger.LogInformation("WebScraperHostedService is stopping.");
+            this.startupHostedServiceHealthCheck.StartupTaskCompleted = false;
 
             return Task.CompletedTask;
         }
@@ -51,6 +59,7 @@
             try
             {
                 await this.covidScraper.ScrapeData();
+                this.startupHostedServiceHealthCheck.StartupTaskCompleted = true;
             }
             catch (Exception e)
             {

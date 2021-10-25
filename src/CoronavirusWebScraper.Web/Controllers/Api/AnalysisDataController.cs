@@ -29,7 +29,8 @@
         [HttpGet]
         public ActionResult Analysis()
         {
-            var analysis = Conversion.ConvertToAnalysisModel(this.dataService.GetAnalysisData());
+            var data = this.dataService.GetAnalysisData();
+            var analysis = Conversion.ConvertToAnalysisModel(data);
 
             if (analysis == null)
             {

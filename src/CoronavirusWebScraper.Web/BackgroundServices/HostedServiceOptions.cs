@@ -1,7 +1,9 @@
 ﻿namespace CoronavirusWebScraper.Web.BackgroundServices
 {
-    public interface IBackgroundServiceConfiguration
+    public class HostedServiceOptions
     {
+        public const string HostedService = "HostedService";
+
         public int Hours { get; set; }
     }
 }

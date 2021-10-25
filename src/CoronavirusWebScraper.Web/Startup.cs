@@ -7,7 +7,6 @@ namespace CoronavirusWebScraper.Web
     using CoronavirusWebScraper.Services;
     using CoronavirusWebScraper.Services.Impl;
     using CoronavirusWebScraper.Web.BackgroundServices;
-    using CoronavirusWebScraper.Web.HealthChecks;
     using global::HealthChecks.UI.Client;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -41,9 +40,8 @@ namespace CoronavirusWebScraper.Web
             services.AddTransient<IStatisticsDataService, StatisticsDataService>();
 
             // BackgroundService implementation
-            services.Configure<BackgroundServiceConfiguration>(this.Configuration.GetSection(nameof(BackgroundServiceConfiguration)));
-            services.AddSingleton<IBackgroundServiceConfiguration>(serviceProvider => serviceProvider.GetRequiredService<IOptions<BackgroundServiceConfiguration>>().Value);
-            services.AddHostedService<Worker>();
+            services.Configure<HostedServiceOptions>(this.Configuration.GetSection(HostedServiceOptions.HostedService));
+            services.AddHostedService<WebScraperHostedService>();
 
             services.AddControllersWithViews();
 
@@ -51,12 +49,7 @@ namespace CoronavirusWebScraper.Web
             services.AddHealthChecks()
              .AddMongoDb(
                  mongodbConnectionString: this.Configuration["MongoDbSettings:ConnectionString"],
-                 name: "MongoDb connection")
-             .AddUrlGroup(new Uri("https://coronavirus.bg/"), "Check coronavirus.bg page is up")
-             .AddUrlGroup(new Uri("https://coronavirus.bg/bg/statistika"), "Check coronavirus.bg/bg/statistika page is up")
-             .AddCheck<CoronaviursPagePingHelthCheck>(name: "coronavirus.bg ping check")
-             .AddDiskStorageHealthCheck(s => s.AddDrive("C:\\", 1024))
-             .AddProcessAllocatedMemoryHealthCheck(512);
+                 name: "MongoDb connection");
 
             services.AddHealthChecksUI().AddInMemoryStorage();
         }

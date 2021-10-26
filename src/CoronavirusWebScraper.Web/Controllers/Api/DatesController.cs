@@ -4,7 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
-    /// Retrive dates for which have statistical infromation.
+    /// Retrieve dates for which have statistical information.
     /// </summary>
     [ApiController]
     [Route("api/dates")]
@@ -22,11 +22,11 @@
         }
 
         /// <summary>
-        /// Retrive dates for which have statistical infromation.
+        /// Retrieve dates for which have statistical information.
         /// </summary>
         /// <param name="year">Year to search information for.</param>
         /// <param name="month">Month to search information for.</param>
-        /// <returns>Collection of dates for which have statistical information in database or not faund if doesn't have information.</returns>
+        /// <returns>Collection of dates for which have statistical information in database or not fauns if doesn't have information.</returns>
         [HttpGet]
         public ActionResult Dates(string year, string month)
         {

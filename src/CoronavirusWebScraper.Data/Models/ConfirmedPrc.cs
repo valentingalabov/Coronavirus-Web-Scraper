@@ -20,19 +20,19 @@
         public double LastPerTestedPrc { get; set; }
 
         /// <summary>
-        /// Gets or sets confirmed percantage by type of test.
+        /// Gets or sets confirmed percentage by type of test.
         /// </summary>
         [BsonElement("total_by_type_prc")]
         public PcrAntigenPrc TotalByTypePrc { get; set; }
 
         /// <summary>
-        /// Gets or sets confirmed percantage by type of test for last 24 hours.
+        /// Gets or sets confirmed percentage by type of test for last 24 hours.
         /// </summary>
         [BsonElement("last_by_type_prc")]
         public PcrAntigenPrc LastByTypePrc { get; set; }
 
         /// <summary>
-        /// Gets or sets percantage about medical staff per confirmed for last 24 hours.
+        /// Gets or sets percentage about medical staff per confirmed for last 24 hours.
         /// </summary>
         [BsonElement("medical_prc")]
         public double MedicalPcr { get; set; }

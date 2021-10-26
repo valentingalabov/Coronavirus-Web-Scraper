@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
-    /// Retrive stastical information about covid 19.
+    /// Retrieve statistical information about covid19.
     /// </summary>
     public class DataController : Controller
     {
@@ -31,10 +31,10 @@
         }
 
         /// <summary>
-        /// Retrive statistical information for given date.
+        /// Retrieve statistical information for given date.
         /// </summary>
         /// <param name="date">Date to search statistical information for.</param>
-        /// <returns>Statistical information about choosen date or redirect to DataView if date is invalid.</returns>
+        /// <returns>Statistical information about chosen date or redirect to DataView if date is invalid.</returns>
         [HttpGet]
         public IActionResult DateData(string date)
         {

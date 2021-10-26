@@ -10,7 +10,7 @@
     using MongoDB.Bson.Serialization;
 
     /// <summary>
-    /// Convertion methods which conver database models to service models.
+    /// Conversion methods which convert database models to service models.
     /// </summary>
     public static class Conversion
     {
@@ -59,7 +59,7 @@
         }
 
         /// <summary>
-        /// Convertion Region name / EKKATE code depend of imput parameter.
+        /// Conversion Region name / EKKATE code depend of input parameter.
         /// </summary>
         /// <param name="region">String representation of region.</param>
         /// <returns>Converted region name.</returns>
@@ -112,8 +112,8 @@
         /// <summary>
         /// Convert database regions to RegionsServiceModel.
         /// </summary>
-        /// <param name="regions">Regions infromation as bsondocument.</param>
-        /// <returns>Return regions infromation as RegionsServiceModel.</returns>
+        /// <param name="regions">Regions information as bson document.</param>
+        /// <returns>Return regions information as RegionsServiceModel.</returns>
         public static IEnumerable<RegionsServiceModel> ConvertToRegionsServiceModel(BsonDocument regions)
         {
             var listOfRegins = new List<RegionsServiceModel>();

@@ -21,7 +21,7 @@
         public VaccineTypeViewModel LastByType { get; set; }
 
         /// <summary>
-        /// Gets or sets count fully complate vaccination.
+        /// Gets or sets count fully complete vaccination.
         /// </summary>
         public int TotalCompleted { get; set; }
     }

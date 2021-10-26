@@ -1,7 +1,7 @@
 ﻿namespace CoronavirusWebScraper.Services.ServiceModels
 {
     /// <summary>
-    /// Hold information about confimed covid19 cases.
+    /// Hold information about confirmed covid19 cases.
     /// </summary>
     public class ConfirmedServiceModel
     {

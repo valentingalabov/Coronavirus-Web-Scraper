@@ -25,7 +25,7 @@
         /// Return single objects from database.
         /// </summary>
         /// <param name="filterExpression">Expression parameter which filter data.</param>
-        /// <returns>The maching document.</returns>
+        /// <returns>The matching document.</returns>
         Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression);
 
         /// <summary>
@@ -35,10 +35,10 @@
         IQueryable<TDocument> AsQueryable();
 
         /// <summary>
-        /// Return filtred objects.
+        /// Return filtered objects.
         /// </summary>
         /// <param name="filterExpression">/Expression parameter which filter data.</param>
-        /// <returns>Maching collection.</returns>
+        /// <returns>Matching collection.</returns>
         IEnumerable<TDocument> FilterBy(Expression<Func<TDocument, bool>> filterExpression);
 
         /// <summary>
@@ -47,7 +47,7 @@
         /// <typeparam name="TProjected">Filtered object.</typeparam>
         /// <param name="filterExpression">Expression parameter which filter data.</param>
         /// <param name="projectionExpression"> Project field you want to take.</param>
-        /// <returns>Maching collection projected objects.</returns>
+        /// <returns>Matching collection projected objects.</returns>
         IEnumerable<TProjected> FilterBy<TProjected>(
             Expression<Func<TDocument, bool>> filterExpression,
             Expression<Func<TDocument, TProjected>> projectionExpression);

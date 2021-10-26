@@ -12,8 +12,8 @@
         /// <summary>
         /// Get all dates in given month and year with statistical information about covid.
         /// </summary>
-        /// <param name="year">Year to serch dates.</param>
-        /// <param name="month">Month to serch dates.</param>
+        /// <param name="year">Year to search dates.</param>
+        /// <param name="month">Month to search dates.</param>
         /// <returns>Return collection of dates as string for which have statistical data.</returns>
         IEnumerable<string> GetAllDatesForSpecificMonthAndYear(string year, string month);
 
@@ -21,11 +21,11 @@
         /// Get statistical information for specific date.
         /// </summary>
         /// <param name="date">the date for which to find information.</param>
-        /// <returns>Statistical information about the maching day or null if doesn't find information.</returns>
+        /// <returns>Statistical information about the matching day or null if doesn't find information.</returns>
         CovidStatisticServiceModel GetStatisticsForSpecificDay(string date);
 
         /// <summary>
-        /// Get statistical information for analisys for the last day.
+        /// Get statistical information for analysis for the last day.
         /// </summary>
         /// <returns>Analysis information for last day.</returns>
         AnalysisServiceModel GetAnalysisDataForLastDay();

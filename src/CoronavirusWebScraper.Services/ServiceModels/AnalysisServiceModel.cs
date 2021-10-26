@@ -31,7 +31,7 @@
         public int Confirmed { get; set; }
 
         /// <summary>
-        /// Gets or sets coun of total tests.
+        /// Gets or sets count of total tests.
         /// </summary>
         public int TotalTests { get; set; }
 

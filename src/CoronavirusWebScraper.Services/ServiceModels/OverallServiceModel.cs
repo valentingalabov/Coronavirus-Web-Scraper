@@ -11,7 +11,7 @@
         public TestedServiceModel Tested { get; set; }
 
         /// <summary>
-        /// Gets or sets values about confimed cases.
+        /// Gets or sets values about confirmed cases.
         /// </summary>
         public ConfirmedServiceModel Confirmed { get; set; }
 

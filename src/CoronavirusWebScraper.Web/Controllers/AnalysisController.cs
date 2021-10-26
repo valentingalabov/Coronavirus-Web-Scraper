@@ -8,7 +8,7 @@
     public class AnalysisController : Controller
     {
         /// <summary>
-        /// Analisys page.
+        /// Analysis page.
         /// </summary>
         /// <returns>Return Analysis view.</returns>
         [HttpGet]

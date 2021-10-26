@@ -1,7 +1,7 @@
 ﻿namespace CoronavirusWebScraper.Web.Models
 {
     /// <summary>
-    /// Hold infromation of vaccinated by type of vaccine for last 24 hours.
+    /// Hold information of vaccinated by type of vaccine for last 24 hours.
     /// </summary>
     public class TotalVaccineByType24ViewModel
     {

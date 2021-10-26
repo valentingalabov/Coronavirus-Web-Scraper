@@ -21,9 +21,9 @@
         private readonly IMongoRepository<CovidStatistics> repository;
 
         /// <summary>
-        /// Contructor Implementation repository to store covid statistics data.
+        /// Constructor Implementation repository to store covid19 statistics data.
         /// </summary>
-        /// <param name="repository">Mongo db repository.</param>
+        /// <param name="repository">Mongodb repository.</param>
         public CovidDataScraperService(IMongoRepository<CovidStatistics> repository)
         {
             this.repository = repository;
@@ -156,7 +156,7 @@
 
             var totalMedical = this.IntParser(medicalTableRecords[11]);
 
-            // Check having information about medics for prev day.
+            // Check having information about medics for previous day.
             var medicalInformationForPreviousDay = this.repository
                         .FilterBy(filter => filter.Date == previousDate, projected
                         => projected.Overall.Confirmed.Medical)

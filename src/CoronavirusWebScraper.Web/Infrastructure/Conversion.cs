@@ -15,8 +15,8 @@
         /// <summary>
         /// Convert CovidStatisticServiceModel to CovidStatisticViewModel.
         /// </summary>
-        /// <param name="covidStatistic">Service model for statistical information about covid 19.</param>
-        /// <returns>Statistical information about covid 19 as view model.</returns>
+        /// <param name="covidStatistic">Service model for statistical information about covid19.</param>
+        /// <returns>Statistical information about covid19 as view model.</returns>
         public static CovidStatisticViewModel ConvertToCovidStatisticViewModel(CovidStatisticServiceModel covidStatistic)
         {
             return new CovidStatisticViewModel
@@ -36,8 +36,8 @@
         /// <summary>
         /// Convert AnalysisServiceModel to AnalysisModel.
         /// </summary>
-        /// <param name="analysis">Service model for statistical information about covid 19.</param>
-        /// <returns>Statistical information for analysis about covid 19 as view model.</returns>
+        /// <param name="analysis">Service model for statistical information about covid19.</param>
+        /// <returns>Statistical information for analysis about covid19 as view model.</returns>
         public static AnalysisModel ConvertToAnalysisModel(AnalysisServiceModel analysis)
         {
             return new AnalysisModel

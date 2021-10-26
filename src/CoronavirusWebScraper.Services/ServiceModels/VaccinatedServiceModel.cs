@@ -26,7 +26,7 @@
         public TotalVaccineByType24ServiceModel LastByType { get; set; }
 
         /// <summary>
-        /// Gets or sets count fully complate vaccination.
+        /// Gets or sets count fully complete vaccination.
         /// </summary>
         [BsonElement("total_completed")]
         public int TotalCompleted { get; set; }

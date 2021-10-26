@@ -6,17 +6,17 @@
     public static class Constants
     {
         /// <summary>
-        /// Url containing stsatistical infromation about covid19.
+        /// URL containing statistical information about covid19.
         /// </summary>
         public const string CovidUrl = "https://coronavirus.bg/";
 
         /// <summary>
-        /// DateTime iso 8601 format with current time zone.
+        /// DateTime iso8601 format with current time zone.
         /// </summary>
         public const string DateTimeFormatISO8601WithTimeZone = "yyyy-MM-ddTHH\\:mm\\:sszzz";
 
         /// <summary>
-        /// DateTime iso 8601 format.
+        /// DateTime iso8601 format.
         /// </summary>
         public const string DateTimeFormatISO8601 = "yyyy-MM-ddTHH:mm:ssZ";
 

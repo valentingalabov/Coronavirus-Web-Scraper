@@ -3,7 +3,7 @@
     using MongoDB.Bson.Serialization.Attributes;
 
     /// <summary>
-    /// Hold percentage infromation about tested, confirmed and active.
+    /// Hold percentage information about tested, confirmed and active.
     /// </summary>
     public class Stats
     {

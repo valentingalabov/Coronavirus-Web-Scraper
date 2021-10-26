@@ -3,7 +3,7 @@
     using System;
 
     /// <summary>
-    /// Atribute specifies the collection name in mongo db document.
+    /// Attribute specifies the collection name in mongodb document.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class BsonCollectionAttribute : Attribute

@@ -16,7 +16,7 @@
         private readonly IMongoRepository<CovidStatistics> repository;
 
         /// <summary>
-        /// Contructor Implementation repository to read covid19 statistics data.
+        /// Constructor Implementation repository to read covid19 statistics data.
         /// </summary>
         /// <param name="repository">Mongo db repository.</param>
         public StatisticsDataService(IMongoRepository<CovidStatistics> repository)

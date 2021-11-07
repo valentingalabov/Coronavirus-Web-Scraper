@@ -5,6 +5,7 @@ namespace CoronavirusWebScraper.Web
     using CoronavirusWebScraper.Services;
     using CoronavirusWebScraper.Services.Impl;
     using CoronavirusWebScraper.Web.BackgroundServices;
+    using CoronavirusWebScraper.Web.HealthChecks;
     using global::HealthChecks.UI.Client;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -41,13 +42,17 @@ namespace CoronavirusWebScraper.Web
             services.Configure<HostedServiceOptions>(this.Configuration.GetSection(HostedServiceOptions.HostedService));
             services.AddHostedService<WebScraperHostedService>();
 
+            services.Configure<MongoDbHCSettings>(this.Configuration.GetSection(MongoDbHCSettings.MongoDbSettings));
+
             services.AddControllersWithViews();
 
             // Health checks
             services.AddHealthChecks()
-             .AddMongoDb(
-                 mongodbConnectionString: this.Configuration["MongoDbSettings:ConnectionString"],
-                 name: "MongoDb connection");
+
+             // .AddMongoDb(
+             //    mongodbConnectionString: this.Configuration["MongoDbSettings:ConnectionString"],
+             //    name: "MongoDb connection")
+             .AddCheck<MongoDbHealthCheck>("MongoDb HealthCheck");
 
             services.AddHealthChecksUI().AddInMemoryStorage();
         }

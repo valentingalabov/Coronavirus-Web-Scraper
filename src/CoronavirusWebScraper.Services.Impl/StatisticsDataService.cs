@@ -34,7 +34,6 @@
             }
 
             return null;
-
         }
 
         /// <inheritdoc />
